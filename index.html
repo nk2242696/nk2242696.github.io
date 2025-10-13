@@ -1,340 +1,950 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nikhil Kumar | Big Data Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a2e;
+      --bg-card-hover: #252541;
+      --accent: #ffffff;
+      --accent-muted: #b3b3b3;
+      --accent-dim: #8e8e93;
+      --border: rgba(255, 255, 255, 0.08);
+      --highlight: #e50914;
+    }
 
-    <title>Resume - Start Bootstrap Theme</title>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--accent);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: linear-gradient(180deg, rgba(10, 10, 10, 0.98) 0%, rgba(10, 10, 10, 0) 100%);
+      padding: 2rem 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
 
-    <!-- Custom fonts for this template -->
-    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="vendor/devicons/css/devicons.min.css" rel="stylesheet">
-    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+    nav.scrolled {
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
 
-    <!-- Custom styles for this template -->
-    <link href="css/resume.min.css" rel="stylesheet">
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 5%;
+    }
 
-  </head>
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      padding: 0.5rem 0;
+    }
 
-  <body id="page-top">
+    .nav-links {
+      display: flex;
+      gap: 3rem;
+      list-style: none;
+    }
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">
-        <span class="d-block d-lg-none">Start Bootstrap</span>
-        <span class="d-none d-lg-block">
-          <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="img/profile.jpg" alt="">
-        </span>
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#experience">Experience</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#education">Education</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#skills">Skills</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#interests">Interests</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#awards">Awards</a>
-          </li>
+    .nav-links a {
+      color: var(--accent-muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 5%;
+      position: relative;
+      background: radial-gradient(ellipse at top, rgba(229, 9, 20, 0.08), transparent 50%);
+    }
+
+    .hero-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .hero-text {
+      flex: 1;
+    }
+
+    .profile-image-container {
+      flex-shrink: 0;
+    }
+
+    .profile-image {
+      width: 300px;
+      height: 300px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 3px solid rgba(229, 9, 20, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      transition: all 0.4s ease;
+    }
+
+    .profile-image:hover {
+      transform: scale(1.05);
+      border-color: var(--highlight);
+      box-shadow: 0 30px 80px rgba(229, 9, 20, 0.4);
+    }
+
+    .hero-label {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: rgba(229, 9, 20, 0.15);
+      border: 1px solid rgba(229, 9, 20, 0.4);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--highlight);
+      margin-bottom: 2rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: 5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -2px;
+      line-height: 1.1;
+    }
+
+    .hero .subtitle {
+      font-size: 1.5rem;
+      color: var(--accent-muted);
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--accent-dim);
+      max-width: 650px;
+      margin-bottom: 3rem;
+      line-height: 1.8;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 1rem 2.5rem;
+      border: none;
+      background: var(--accent);
+      color: var(--bg-primary);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Section Styling */
+    section {
+      padding: 8rem 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      color: var(--highlight);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+
+    .section-description {
+      font-size: 1.1rem;
+      color: var(--accent-dim);
+      max-width: 700px;
+    }
+
+    /* Experience Cards - Netflix Style */
+    .experience-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .experience-card {
+      background: var(--bg-card);
+      padding: 3rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .experience-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(229, 9, 20, 0.6), rgba(147, 51, 234, 0.6));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .experience-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .experience-card:hover::before {
+      opacity: 1;
+    }
+
+    .company-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .company-info {
+      flex: 1;
+    }
+
+    .company-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .company-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .role {
+      font-size: 1.1rem;
+      color: var(--accent-muted);
+      font-weight: 500;
+    }
+
+    .date-badge {
+      padding: 0.6rem 1.4rem;
+      background: rgba(229, 9, 20, 0.15);
+      border: 1px solid rgba(229, 9, 20, 0.3);
+      border-radius: 50px;
+      color: var(--highlight);
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .experience-card ul {
+      list-style: none;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .experience-card li {
+      padding-left: 2rem;
+      position: relative;
+      color: var(--accent-dim);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .experience-card li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--highlight);
+      font-weight: bold;
+    }
+
+    /* Skills Section - Netflix Card Style */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-category {
+      background: var(--bg-card);
+      padding: 3rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-category::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(229, 9, 20, 0.2), transparent 70%);
+      border-radius: 50%;
+      transform: translate(40%, -40%);
+      transition: all 0.4s ease;
+    }
+
+    .skill-category:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .skill-category:hover::before {
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(229, 9, 20, 0.3), transparent 70%);
+    }
+
+    .skill-category h3 {
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .skill-tag {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.7rem 1.3rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--accent-muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .skill-tag:hover {
+      background: rgba(229, 9, 20, 0.2);
+      border-color: rgba(229, 9, 20, 0.6);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Education & Certifications */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .info-card {
+      background: var(--bg-card);
+      padding: 3rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #e50914, #9333ea, #3b82f6);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+
+    .info-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .info-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .info-card h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .info-card .institution {
+      color: var(--accent-muted);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-card p {
+      color: var(--accent-dim);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .info-card .date {
+      display: inline-block;
+      padding: 0.5rem 1.2rem;
+      background: rgba(229, 9, 20, 0.15);
+      border: 1px solid rgba(229, 9, 20, 0.3);
+      border-radius: 50px;
+      color: var(--highlight);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .award-list {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .award-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .award-item:hover {
+      background: rgba(229, 9, 20, 0.08);
+      border-color: rgba(229, 9, 20, 0.4);
+      transform: translateX(5px);
+    }
+
+    .award-icon {
+      color: var(--highlight);
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .award-item span {
+      color: var(--accent-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Contact Section */
+    .contact-content {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .contact-content p {
+      color: var(--accent-dim);
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+      line-height: 1.8;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .social-link {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-muted);
+      text-decoration: none;
+      font-size: 1.4rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .social-link:hover {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-color: var(--accent);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 5%;
+      color: var(--accent-dim);
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .nav-links {
+        gap: 1.5rem;
+      }
+
+      .hero-content {
+        flex-direction: column-reverse;
+        gap: 3rem;
+      }
+
+      .profile-image {
+        width: 250px;
+        height: 250px;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+      }
+
+      .hero .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+
+      .company-header {
+        flex-direction: column;
+      }
+
+      .date-badge {
+        align-self: flex-start;
+      }
+
+      .company-name {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .profile-image {
+        width: 200px;
+        height: 200px;
+      }
+
+      section {
+        padding: 5rem 5%;
+      }
+
+      .experience-card {
+        padding: 2rem;
+      }
+
+      .skill-category {
+        padding: 2rem;
+      }
+
+      .info-card {
+        padding: 2rem;
+      }
+    }
+
+    /* Smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="navbar">
+    <div class="container">
+      <a href="#" class="logo">NIKHIL KUMAR</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero" id="about">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-label">7+ YEARS EXPERIENCE</div>
+        <h1>Big Data Engineer<br>& Cloud Architect</h1>
+        <p class="subtitle">Building scalable data solutions at enterprise scale</p>
+        <p>Specialized in Apache Spark, Kafka, and cloud-native architectures. Proven track record of optimizing
+          data pipelines, reducing costs, and delivering high-impact solutions for Fortune 500 companies.</p>
+        <div class="cta-buttons">
+          <a href="#contact" class="btn">Get In Touch</a>
+          <a href="https://github.com/nk2242696" class="btn btn-secondary" target="_blank">View GitHub</a>
+        </div>
+      </div>
+      <div class="profile-image-container">
+        <img src="img/profile.jpg" alt="Nikhil Kumar" class="profile-image">
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="section-header">
+      <div class="section-label">CAREER PATH</div>
+      <h2 class="section-title">Professional Experience</h2>
+      <p class="section-description">Delivered high-impact data solutions across cloud platforms and big data
+        technologies for leading global enterprises.</p>
+    </div>
+    <div class="experience-grid">
+      <div class="experience-card">
+        <div class="company-header">
+          <div class="company-info">
+            <h3 class="company-name">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/2048px-Microsoft_logo.svg.png"
+                alt="Microsoft" class="company-logo">
+              <span>Microsoft</span>
+            </h3>
+            <p class="role">Software Engineer</p>
+          </div>
+          <span class="date-badge">Aug 2022 - Present</span>
+        </div>
+        <ul>
+          <li>Drove 2-3% improvement in load balancing for CosmosDB cluster deployments as part of Azure Cloud
+            Supply Chain Data team, directly impacting resource forecasting accuracy</li>
+          <li>Led migration from legacy BigData Storage Framework to modern Spark-based architecture using
+            ADF, Synapse, Databricks, and Azure Functions</li>
+          <li>Architected and deployed new Data Quality framework, stabilizing Storage telemetry across
+            multiple Azure teams</li>
+          <li>Implemented Erasure Coding techniques, achieving significant reduction in Storage infrastructure
+            footprint</li>
         </ul>
       </div>
-    </nav>
 
-    <a href="" target="_blank">View Count
-<img src="https://hitwebcounter.com/counter/counter.php?page=8014433&style=0025&nbdigits=5&type=page&initCount=0" title="Free Counter" Alt="web counter"   border="0" /></a>      
-     
-    <div style="text-align:center;padding:1em 0;"> <h3><a style="text-decoration:none;" href="https://www.zeitverschiebung.net/en/city/1259229"><span style="color:gray;">Current local time in</span><br />India</a></h3> <iframe src="https://www.zeitverschiebung.net/clock-widget-iframe-v2?language=en&size=medium&timezone=Asia%2FKolkata" width="100%" height="115" frameborder="0" seamless></iframe> </div>
-    <div class="container-fluid p-0">
-      <!-- hitwebcounter Code START --> 
-      
-
-      <section class="resume-section p-3 p-lg-5 d-flex d-column" id="about">
-        <div class="my-auto">
-          <h1 class="mb-0">Nikhil
-            <span class="text-primary">Kumar</span>
-          </h1>
-          <div class="subheading mb-5">India
-            <a href="mailto:name@email.com">nk2242696@gmail.com</a>
+      <div class="experience-card">
+        <div class="company-header">
+          <div class="company-info">
+            <h3 class="company-name">
+              <img src="img/epsilon_logo.png" alt="Epsilon" style="width:40px;height:30px;" class="company-logo">
+              <span>Epsilon</span>
+            </h3>
+            <p class="role">Software Engineer 2</p>
           </div>
-          <p class="mb-5">I am a Software Engineer passsionate about BigData. I like solving Puzzles, Riddles, playing Chess and doing Competitive Programming.</p>
-          <ul class="list-inline list-social-icons mb-0">
-            <li class="list-inline-item">
-              <a href="https://www.hackerrank.com/nk2734534">
-                 <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-hacker-news fa-stack-1x fa-inverse"></i>
-                </span>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                </span>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="https://www.linkedin.com/in/nikhil-k-82b003ba/">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
-                </span>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="https://github.com/nk2242696">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                </span>
-              </a>
-            </li>
-          </ul>
+          <span class="date-badge">June 2021 - Aug 2022</span>
         </div>
-      </section>
+        <ul>
+          <li>Engineered framework to migrate MapReduce jobs to Spark, modernizing legacy LinkedIn Camus-based
+            data ingestion pipeline</li>
+          <li>Achieved 3x reduction in HDFS disk footprint through advanced ORC file and Kafka compression
+            optimization, including linger/batch size tuning, sticky partitioning, and high-cardinality
+            column sorting</li>
+          <li>Built comprehensive Kibana Dashboard for Spark Job metrics monitoring using ELK stack, improving
+            observability across data engineering teams</li>
+          <li>Maintained production data pipeline processing 300B+ records daily with 99.9% uptime through
+            on-call support and proactive troubleshooting</li>
+        </ul>
+      </div>
 
-      <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="experience">
-        <div class="my-auto">
-          <h2 class="mb-5">Experience</h2>
-
-          <div class="resume-item d-flex flex-column flex-md-row mb-5">
-            <div class="resume-content mr-auto">
-              <h3 class="mb-0">Software Engineer</h3>
-              <div class="subheading mb-3" border="1" bgcolor="#00cc99">Microsoft<img src="img/microsoft_logo.png" alt="Microsoft Logo" style="width:40px;height:30px;"></div>
-              <ul border="1" bgcolor="#00cc99">
-                <li>Part of Azure Cloud Supply Chain Data team responsible of forecasting of Azure Resources. 
-                Worked on key feature resulting in **2-3%**better load balancing for deployment of CosmosDB clusters
-                Worked on Storage and Cosmos teams. </li>
-                <li>Migrated from Legacy BigData Storage Framework(Internal) to newer Spark Based
-                Framework(ADF,Synapse,Databricks,Functions) . Introduced new DQ framework and stablized Storage telemetry. Worked on
-                Erasure Coding technique to reduce Storage footprint.</li>
-              </ul>
-            </div>
-            <div class="resume-date text-md-right">
-              <span class="text-primary">Aug 2022 - Present</span>
-            </div>
+      <div class="experience-card">
+        <div class="company-header">
+          <div class="company-info">
+            <h3 class="company-name">
+              <img src="img/hashmap_logo.jpg" style="width:30px;height:30px;" alt="HashMap Inc" class="company-logo">
+              <span>HashMap Inc</span>
+            </h3>
+            <p class="role">Cloud Data Engineer</p>
           </div>
-          
-          <div class="resume-item d-flex flex-column flex-md-row mb-5">
-            <div class="resume-content mr-auto">
-              <h3 class="mb-0">Software Engineer 2</h3>
-              <div class="subheading mb-3">Epsilon<img src="img/epsilon_logo.png" alt="Epsilon Logo" style="width:40px;height:30px;"></div>
-              <ul>
-              <li>Building framework to migrate Map Reduce jobs to Spark.</li>
-              <li>Improved ORC file and Kafka compression thus reducing HDFS Disk
-footprint by 3 times using techniques like ( tuning linger and batch size, Sticky Partitioner, Sorting high cardinality columns etc).</li>
-              <li>Troubleshooting and debugging data pipeline on rotation basis to support
-300B records/ day.</li>
-              <li>Build Kibana Dashboard for Spark Job metrics using ELK stack.  </li>
-              </ul>
-            </div>
-            <div class="resume-date text-md-right">
-              <span class="text-primary">Aug 2021 - Aug 2022</span>
-            </div>
-          </div>
-          
-          
-          <div class="resume-item d-flex flex-column flex-md-row mb-5">
-            <div class="resume-content mr-auto">
-              <h3 class="mb-0">Cloud Data Engineer</h3>
-              <div class="subheading mb-3" border="1"
-        bgcolor="#00cc99">Hashmap Inc <img src="img/hashmap_logo.jpg" alt="Hashmap Logo" style="width:30px;height:30px;"></div>
-              <ul border="1"
-        bgcolor="#00cc99">
-              <li>Responsible for integrating
-On prem Data Sources(Oracle, Netezza) and Cloud datasources(Google
-Analytics, S3, APIs) with Snowflake. Responsible for writing Matillion ETL
-jobs and supporting a range of Business consumption of patterns. Cloud
-Formation scripts to automate test and deployment of AWS resources.</li>
-              <li>Build Spark batch application for
-parsing complex JSON files. Ingesting data into HBase and creation of
-HDF5 files using Java. Build Pyton library for loading, querying and performing analytical
-operations on time-series HBase data using SQL like syntax. </li>
-              <li>Build accelerator to automate ETL
-process by using crealytics library for excel ingestion.</li>
-                </ul>
-            </div>
-            <div class="resume-date text-md-right">
-              <span class="text-primary">June 2018 - July 2021</span>
-            </div>
-          </div>
-      </section>
-
-      <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="education">
-        <div class="my-auto">
-          <h2 class="mb-5">Education</h2>
-
-          <div class="resume-item d-flex flex-column flex-md-row mb-5">
-            <div class="resume-content mr-auto">
-              <h3 class="mb-0">Army Institute of Technology</h3>
-              <div class="subheading mb-3">Bachelor of Engineering</div>
-              <div>Information Technology</div>
-              <p>PERCENTAGE: 70.8</p>
-            </div>
-            <div class="resume-date text-md-right">
-              <span class="text-primary">July 2014 - May 2018</span>
-            </div>
-          </div>
-
-          <div class="resume-item d-flex flex-column flex-md-row">
-            <div class="resume-content mr-auto">
-              <h3 class="mb-0">Army Public School Kaluchak</h3>
-              <div class="subheading mb-3">Class XII</div>
-              <p>PERCENTAGE: 87.4</p>
-            </div>
-            <div class="resume-date text-md-right">
-              <span class="text-primary">March 2013 - May 2014</span>
-            </div>
-          </div>
-          
-          <div class="resume-item d-flex flex-column flex-md-row">
-            <div class="resume-content mr-auto">
-              <h3 class="mb-0">Army Public School Kaluchak</h3>
-              <div class="subheading mb-3">Class X</div>
-              <p>CGPA: 10</p>
-            </div>
-            <div class="resume-date text-md-right">
-              <span class="text-primary">March 2012 - June 2013</span>
-            </div>
-          </div>
-
-
+          <span class="date-badge">June 2018 - June 2021</span>
         </div>
-      </section>
-
-      <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="skills">
-        <div class="my-auto">
-          <h2 class="mb-5">Skills</h2>
-
-          <div class="subheading mb-3">Programming Languages &amp; Tools</div>
-          <ul class="list-inline list-icons">
-            <li class="list-inline-item">
-              <i class="devicons devicons-java"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-python"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-google-cloud-platform"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-aws"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-mysql"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-ubuntu"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-postgresql"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-docker"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-wordpress"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-git"></i>
-            </li>
-            <li class="list-inline-item">
-              <i class="devicons devicons-npm"></i>
-            </li>
-            
-          </ul>
-
-          <div class="subheading mb-3">Workflow</div>
-          <ul class="fa-ul mb-0">
-            <li>
-              <i class="fa-li fa fa-check"></i>
-              Spark;Kafka;Functional Programming,Open Source/Big Data</li>
-            <li>
-              <i class="fa-li fa fa-check"></i>
-              Python;Java</li>
-            <li>
-              <i class="fa-li fa fa-check"></i>
-              Algorithms;DataStructures;Linux,Networking</li>
-            <li>
-              <i class="fa-li fa fa-check"></i>
-              HTML;CSS;PHP</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="interests">
-        <div class="my-auto">
-          <h2 class="mb-5">Interests</h2>
-          <p>Apart from being a Software Engineer, I enjoy most of my time being outdoors. In the winter, I am an avid runner, skater and footballer. During the warmer months, I enjoy badminton, cycling, and swimming.</p>
-          <p class="mb-0">When forced indoors, I follow a number of documentaries, listening to music and watching anime movies, I am an aspiring chef, and I spend a large amount of my free time exploring the latest technolgy advancements in the BigData Field.</p>
-        </div>
-      </section>
-
-      <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="awards">
-        <div class="my-auto">
-          <h2 class="mb-5">Awards &amp; Certifications</h2>
-          <ul class="fa-ul mb-0">
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-              Mountain Mover Award</li>
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-              Google Cloud Certified Professional Data Engineer</li>
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-              Snowflake Snowpro Certified Developer </li>
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-              Won AIT Pune Tech Quiz</li>
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-              2<sup>nd</sup>
-              Runner Up Inter College Chess Tournament</li>
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-              Won Amul Vidyashree Award Class Xth</li>
-            <li>
-              <i class="fa-li fa fa-trophy text-warning"></i>
-             Scored 96 percentile in National Creativity Aptitude Test
-              </li>
-          </ul>
-        </div>
-      </section>
-
+        <ul>
+          <li><strong>Waste Management:</strong> Integrated on-premise data sources (Netezza, Oracle) and
+            cloud platforms (Google Analytics, S3, REST APIs) with Snowflake using Matillion ETL; automated
+            AWS resource deployment with CloudFormation scripts</li>
+          <li><strong>LAM Research:</strong> Developed Spark batch and structured streaming applications for
+            multi-format data parsing (CSV, JSON, Excel); created Python analytics library enabling SQL-like
+            querying of HBase time-series data</li>
+          <li><strong>Murphy Oil:</strong> Built automation accelerators for Excel file ingestion using
+            Crealytics library, reducing manual ETL processes by 80%</li>
+        </ul>
+      </div>
     </div>
+  </section>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <section id="skills">
+    <div class="section-header">
+      <div class="section-label">EXPERTISE</div>
+      <h2 class="section-title">Technical Skills</h2>
+      <p class="section-description">Comprehensive toolkit spanning big data technologies, cloud platforms, and
+        modern data engineering practices.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-category">
+        <h3>Languages</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">Scala</span>
+        </div>
+      </div>
 
-    <!-- Plugin JavaScript -->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+      <div class="skill-category">
+        <h3>Big Data & Streaming</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Apache Spark</span>
+          <span class="skill-tag">Kafka</span>
+          <span class="skill-tag">Hadoop</span>
+          <span class="skill-tag">HBase</span>
+          <span class="skill-tag">HDFS</span>
+        </div>
+      </div>
 
-    <!-- Custom scripts for this template -->
-    <script src="js/resume.min.js"></script>
+      <div class="skill-category">
+        <h3>Cloud Platforms</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Microsoft Azure</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">GCP</span>
+          <span class="skill-tag">Snowflake</span>
+        </div>
+      </div>
 
-  </body>
+      <div class="skill-category">
+        <h3>Frameworks & Services</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Spring Boot</span>
+          <span class="skill-tag">Databricks</span>
+          <span class="skill-tag">Azure Synapse</span>
+          <span class="skill-tag">Azure Data Factory</span>
+          <span class="skill-tag">Matillion</span>
+        </div>
+      </div>
 
-</html>
+      <div class="skill-category">
+        <h3>Databases</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">MySQL</span>
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">MongoDB</span>
+          <span class="skill-tag">CosmosDB</span>
+          <span class="skill-tag">Netezza</span>
+          <span class="skill-tag">Oracle</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3>DevOps & Monitoring</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">Jenkins</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">ELK Stack</span>
+          <span class="skill-tag">Kibana</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="section-header">
+      <div class="section-label">BACKGROUND</div>
+      <h2 class="section-title">Education & Certifications</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>B.Tech in Computer Science</h3>
+        <p class="institution">Army Institute of Technology</p>
+        <p>Information Technology</p>
+        <p>CGPA: 7.08/10</p>
+        <span class="date">July 2014 - May 2018</span>
+      </div>
+
+      <div class="info-card">
+        <h3>Professional Certifications</h3>
+        <div class="award-list">
+          <div class="award-item">
+            <span class="award-icon">🏆</span>
+            <span>Google Cloud Professional Data Engineer</span>
+          </div>
+          <div class="award-item">
+            <span class="award-icon">🏆</span>
+            <span>Snowflake SnowPro Core Certified</span>
+          </div>
+          <div class="award-item">
+            <span class="award-icon">🏆</span>
+            <span>Mountain Mover Award - Microsoft</span>
+          </div>
+          <div class="award-item">
+            <span class="award-icon">🏆</span>
+            <span>Winner - AIT Pune Tech Quiz</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+      <div class="section-label">LET'S CONNECT</div>
+      <h2 class="section-title">Get In Touch</h2>
+    </div>
+    <div class="contact-content">
+      <p>Open to discussing new opportunities, innovative projects, or collaborations in the Big Data and Cloud
+        space. Let's build something great together.</p>
+      <a href="mailto:nk2242696@gmail.com" class="btn">Send Message</a>
+      <div class="social-links">
+        <a href="https://github.com/nk2242696" class="social-link" target="_blank" title="GitHub">
+          <span>💻</span>
+        </a>
+        <a href="https://www.linkedin.com/in/nikhil-k-82b003ba/" class="social-link" target="_blank" title="LinkedIn">
+          <span>💼</span>
+        </a>
+        <a href="https://www.hackerrank.com/nk2734534" class="social-link" target="_blank" title="HackerRank">
+          <span>⚡</span>
+        </a>
+      </div>
+    </div>
+  </section>
