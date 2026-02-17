@@ -1,7 +1,7 @@
 # Hello, I'm [Nikhil Kumar] 👋
 
 ## About Me 🚀
-I'm a Software Engineer with **6 years** of experience in software development. I specialize in creating high-quality, scalable software solutions.
+I'm a Software Engineer with **7 years** of experience in software development. I specialize in creating high-quality, scalable software solutions.
 
 ## Skills 🛠️
 - **Languages**: Java, Python
