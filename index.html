@@ -599,6 +599,138 @@
       font-size: 0.9rem;
     }
 
+    /* Support Section */
+    .support-content {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .support-content p {
+      color: var(--accent-dim);
+      font-size: 1.15rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .coffee-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .coffee-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(229, 9, 20, 0.5), rgba(255, 193, 7, 0.5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .coffee-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .coffee-card:hover::before {
+      opacity: 1;
+    }
+
+    .coffee-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .coffee-card h3 {
+      color: var(--accent);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .coffee-card .coffee-subtitle {
+      color: var(--accent-dim);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .qr-container {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .qr-container:hover {
+      transform: scale(1.05);
+    }
+
+    .qr-container img {
+      width: 200px;
+      height: 200px;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .scan-hint {
+      color: var(--accent-dim);
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .upi-apps {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .upi-badge {
+      padding: 0.4rem 1rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--accent-muted);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .upi-badge:hover {
+      background: rgba(229, 9, 20, 0.15);
+      border-color: rgba(229, 9, 20, 0.4);
+      color: var(--accent);
+    }
+
+    .support-footer-note {
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+      margin-top: 2.5rem;
+      font-style: italic;
+    }
+
     /* Responsive */
     @media (max-width: 968px) {
       .nav-links {
@@ -708,6 +840,7 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#education">Education</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="#support">Support</a></li>
       </ul>
     </div>
   </nav>
@@ -946,5 +1079,33 @@
           <span>⚡</span>
         </a>
       </div>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+      <div class="section-label">SUPPORT</div>
+      <h2 class="section-title">Buy Me a Coffee ☕</h2>
+    </div>
+    <div class="support-content">
+      <p>If you find my work helpful or inspiring, consider buying me a coffee! Your support keeps me motivated to build, share, and create more awesome stuff.</p>
+      <div class="coffee-card">
+        <span class="coffee-icon">☕</span>
+        <h3>Scan & Support</h3>
+        <p class="coffee-subtitle">Every cup of coffee fuels another line of code</p>
+        <div class="qr-container">
+          <img src="img/qr-code.png" alt="Scan to pay via UPI">
+        </div>
+        <div class="scan-hint">
+          <span>📱</span> Scan & Pay with any UPI app
+        </div>
+        <div class="upi-apps">
+          <span class="upi-badge">GPay</span>
+          <span class="upi-badge">PhonePe</span>
+          <span class="upi-badge">Paytm</span>
+          <span class="upi-badge">BHIM</span>
+        </div>
+      </div>
+      <p class="support-footer-note">Powered by Razorpay • 100% Secure UPI Payment 🔒</p>
     </div>
   </section>
