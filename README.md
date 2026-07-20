@@ -1,40 +1,68 @@
-# Hello, I'm [Nikhil Kumar] 👋
+# Nikhil Kumar — Portfolio
 
-## About Me 🚀
-I'm a Software Engineer with **7 years** of experience in software development. I specialize in creating high-quality, scalable software solutions.
+Personal portfolio site hosted on GitHub Pages: **https://nk2242696.github.io/**
 
-## Skills 🛠️
-- **Languages**: Java, Python
-- **Frameworks/Libraries**: Spring Boot, Spark, Kafka
-- **Databases**: MySQL, PostgreSQL, MongoDB
-- **Tools**: Docker, Jenkins, Git, Azure
+Big Data Engineer & Cloud Architect with **8+ years** designing and scaling data
+platforms across Azure, AWS, and GCP.
 
-## Experience 👨‍💻
-### Software Engineer | [Microsoft] | [Aug 2022] - Present
-- Part of Azure Cloud Supply Chain Data team responsible of forecasting of Azure Resources. Worked on key feature resulting in
-  **2-3%**better load balancing for deployment of CosmosDB clusters
-- Worked on Storage and Cosmos teams. Migrated from Legacy BigData Storage Framework(Internal) to newer Spark Based Framework(ADF,Synapse,Databricks,Functions) .
-  Introduced new DQ framework and stablized Storage telemetry. Worked on Erasure Coding technique to reduce Storage footprint.
+## About
 
-### Software Engineer 2| [Epsilon] | [June 2021] - [Aug 2022]
-- Building Framework to migrate Map Reduce Job to Spark.[Legacy was based on LinkedIn's Camus Project]
-- Improved ORC file and Kafka compression thus reducing HDFS Disk footprint by 3 times using techniques like (Linger and Batch Size,Sticky Partitioning,Sorting High cardinality columns)
-- Build Dashboard for Spark Job Metrics using ELK stack
-- Shell script to replace expensive hive msck repair command
+A single-page, dependency-free portfolio built with plain HTML, CSS, and vanilla
+JavaScript — no build step, no framework, no external runtime libraries. Everything
+ships from [index.html](index.html).
 
-### Cloud Data Engineer | [HashMap] | [June 2018] - [June 2021]
-- **WASTE MANAGEMENT INC** (Responsible for Integrating On Prem Data Sources like Netezza/Oracle and Cloud Data Sources(Google Analytics,S3,APIs) with Snowflake.
-  Data transformation using Matillion ETL tool. Writing Cloud Formation scripts to automate test and deployment of AWS resources) 
-- **LAM RESEARCH** ( Spark Batch and Structured Streaming Jobs for Data parsing of files in different file format{CSV,JSON,CSV,EXCEL} and ingesting data into HBase,
-  Analytics Library to query Hbase data using SQl -like syntax in Python)
-- **MURPHY OIL** (Build Accelerators for automating Excel File Ingestion Using Crealytics Library)
+## Highlights
 
-## Education 🎓
-- B.Tech in Computer Science, [Army Institute of Technology], [2014-2018]
+- **Languages:** Java, Python, SQL, Scala
+- **Big Data & Streaming:** Apache Spark, Kafka, Hadoop, HBase, HDFS
+- **Cloud:** Azure, AWS, GCP, Snowflake
+- **Platforms:** Databricks, Azure Synapse, Azure Data Factory, Matillion
+- **Databases:** MySQL, PostgreSQL, MongoDB, CosmosDB, Netezza, Oracle
+- **DevOps & Monitoring:** Docker, Jenkins, Git, ELK Stack, Kibana
 
-## Contact Me 📧
-- **Email**: [nk2242696@gmail.com]
-- **LinkedIn**: https://www.linkedin.com/in/nikhil-k-82b003ba/
-- **GitHub**: https://github.com/nk2242696
+## Experience
 
-> "Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live." - John Woods
+| Company | Role | Period |
+| --- | --- | --- |
+| Microsoft | Software Engineer | Aug 2022 – Present |
+| Epsilon | Software Engineer 2 | Jun 2021 – Aug 2022 |
+| HashMap Inc | Cloud Data Engineer | Jun 2018 – Jun 2021 |
+
+## Education
+
+- B.Tech in Computer Science — Army Institute of Technology (2014–2018)
+
+## Local preview
+
+No tooling required — open the file directly, or serve it with any static server:
+
+```powershell
+# Option 1: just open it
+Start-Process index.html
+
+# Option 2: serve locally (requires Python)
+python -m http.server 8000
+# then visit http://localhost:8000
+```
+
+## Project structure
+
+```
+index.html   # entire site (markup, styles, and script)
+img/         # profile photo, company logos, UPI QR
+assets/      # downloadable resume PDF (add Nikhil_Kumar_Resume.pdf here)
+LICENSE      # MIT
+```
+
+> To enable the **Download Resume** button, drop your PDF at
+> `assets/Nikhil_Kumar_Resume.pdf`.
+
+## Contact
+
+- **Email:** nk2242696@gmail.com
+- **LinkedIn:** https://www.linkedin.com/in/nikhil-k-82b003ba/
+- **GitHub:** https://github.com/nk2242696
+
+## License
+
+Released under the [MIT License](LICENSE).
