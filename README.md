@@ -48,14 +48,33 @@ python -m http.server 8000
 ## Project structure
 
 ```
-index.html   # entire site (markup, styles, and script)
-img/         # profile photo, company logos, UPI QR
-assets/      # downloadable resume PDF (add Nikhil_Kumar_Resume.pdf here)
-LICENSE      # MIT
+index.html                     # entire portfolio (markup, styles, and script)
+sitemap.xml, robots.txt        # SEO
+blog/                          # generated blog (index.html + post HTML)
+posts/                         # source Word docs (.docx) + optional .meta.yaml
+templates/post-template.html   # Pandoc template for blog posts
+scripts/build_blog.py          # docx -> HTML build script
+.github/workflows/blog.yml     # auto-publishes posts on push
+img/                           # profile photo, company logos
+assets/                        # downloadable resume PDF
+LICENSE                        # MIT
 ```
 
 > To enable the **Download Resume** button, drop your PDF at
 > `assets/Nikhil_Kumar_Resume.pdf`.
+
+## Blog (Word → published post)
+
+Write in Word, save a `.docx` into `posts/`, and push. A GitHub Action runs
+[Pandoc](https://pandoc.org/) to convert it into a styled post under `blog/`
+that matches the portfolio design (TOC, reading time, tags, syntax-highlighted
+code). See [posts/README.md](posts/README.md) for the optional metadata sidecar
+format and how to build locally.
+
+```powershell
+# Build locally (requires pandoc on PATH and: pip install pyyaml)
+python scripts/build_blog.py
+```
 
 ## Contact
 

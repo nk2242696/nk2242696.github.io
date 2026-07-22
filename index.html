@@ -32,6 +32,36 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Structured data for rich results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Nikhil Kumar",
+    "jobTitle": "Big Data Engineer & Cloud Architect",
+    "url": "https://nk2242696.github.io/",
+    "image": "https://nk2242696.github.io/img/profile.jpg",
+    "email": "mailto:nk2242696@gmail.com",
+    "sameAs": [
+      "https://github.com/nk2242696",
+      "https://www.linkedin.com/in/nikhil-k-82b003ba/",
+      "https://www.hackerrank.com/nk2734534"
+    ],
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Microsoft"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Army Institute of Technology"
+    },
+    "knowsAbout": [
+      "Apache Spark", "Apache Kafka", "Databricks", "Snowflake",
+      "Azure", "AWS", "GCP", "Data Engineering", "Cloud Architecture"
+    ]
+  }
+  </script>
   <style>
     * {
       margin: 0;
@@ -46,7 +76,7 @@
       --bg-card-hover: #252541;
       --accent: #ffffff;
       --accent-muted: #b3b3b3;
-      --accent-dim: #8e8e93;
+      --accent-dim: #a1a1a6;
       --border: rgba(255, 255, 255, 0.08);
       --highlight: #e50914;
     }
@@ -624,137 +654,107 @@
       font-size: 0.9rem;
     }
 
-    /* Support Section */
-    .support-content {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto;
+    /* Hero metrics strip */
+    .hero-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      margin-top: 3rem;
     }
 
-    .support-content p {
+    .metric {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -1px;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
       color: var(--accent-dim);
-      font-size: 1.15rem;
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
     }
 
-    .coffee-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 3rem;
-      display: inline-block;
+    /* Skill note */
+    .skill-note {
+      color: var(--accent-dim);
+      font-size: 0.85rem;
+      margin-bottom: 1.2rem;
       position: relative;
-      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Projects / Case Studies */
+    .projects-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      padding: 3rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .coffee-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 24px;
-      padding: 2px;
-      background: linear-gradient(135deg, rgba(229, 9, 20, 0.5), rgba(255, 193, 7, 0.5));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .coffee-card:hover {
+    .project-card:hover {
       background: var(--bg-card-hover);
       transform: translateY(-8px);
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
     }
 
-    .coffee-card:hover::before {
-      opacity: 1;
-    }
-
-    .coffee-icon {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      display: block;
-    }
-
-    .coffee-card h3 {
-      color: var(--accent);
+    .project-card h3 {
       font-size: 1.5rem;
       font-weight: 700;
+      color: var(--accent);
       margin-bottom: 0.5rem;
       letter-spacing: -0.5px;
     }
 
-    .coffee-card .coffee-subtitle {
-      color: var(--accent-dim);
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-    }
-
-    .qr-container {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 1.5rem;
-      display: inline-block;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
-    }
-
-    .qr-container:hover {
-      transform: scale(1.05);
-    }
-
-    .qr-container img {
-      width: 200px;
-      height: 200px;
-      display: block;
-      border-radius: 8px;
-    }
-
-    .scan-hint {
-      color: var(--accent-dim);
-      font-size: 0.85rem;
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .upi-apps {
-      display: flex;
-      justify-content: center;
-      gap: 0.8rem;
-      margin-top: 1.2rem;
-      flex-wrap: wrap;
-    }
-
-    .upi-badge {
-      padding: 0.4rem 1rem;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 50px;
-      font-size: 0.8rem;
+    .project-card .project-context {
       color: var(--accent-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
       font-weight: 500;
-      transition: all 0.3s ease;
     }
 
-    .upi-badge:hover {
-      background: rgba(229, 9, 20, 0.15);
-      border-color: rgba(229, 9, 20, 0.4);
-      color: var(--accent);
+    .case-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-top: 1px solid var(--border);
     }
 
-    .support-footer-note {
+    .case-row:first-of-type {
+      border-top: none;
+    }
+
+    .case-label {
+      color: var(--highlight);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-top: 0.1rem;
+    }
+
+    .case-text {
       color: var(--accent-dim);
-      font-size: 0.9rem;
-      margin-top: 2.5rem;
-      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 640px) {
+      .case-row {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+      }
     }
 
     /* Responsive */
@@ -863,10 +863,12 @@
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#education">Education</a></li>
+        <li><a href="blog/">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><a href="#support">Support</a></li>
+        <li><a href="assets/Nikhil_Kumar_Resume.pdf" download>Resume</a></li>
       </ul>
     </div>
   </nav>
@@ -876,14 +878,21 @@
       <div class="hero-text">
         <div class="hero-label" id="expLabel">8+ YEARS EXPERIENCE</div>
         <h1>Big Data Engineer<br>& Cloud Architect</h1>
-        <p class="subtitle">Building scalable data solutions at enterprise scale</p>
-        <p>Specialized in Apache Spark, Kafka, and cloud-native architectures. Proven track record of optimizing
-          data pipelines, reducing costs, and delivering high-impact solutions for Fortune 500 companies.</p>
+        <p class="subtitle">Building and scaling data platforms that process 300B+ records a day</p>
+        <p>Senior data engineer specializing in Apache Spark, Kafka, and cloud-native architectures across Azure,
+          AWS, and GCP. I lead large-scale pipeline migrations, own data-platform architecture decisions, and
+          deliver measurable gains in reliability, cost, and storage efficiency.</p>
         <div class="cta-buttons">
           <a href="#contact" class="btn">Get In Touch</a>
           <a href="assets/Nikhil_Kumar_Resume.pdf" class="btn btn-secondary" download>Download Resume</a>
           <a href="https://github.com/nk2242696" class="btn btn-secondary" target="_blank" rel="noopener">View
             GitHub</a>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric"><span class="metric-value">300B+</span><span class="metric-label">Records/day processed</span></div>
+          <div class="metric"><span class="metric-value">99.9%</span><span class="metric-label">Pipeline uptime</span></div>
+          <div class="metric"><span class="metric-value">3x</span><span class="metric-label">Storage footprint cut</span></div>
+          <div class="metric"><span class="metric-value">80%</span><span class="metric-label">Less manual ETL</span></div>
         </div>
       </div>
       <div class="profile-image-container">
@@ -904,7 +913,7 @@
         <div class="company-header">
           <div class="company-info">
             <h3 class="company-name">
-              <img src="img/microsoft_logo.png" alt="Microsoft" class="company-logo">
+              <img src="img/microsoft_logo.png" alt="Microsoft" class="company-logo" loading="lazy">
               <span>Microsoft</span>
             </h3>
             <p class="role">Software Engineer</p>
@@ -920,6 +929,8 @@
             multiple Azure teams</li>
           <li>Implemented Erasure Coding techniques, achieving significant reduction in Storage infrastructure
             footprint</li>
+          <li>Own architecture and design decisions for storage data-platform initiatives, partnering across
+            multiple Azure engineering teams and mentoring engineers on Spark and cloud-native best practices</li>
         </ul>
       </div>
 
@@ -927,7 +938,7 @@
         <div class="company-header">
           <div class="company-info">
             <h3 class="company-name">
-              <img src="img/epsilon_logo.png" alt="Epsilon" style="width:40px;height:30px;" class="company-logo">
+              <img src="img/epsilon_logo.png" alt="Epsilon" style="width:40px;height:30px;" class="company-logo" loading="lazy">
               <span>Epsilon</span>
             </h3>
             <p class="role">Software Engineer 2</p>
@@ -951,7 +962,7 @@
         <div class="company-header">
           <div class="company-info">
             <h3 class="company-name">
-              <img src="img/hashmap_logo.jpg" style="width:30px;height:30px;" alt="HashMap Inc" class="company-logo">
+              <img src="img/hashmap_logo.jpg" style="width:30px;height:30px;" alt="HashMap Inc" class="company-logo" loading="lazy">
               <span>HashMap Inc</span>
             </h3>
             <p class="role">Cloud Data Engineer</p>
@@ -972,6 +983,77 @@
     </div>
   </section>
 
+  <section id="projects">
+    <div class="section-header">
+      <div class="section-label">SELECTED WORK</div>
+      <h2 class="section-title">Case Studies</h2>
+      <p class="section-description">A closer look at three engagements — the problem, the architecture decisions I
+        drove, and the measurable outcome.</p>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <h3>MapReduce &rarr; Spark Pipeline Modernization</h3>
+        <p class="project-context">Epsilon &middot; LinkedIn Camus-based ingestion platform</p>
+        <div class="case-row">
+          <span class="case-label">Problem</span>
+          <span class="case-text">A legacy MapReduce ingestion pipeline was slow, storage-heavy, and expensive to
+            operate at 300B+ records/day, with limited observability into job health.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Approach</span>
+          <span class="case-text">Engineered a framework to migrate MapReduce jobs to Spark and tuned Kafka and ORC
+            storage — linger/batch sizing, sticky partitioning, and high-cardinality column sorting — then built
+            an ELK/Kibana dashboard for Spark job metrics.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Impact</span>
+          <span class="case-text">3x reduction in HDFS disk footprint and full pipeline observability, sustaining
+            99.9% uptime on 300B+ records processed daily.</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h3>Multi-Cloud Data Integration to Snowflake</h3>
+        <p class="project-context">HashMap Inc &middot; Waste Management</p>
+        <div class="case-row">
+          <span class="case-label">Problem</span>
+          <span class="case-text">Data was fragmented across on-premise systems (Netezza, Oracle) and cloud sources
+            (Google Analytics, S3, REST APIs) with no unified analytics layer.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Approach</span>
+          <span class="case-text">Integrated all sources into Snowflake using Matillion ETL and automated AWS resource
+            provisioning with CloudFormation for repeatable, hands-off deployments.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Impact</span>
+          <span class="case-text">A single governed analytics platform with automated infrastructure, eliminating
+            manual provisioning and unifying reporting across the business.</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h3>Real-Time Streaming &amp; Time-Series Analytics</h3>
+        <p class="project-context">HashMap Inc &middot; LAM Research</p>
+        <div class="case-row">
+          <span class="case-label">Problem</span>
+          <span class="case-text">Multi-format sensor and operational data (CSV, JSON, Excel) needed to be parsed and
+            queried as time-series with SQL-like access for analysts.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Approach</span>
+          <span class="case-text">Built Spark batch and structured-streaming applications for multi-format parsing and
+            authored a Python analytics library enabling SQL-like querying of HBase time-series data.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Impact</span>
+          <span class="case-text">Analysts gained self-serve, SQL-like access to high-volume time-series data without
+            deep HBase expertise.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="skills">
     <div class="section-header">
       <div class="section-label">EXPERTISE</div>
@@ -982,6 +1064,7 @@
     <div class="skills-grid">
       <div class="skill-category">
         <h3>Languages</h3>
+        <p class="skill-note">Primary: Python &amp; Scala for Spark; Java for backend services.</p>
         <div class="skill-tags">
           <span class="skill-tag">Java</span>
           <span class="skill-tag">Python</span>
@@ -992,6 +1075,7 @@
 
       <div class="skill-category">
         <h3>Big Data & Streaming</h3>
+        <p class="skill-note">Production Spark &amp; Kafka at 300B+ records/day.</p>
         <div class="skill-tags">
           <span class="skill-tag">Apache Spark</span>
           <span class="skill-tag">Kafka</span>
@@ -1003,6 +1087,7 @@
 
       <div class="skill-category">
         <h3>Cloud Platforms</h3>
+        <p class="skill-note">Azure primary; multi-cloud data platforms on AWS &amp; GCP.</p>
         <div class="skill-tags">
           <span class="skill-tag">Microsoft Azure</span>
           <span class="skill-tag">AWS</span>
@@ -1013,6 +1098,7 @@
 
       <div class="skill-category">
         <h3>Frameworks & Services</h3>
+        <p class="skill-note">Databricks, Synapse &amp; ADF running in production.</p>
         <div class="skill-tags">
           <span class="skill-tag">Spring Boot</span>
           <span class="skill-tag">Databricks</span>
@@ -1024,6 +1110,7 @@
 
       <div class="skill-category">
         <h3>Databases</h3>
+        <p class="skill-note">OLTP, analytical &amp; time-series stores at scale.</p>
         <div class="skill-tags">
           <span class="skill-tag">MySQL</span>
           <span class="skill-tag">PostgreSQL</span>
@@ -1036,6 +1123,7 @@
 
       <div class="skill-category">
         <h3>DevOps & Monitoring</h3>
+        <p class="skill-note">CI/CD plus observability with ELK &amp; Kibana.</p>
         <div class="skill-tags">
           <span class="skill-tag">Docker</span>
           <span class="skill-tag">Jenkins</span>
@@ -1075,10 +1163,6 @@
             <span class="award-icon">🏆</span>
             <span>Mountain Mover Award - Microsoft</span>
           </div>
-          <div class="award-item">
-            <span class="award-icon">🏆</span>
-            <span>Winner - AIT Pune Tech Quiz</span>
-          </div>
         </div>
       </div>
     </div>
@@ -1110,41 +1194,14 @@
         </a>
         <a href="https://www.hackerrank.com/nk2734534" class="social-link" target="_blank" rel="noopener"
           aria-label="HackerRank profile" title="HackerRank">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="8 8 4 12 8 16" />
-            <polyline points="16 8 20 12 16 16" />
+            <polyline points="9 8 5 12 9 16" />
+            <polyline points="15 8 19 12 15 16" />
+            <line x1="13" y1="6" x2="11" y2="18" />
           </svg>
         </a>
       </div>
-    </div>
-  </section>
-
-  <section id="support">
-    <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
-      <div class="section-label">SUPPORT</div>
-      <h2 class="section-title">Buy Me a Coffee ☕</h2>
-    </div>
-    <div class="support-content">
-      <p>If you find my work helpful or inspiring, consider buying me a coffee! Your support keeps me motivated to build, share, and create more awesome stuff.</p>
-      <div class="coffee-card">
-        <span class="coffee-icon">☕</span>
-        <h3>Scan & Support</h3>
-        <p class="coffee-subtitle">Every cup of coffee fuels another line of code</p>
-        <div class="qr-container">
-          <img src="img/qr-code.png" alt="Scan to pay via UPI">
-        </div>
-        <div class="scan-hint">
-          <span>📱</span> Scan & Pay with any UPI app
-        </div>
-        <div class="upi-apps">
-          <span class="upi-badge">GPay</span>
-          <span class="upi-badge">PhonePe</span>
-          <span class="upi-badge">Paytm</span>
-          <span class="upi-badge">BHIM</span>
-        </div>
-      </div>
-      <p class="support-footer-note">Powered by Razorpay • 100% Secure UPI Payment 🔒</p>
     </div>
   </section>
 
