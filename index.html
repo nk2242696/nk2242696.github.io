@@ -4,6 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
   <title>Nikhil Kumar | Big Data Engineer &amp; Cloud Architect</title>
   <meta name="description"
     content="Nikhil Kumar - Big Data Engineer & Cloud Architect with 8+ years building scalable data pipelines on Azure, AWS, and GCP using Apache Spark, Kafka, Databricks, and Snowflake.">
@@ -32,6 +44,36 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Structured data for rich results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Nikhil Kumar",
+    "jobTitle": "Big Data Engineer & Cloud Architect",
+    "url": "https://nk2242696.github.io/",
+    "image": "https://nk2242696.github.io/img/profile.jpg",
+    "email": "mailto:nk2242696@gmail.com",
+    "sameAs": [
+      "https://github.com/nk2242696",
+      "https://www.linkedin.com/in/nikhil-k-82b003ba/",
+      "https://www.hackerrank.com/nk2734534"
+    ],
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Microsoft"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Army Institute of Technology"
+    },
+    "knowsAbout": [
+      "Apache Spark", "Apache Kafka", "Databricks", "Snowflake",
+      "Azure", "AWS", "GCP", "Data Engineering", "Cloud Architecture"
+    ]
+  }
+  </script>
   <style>
     * {
       margin: 0;
@@ -46,9 +88,37 @@
       --bg-card-hover: #252541;
       --accent: #ffffff;
       --accent-muted: #b3b3b3;
-      --accent-dim: #8e8e93;
+      --accent-dim: #a1a1a6;
       --border: rgba(255, 255, 255, 0.08);
       --highlight: #e50914;
+      --overlay-1: rgba(255, 255, 255, 0.03);
+      --overlay-2: rgba(255, 255, 255, 0.06);
+      --overlay-border: rgba(255, 255, 255, 0.1);
+      --btn-border: rgba(255, 255, 255, 0.2);
+      --btn-glow: rgba(255, 255, 255, 0.3);
+      --shadow-card: rgba(0, 0, 0, 0.6);
+      --shadow-hero: rgba(0, 0, 0, 0.5);
+      --nav-bg: rgba(10, 10, 10, 0.98);
+    }
+
+    html[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #f5f5f7;
+      --bg-card-hover: #ececf0;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --overlay-1: rgba(0, 0, 0, 0.03);
+      --overlay-2: rgba(0, 0, 0, 0.05);
+      --overlay-border: rgba(0, 0, 0, 0.1);
+      --btn-border: rgba(0, 0, 0, 0.15);
+      --btn-glow: rgba(0, 0, 0, 0.15);
+      --shadow-card: rgba(0, 0, 0, 0.1);
+      --shadow-hero: rgba(0, 0, 0, 0.12);
+      --nav-bg: rgba(255, 255, 255, 0.92);
     }
 
     body {
@@ -58,6 +128,7 @@
       line-height: 1.7;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* Navigation */
@@ -65,14 +136,14 @@
       position: fixed;
       top: 0;
       width: 100%;
-      background: linear-gradient(180deg, rgba(10, 10, 10, 0.98) 0%, rgba(10, 10, 10, 0) 100%);
+      background: linear-gradient(180deg, var(--nav-bg) 0%, transparent 100%);
       padding: 2rem 0;
       z-index: 1000;
       transition: all 0.3s ease;
     }
 
     nav.scrolled {
-      background: rgba(10, 10, 10, 0.98);
+      background: var(--nav-bg);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
@@ -99,6 +170,7 @@
       display: flex;
       gap: 3rem;
       list-style: none;
+      align-items: center;
     }
 
     .nav-links a {
@@ -129,14 +201,51 @@
       width: 100%;
     }
 
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--overlay-2);
+      border: 1px solid var(--overlay-border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .theme-toggle svg {
+      display: block;
+    }
+
+    .theme-toggle .icon-moon {
+      display: none;
+    }
+
+    html[data-theme="light"] .theme-toggle .icon-sun {
+      display: none;
+    }
+
+    html[data-theme="light"] .theme-toggle .icon-moon {
+      display: block;
+    }
+
     /* Hero Section */
     .hero {
       min-height: 100vh;
       display: flex;
       align-items: center;
-      padding: 0 5%;
+      padding: 6rem 5% 2rem;
       position: relative;
-      background: radial-gradient(ellipse at top, rgba(229, 9, 20, 0.08), transparent 50%);
+      background: radial-gradient(ellipse at top, color-mix(in srgb, var(--highlight) 8%, transparent), transparent 50%);
     }
 
     .hero-content {
@@ -161,29 +270,15 @@
       height: 300px;
       border-radius: 20px;
       object-fit: cover;
-      border: 3px solid rgba(229, 9, 20, 0.3);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      border: 3px solid color-mix(in srgb, var(--highlight) 30%, transparent);
+      box-shadow: 0 20px 60px var(--shadow-hero);
       transition: all 0.4s ease;
     }
 
     .profile-image:hover {
       transform: scale(1.05);
       border-color: var(--highlight);
-      box-shadow: 0 30px 80px rgba(229, 9, 20, 0.4);
-    }
-
-    .hero-label {
-      display: inline-block;
-      padding: 0.6rem 1.2rem;
-      background: rgba(229, 9, 20, 0.15);
-      border: 1px solid rgba(229, 9, 20, 0.4);
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--highlight);
-      margin-bottom: 2rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      box-shadow: 0 30px 80px color-mix(in srgb, var(--highlight) 40%, transparent);
     }
 
     .hero h1 {
@@ -230,18 +325,18 @@
 
     .btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 40px var(--btn-glow);
     }
 
     .btn-secondary {
       background: transparent;
       color: var(--accent);
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      border: 2px solid var(--btn-border);
     }
 
     .btn-secondary:hover {
       border-color: var(--accent);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--overlay-2);
     }
 
     /* Section Styling */
@@ -311,7 +406,7 @@
     .experience-card:hover {
       background: var(--bg-card-hover);
       transform: translateY(-8px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px var(--shadow-card);
     }
 
     .experience-card:hover::before {
@@ -356,8 +451,8 @@
 
     .date-badge {
       padding: 0.6rem 1.4rem;
-      background: rgba(229, 9, 20, 0.15);
-      border: 1px solid rgba(229, 9, 20, 0.3);
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
       color: var(--highlight);
       font-size: 0.85rem;
@@ -396,8 +491,8 @@
 
     .skill-category {
       background: var(--bg-card);
-      padding: 3rem;
-      border-radius: 20px;
+      padding: 1.75rem;
+      border-radius: 16px;
       border: 1px solid var(--border);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
@@ -411,7 +506,7 @@
       right: 0;
       width: 120px;
       height: 120px;
-      background: radial-gradient(circle, rgba(229, 9, 20, 0.2), transparent 70%);
+      background: radial-gradient(circle, color-mix(in srgb, var(--highlight) 20%, transparent), transparent 70%);
       border-radius: 50%;
       transform: translate(40%, -40%);
       transition: all 0.4s ease;
@@ -420,19 +515,19 @@
     .skill-category:hover {
       background: var(--bg-card-hover);
       transform: translateY(-8px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px var(--shadow-card);
     }
 
     .skill-category:hover::before {
       width: 180px;
       height: 180px;
-      background: radial-gradient(circle, rgba(229, 9, 20, 0.3), transparent 70%);
+      background: radial-gradient(circle, color-mix(in srgb, var(--highlight) 30%, transparent), transparent 70%);
     }
 
     .skill-category h3 {
       color: var(--accent);
-      margin-bottom: 1.5rem;
-      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+      font-size: 1.2rem;
       font-weight: 600;
       letter-spacing: -0.5px;
       position: relative;
@@ -442,25 +537,25 @@
     .skill-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.8rem;
+      gap: 0.5rem;
       position: relative;
       z-index: 1;
     }
 
     .skill-tag {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 0.7rem 1.3rem;
+      background: var(--overlay-2);
+      padding: 0.45rem 0.9rem;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--accent-muted);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--overlay-border);
       transition: all 0.3s ease;
       font-weight: 500;
     }
 
     .skill-tag:hover {
-      background: rgba(229, 9, 20, 0.2);
-      border-color: rgba(229, 9, 20, 0.6);
+      background: color-mix(in srgb, var(--highlight) 20%, transparent);
+      border-color: color-mix(in srgb, var(--highlight) 60%, transparent);
       color: var(--accent);
       transform: translateY(-2px);
     }
@@ -498,7 +593,7 @@
     .info-card:hover {
       background: var(--bg-card-hover);
       transform: translateY(-8px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px var(--shadow-card);
     }
 
     .info-card:hover::after {
@@ -528,8 +623,8 @@
     .info-card .date {
       display: inline-block;
       padding: 0.5rem 1.2rem;
-      background: rgba(229, 9, 20, 0.15);
-      border: 1px solid rgba(229, 9, 20, 0.3);
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
       color: var(--highlight);
       font-size: 0.85rem;
@@ -547,15 +642,15 @@
       align-items: flex-start;
       gap: 1rem;
       padding: 1.2rem;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--overlay-1);
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--overlay-border);
       transition: all 0.3s ease;
     }
 
     .award-item:hover {
-      background: rgba(229, 9, 20, 0.08);
-      border-color: rgba(229, 9, 20, 0.4);
+      background: color-mix(in srgb, var(--highlight) 8%, transparent);
+      border-color: color-mix(in srgb, var(--highlight) 40%, transparent);
       transform: translateX(5px);
     }
 
@@ -612,7 +707,7 @@
       color: var(--bg-primary);
       border-color: var(--accent);
       transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px var(--btn-glow);
     }
 
     /* Footer */
@@ -624,137 +719,107 @@
       font-size: 0.9rem;
     }
 
-    /* Support Section */
-    .support-content {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto;
+    /* Hero metrics strip */
+    .hero-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      margin-top: 3rem;
     }
 
-    .support-content p {
+    .metric {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -1px;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
       color: var(--accent-dim);
-      font-size: 1.15rem;
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
     }
 
-    .coffee-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 3rem;
-      display: inline-block;
+    /* Skill note */
+    .skill-note {
+      color: var(--accent-dim);
+      font-size: 0.8rem;
+      margin-bottom: 0.9rem;
       position: relative;
-      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Projects / Case Studies */
+    .projects-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      padding: 3rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .coffee-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 24px;
-      padding: 2px;
-      background: linear-gradient(135deg, rgba(229, 9, 20, 0.5), rgba(255, 193, 7, 0.5));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .coffee-card:hover {
+    .project-card:hover {
       background: var(--bg-card-hover);
       transform: translateY(-8px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px var(--shadow-card);
     }
 
-    .coffee-card:hover::before {
-      opacity: 1;
-    }
-
-    .coffee-icon {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      display: block;
-    }
-
-    .coffee-card h3 {
-      color: var(--accent);
+    .project-card h3 {
       font-size: 1.5rem;
       font-weight: 700;
+      color: var(--accent);
       margin-bottom: 0.5rem;
       letter-spacing: -0.5px;
     }
 
-    .coffee-card .coffee-subtitle {
-      color: var(--accent-dim);
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-    }
-
-    .qr-container {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 1.5rem;
-      display: inline-block;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
-    }
-
-    .qr-container:hover {
-      transform: scale(1.05);
-    }
-
-    .qr-container img {
-      width: 200px;
-      height: 200px;
-      display: block;
-      border-radius: 8px;
-    }
-
-    .scan-hint {
-      color: var(--accent-dim);
-      font-size: 0.85rem;
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .upi-apps {
-      display: flex;
-      justify-content: center;
-      gap: 0.8rem;
-      margin-top: 1.2rem;
-      flex-wrap: wrap;
-    }
-
-    .upi-badge {
-      padding: 0.4rem 1rem;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 50px;
-      font-size: 0.8rem;
+    .project-card .project-context {
       color: var(--accent-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
       font-weight: 500;
-      transition: all 0.3s ease;
     }
 
-    .upi-badge:hover {
-      background: rgba(229, 9, 20, 0.15);
-      border-color: rgba(229, 9, 20, 0.4);
-      color: var(--accent);
+    .case-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-top: 1px solid var(--border);
     }
 
-    .support-footer-note {
+    .case-row:first-of-type {
+      border-top: none;
+    }
+
+    .case-label {
+      color: var(--highlight);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-top: 0.1rem;
+    }
+
+    .case-text {
       color: var(--accent-dim);
-      font-size: 0.9rem;
-      margin-top: 2.5rem;
-      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 640px) {
+      .case-row {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+      }
     }
 
     /* Responsive */
@@ -846,12 +911,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--btn-border);
       border-radius: 5px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: var(--btn-glow);
     }
   </style>
 </head>
@@ -863,10 +928,23 @@
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#education">Education</a></li>
+        <li><a href="blog/">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><a href="#support">Support</a></li>
+        <li><a href="assets/Nikhil_Kumar_Resume.pdf" download>Resume</a></li>
+        <li>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+            <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </li>
       </ul>
     </div>
   </nav>
@@ -874,16 +952,21 @@
   <section class="hero" id="about">
     <div class="hero-content">
       <div class="hero-text">
-        <div class="hero-label" id="expLabel">8+ YEARS EXPERIENCE</div>
         <h1>Big Data Engineer<br>& Cloud Architect</h1>
-        <p class="subtitle">Building scalable data solutions at enterprise scale</p>
-        <p>Specialized in Apache Spark, Kafka, and cloud-native architectures. Proven track record of optimizing
-          data pipelines, reducing costs, and delivering high-impact solutions for Fortune 500 companies.</p>
+        <p class="subtitle">Building and scaling data platforms that process 300B+ records a day</p>
+        <p>I lead large-scale pipeline migrations, own data-platform architecture decisions, and
+          deliver measurable gains in reliability, cost, and storage efficiency.</p>
         <div class="cta-buttons">
           <a href="#contact" class="btn">Get In Touch</a>
           <a href="assets/Nikhil_Kumar_Resume.pdf" class="btn btn-secondary" download>Download Resume</a>
           <a href="https://github.com/nk2242696" class="btn btn-secondary" target="_blank" rel="noopener">View
             GitHub</a>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric"><span class="metric-value">300B+</span><span class="metric-label">Records/day processed</span></div>
+          <div class="metric"><span class="metric-value">99.9%</span><span class="metric-label">Pipeline uptime</span></div>
+          <div class="metric"><span class="metric-value">3x</span><span class="metric-label">Storage footprint cut</span></div>
+          <div class="metric"><span class="metric-value">80%</span><span class="metric-label">Less manual ETL</span></div>
         </div>
       </div>
       <div class="profile-image-container">
@@ -904,7 +987,7 @@
         <div class="company-header">
           <div class="company-info">
             <h3 class="company-name">
-              <img src="img/microsoft_logo.png" alt="Microsoft" class="company-logo">
+              <img src="img/microsoft_logo.png" alt="Microsoft" class="company-logo" loading="lazy">
               <span>Microsoft</span>
             </h3>
             <p class="role">Software Engineer</p>
@@ -920,6 +1003,8 @@
             multiple Azure teams</li>
           <li>Implemented Erasure Coding techniques, achieving significant reduction in Storage infrastructure
             footprint</li>
+          <li>Own architecture and design decisions for storage data-platform initiatives, partnering across
+            multiple Azure engineering teams and mentoring engineers on Spark and cloud-native best practices</li>
         </ul>
       </div>
 
@@ -927,7 +1012,7 @@
         <div class="company-header">
           <div class="company-info">
             <h3 class="company-name">
-              <img src="img/epsilon_logo.png" alt="Epsilon" style="width:40px;height:30px;" class="company-logo">
+              <img src="img/epsilon_logo.png" alt="Epsilon" style="width:40px;height:30px;" class="company-logo" loading="lazy">
               <span>Epsilon</span>
             </h3>
             <p class="role">Software Engineer 2</p>
@@ -951,7 +1036,7 @@
         <div class="company-header">
           <div class="company-info">
             <h3 class="company-name">
-              <img src="img/hashmap_logo.jpg" style="width:30px;height:30px;" alt="HashMap Inc" class="company-logo">
+              <img src="img/hashmap_logo.jpg" style="width:30px;height:30px;" alt="HashMap Inc" class="company-logo" loading="lazy">
               <span>HashMap Inc</span>
             </h3>
             <p class="role">Cloud Data Engineer</p>
@@ -972,6 +1057,77 @@
     </div>
   </section>
 
+  <section id="projects">
+    <div class="section-header">
+      <div class="section-label">SELECTED WORK</div>
+      <h2 class="section-title">Case Studies</h2>
+      <p class="section-description">A closer look at three engagements — the problem, the architecture decisions I
+        drove, and the measurable outcome.</p>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <h3>MapReduce &rarr; Spark Pipeline Modernization</h3>
+        <p class="project-context">Epsilon &middot; LinkedIn Camus-based ingestion platform</p>
+        <div class="case-row">
+          <span class="case-label">Problem</span>
+          <span class="case-text">A legacy MapReduce ingestion pipeline was slow, storage-heavy, and expensive to
+            operate at 300B+ records/day, with limited observability into job health.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Approach</span>
+          <span class="case-text">Engineered a framework to migrate MapReduce jobs to Spark and tuned Kafka and ORC
+            storage — linger/batch sizing, sticky partitioning, and high-cardinality column sorting — then built
+            an ELK/Kibana dashboard for Spark job metrics.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Impact</span>
+          <span class="case-text">3x reduction in HDFS disk footprint and full pipeline observability, sustaining
+            99.9% uptime on 300B+ records processed daily.</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h3>Multi-Cloud Data Integration to Snowflake</h3>
+        <p class="project-context">HashMap Inc &middot; Waste Management</p>
+        <div class="case-row">
+          <span class="case-label">Problem</span>
+          <span class="case-text">Data was fragmented across on-premise systems (Netezza, Oracle) and cloud sources
+            (Google Analytics, S3, REST APIs) with no unified analytics layer.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Approach</span>
+          <span class="case-text">Integrated all sources into Snowflake using Matillion ETL and automated AWS resource
+            provisioning with CloudFormation for repeatable, hands-off deployments.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Impact</span>
+          <span class="case-text">A single governed analytics platform with automated infrastructure, eliminating
+            manual provisioning and unifying reporting across the business.</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h3>Real-Time Streaming &amp; Time-Series Analytics</h3>
+        <p class="project-context">HashMap Inc &middot; LAM Research</p>
+        <div class="case-row">
+          <span class="case-label">Problem</span>
+          <span class="case-text">Multi-format sensor and operational data (CSV, JSON, Excel) needed to be parsed and
+            queried as time-series with SQL-like access for analysts.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Approach</span>
+          <span class="case-text">Built Spark batch and structured-streaming applications for multi-format parsing and
+            authored a Python analytics library enabling SQL-like querying of HBase time-series data.</span>
+        </div>
+        <div class="case-row">
+          <span class="case-label">Impact</span>
+          <span class="case-text">Analysts gained self-serve, SQL-like access to high-volume time-series data without
+            deep HBase expertise.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="skills">
     <div class="section-header">
       <div class="section-label">EXPERTISE</div>
@@ -982,66 +1138,57 @@
     <div class="skills-grid">
       <div class="skill-category">
         <h3>Languages</h3>
+        <p class="skill-note">Primary: Python, Java &amp; SQL.</p>
         <div class="skill-tags">
           <span class="skill-tag">Java</span>
           <span class="skill-tag">Python</span>
           <span class="skill-tag">SQL</span>
-          <span class="skill-tag">Scala</span>
         </div>
       </div>
 
       <div class="skill-category">
         <h3>Big Data & Streaming</h3>
+        <p class="skill-note">Production Spark &amp; Kafka at 300B+ records/day.</p>
         <div class="skill-tags">
           <span class="skill-tag">Apache Spark</span>
-          <span class="skill-tag">Kafka</span>
-          <span class="skill-tag">Hadoop</span>
-          <span class="skill-tag">HBase</span>
-          <span class="skill-tag">HDFS</span>
+          <span class="skill-tag">Spark SQL</span>
+          <span class="skill-tag">Structured Streaming</span>
+          <span class="skill-tag">Apache Kafka</span>
+          <span class="skill-tag">Delta Lake</span>
         </div>
       </div>
 
       <div class="skill-category">
-        <h3>Cloud Platforms</h3>
+        <h3>Cloud Data Platforms</h3>
+        <p class="skill-note">Databricks, Synapse &amp; ADF running in production.</p>
         <div class="skill-tags">
-          <span class="skill-tag">Microsoft Azure</span>
-          <span class="skill-tag">AWS</span>
-          <span class="skill-tag">GCP</span>
-          <span class="skill-tag">Snowflake</span>
-        </div>
-      </div>
-
-      <div class="skill-category">
-        <h3>Frameworks & Services</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">Spring Boot</span>
           <span class="skill-tag">Databricks</span>
-          <span class="skill-tag">Azure Synapse</span>
+          <span class="skill-tag">Snowflake</span>
+          <span class="skill-tag">Azure Synapse Analytics</span>
           <span class="skill-tag">Azure Data Factory</span>
-          <span class="skill-tag">Matillion</span>
         </div>
       </div>
 
       <div class="skill-category">
         <h3>Databases</h3>
+        <p class="skill-note">OLTP, analytical &amp; document stores at scale.</p>
         <div class="skill-tags">
-          <span class="skill-tag">MySQL</span>
           <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">MySQL</span>
           <span class="skill-tag">MongoDB</span>
-          <span class="skill-tag">CosmosDB</span>
+          <span class="skill-tag">Azure Cosmos DB</span>
           <span class="skill-tag">Netezza</span>
-          <span class="skill-tag">Oracle</span>
         </div>
       </div>
 
       <div class="skill-category">
-        <h3>DevOps & Monitoring</h3>
+        <h3>DevOps & Observability</h3>
+        <p class="skill-note">CI/CD plus observability with the ELK Stack.</p>
         <div class="skill-tags">
-          <span class="skill-tag">Docker</span>
-          <span class="skill-tag">Jenkins</span>
           <span class="skill-tag">Git</span>
+          <span class="skill-tag">Jenkins</span>
+          <span class="skill-tag">Docker</span>
           <span class="skill-tag">ELK Stack</span>
-          <span class="skill-tag">Kibana</span>
         </div>
       </div>
     </div>
@@ -1073,11 +1220,11 @@
           </div>
           <div class="award-item">
             <span class="award-icon">🏆</span>
-            <span>Mountain Mover Award - Microsoft</span>
+            <span>Applied Data Science - WorldQuant University</span>
           </div>
           <div class="award-item">
             <span class="award-icon">🏆</span>
-            <span>Winner - AIT Pune Tech Quiz</span>
+            <span>Mountain Mover Award - Microsoft</span>
           </div>
         </div>
       </div>
@@ -1110,41 +1257,14 @@
         </a>
         <a href="https://www.hackerrank.com/nk2734534" class="social-link" target="_blank" rel="noopener"
           aria-label="HackerRank profile" title="HackerRank">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="8 8 4 12 8 16" />
-            <polyline points="16 8 20 12 16 16" />
+            <polyline points="9 8 5 12 9 16" />
+            <polyline points="15 8 19 12 15 16" />
+            <line x1="13" y1="6" x2="11" y2="18" />
           </svg>
         </a>
       </div>
-    </div>
-  </section>
-
-  <section id="support">
-    <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
-      <div class="section-label">SUPPORT</div>
-      <h2 class="section-title">Buy Me a Coffee ☕</h2>
-    </div>
-    <div class="support-content">
-      <p>If you find my work helpful or inspiring, consider buying me a coffee! Your support keeps me motivated to build, share, and create more awesome stuff.</p>
-      <div class="coffee-card">
-        <span class="coffee-icon">☕</span>
-        <h3>Scan & Support</h3>
-        <p class="coffee-subtitle">Every cup of coffee fuels another line of code</p>
-        <div class="qr-container">
-          <img src="img/qr-code.png" alt="Scan to pay via UPI">
-        </div>
-        <div class="scan-hint">
-          <span>📱</span> Scan & Pay with any UPI app
-        </div>
-        <div class="upi-apps">
-          <span class="upi-badge">GPay</span>
-          <span class="upi-badge">PhonePe</span>
-          <span class="upi-badge">Paytm</span>
-          <span class="upi-badge">BHIM</span>
-        </div>
-      </div>
-      <p class="support-footer-note">Powered by Razorpay • 100% Secure UPI Payment 🔒</p>
     </div>
   </section>
 
@@ -1166,20 +1286,35 @@
         onScroll();
       }
 
-      // Auto-calculate years of experience from career start date.
-      var careerStart = new Date('2018-06-01');
-      var years = Math.floor(
-        (Date.now() - careerStart.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-      );
-      var expLabel = document.getElementById('expLabel');
-      if (expLabel) {
-        expLabel.textContent = years + '+ YEARS EXPERIENCE';
-      }
-
       // Keep the footer year current.
       var yearEl = document.getElementById('year');
       if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
+      }
+
+      // Light/dark theme toggle (preference shared via localStorage).
+      var themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        var syncToggle = function () {
+          var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+          themeToggle.setAttribute('aria-pressed', String(isLight));
+          themeToggle.setAttribute(
+            'aria-label',
+            isLight ? 'Switch to dark theme' : 'Switch to light theme'
+          );
+        };
+        themeToggle.addEventListener('click', function () {
+          var next =
+            document.documentElement.getAttribute('data-theme') === 'light'
+              ? 'dark'
+              : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          try {
+            localStorage.setItem('theme', next);
+          } catch (e) { }
+          syncToggle();
+        });
+        syncToggle();
       }
     })();
   </script>

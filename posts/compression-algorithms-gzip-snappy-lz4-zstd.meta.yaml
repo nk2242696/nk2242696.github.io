@@ -1,0 +1,8 @@
+title: "Compression Algorithms You Probably Inherited: gzip, Snappy, LZ4, zstd"
+date: "2026-07-22"
+description: "A practical guide to gzip, Snappy, LZ4, and zstd - what makes them different and when to use each in real data pipelines."
+tags:
+  - Data Engineering
+  - Compression
+  - Performance
+  - Kafka

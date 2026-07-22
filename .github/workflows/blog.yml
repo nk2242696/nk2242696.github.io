@@ -1,0 +1,53 @@
+name: Build blog from Word docs
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'posts/**'
+      - 'templates/post-template.html'
+      - 'scripts/build_blog.py'
+      - '.github/workflows/blog.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-blog
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Build blog
+        run: python scripts/build_blog.py
+
+      - name: Commit generated posts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add blog/
+          if git diff --staged --quiet; then
+            echo "No blog changes to commit."
+          else
+            git commit -m "Publish blog from Word docs [skip ci]"
+            git push
+          fi
