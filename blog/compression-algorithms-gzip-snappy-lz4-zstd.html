@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
+  <title>Compression Algorithms You Probably Inherited: gzip, Snappy,
+LZ4, zstd | Nikhil Kumar</title>
+  <meta name="description" content="A practical guide to gzip, Snappy,
+LZ4, and zstd - what makes them different and when to use each in real
+data pipelines.">
+  <meta name="author" content="Nikhil Kumar">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Compression Algorithms You Probably
+Inherited: gzip, Snappy, LZ4, zstd">
+  <meta property="og:description" content="A practical guide to gzip,
+Snappy, LZ4, and zstd - what makes them different and when to use each
+in real data pipelines.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-family='Inter,Arial,sans-serif' font-size='30' font-weight='700' fill='%23e50914' text-anchor='middle' dominant-baseline='middle'%3ENK%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a2e;
+      --accent: #ffffff;
+      --accent-muted: #b3b3b3;
+      --accent-dim: #a1a1a6;
+      --border: rgba(255, 255, 255, 0.08);
+      --highlight: #e50914;
+      --link: #6ea8fe;
+      --text-body: #d4d4d8;
+      --code-bg: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(10, 10, 10, 0.9);
+    }
+
+    html[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #f5f5f7;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --link: #0071e3;
+      --text-body: #333336;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--accent);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 5%;
+    }
+
+    .top-nav a {
+      color: var(--accent-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 2rem;
+    }
+
+    .top-nav a:hover { color: var(--accent); text-decoration: none; }
+
+    .theme-toggle {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .theme-toggle svg { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 5% 6rem;
+    }
+
+    .article-header { margin-bottom: 3rem; }
+
+    .article-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
+      border-radius: 50px;
+      color: var(--highlight);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    #TOC {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+    }
+
+    #TOC::before {
+      content: 'Contents';
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--highlight);
+      margin-bottom: 1rem;
+    }
+
+    #TOC ul { list-style: none; }
+    #TOC li { margin: 0.4rem 0; }
+    #TOC a { color: var(--accent-muted); }
+    #TOC ul ul { padding-left: 1.2rem; }
+
+    .article-body h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 2.5rem 0 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p { color: var(--text-body); margin-bottom: 1.3rem; }
+    .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
+    .article-body li { margin-bottom: 0.5rem; }
+
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--highlight);
+      padding-left: 1.2rem;
+      margin: 1.5rem 0;
+      color: var(--accent-muted);
+      font-style: italic;
+    }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 5px;
+    }
+
+    .article-body pre {
+      background: #141414;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e6e6e6;
+    }
+
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .article-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .article-body th, .article-body td {
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+
+    .article-body th { background: var(--bg-card); }
+
+    .article-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    @media (max-width: 640px) {
+      .article-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <a href="/">&larr; Portfolio</a>
+    <a href="/blog/">All posts</a>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <article class="article-wrap">
+    <header class="article-header">
+      <h1 class="article-title">Compression Algorithms You Probably
+Inherited: gzip, Snappy, LZ4, zstd</h1>
+      <div class="article-meta">
+        <span>2026-07-22</span>
+        <span>&middot; 4 min read</span>
+        <span class="tag">Data Engineering</span>
+        <span class="tag">Compression</span>
+        <span class="tag">Performance</span>
+        <span class="tag">Kafka</span>
+      </div>
+    </header>
+
+    <nav id="TOC" role="doc-toc">
+    <ul>
+    <li><a href="#you-might-be-using-the-wrong-compression-algorithm"
+    id="toc-you-might-be-using-the-wrong-compression-algorithm">You
+    Might Be Using The Wrong Compression Algorithm</a></li>
+    <li><a href="#why-compression-choices-matter"
+    id="toc-why-compression-choices-matter">Why Compression Choices
+    Matter</a></li>
+    <li><a href="#main-culprits" id="toc-main-culprits">Main
+    Culprits</a>
+    <ul>
+    <li><a href="#gzip" id="toc-gzip">gzip</a></li>
+    <li><a href="#snappy" id="toc-snappy">Snappy</a></li>
+    <li><a href="#lz4" id="toc-lz4">LZ4</a></li>
+    <li><a href="#zstd-zstandard" id="toc-zstd-zstandard">zstd
+    (Zstandard)</a></li>
+    </ul></li>
+    <li><a href="#strengths-and-weaknesses-at-a-glance"
+    id="toc-strengths-and-weaknesses-at-a-glance">Strengths and
+    Weaknesses (At a Glance)</a></li>
+    <li><a href="#real-world-scenarios-when-to-use-what"
+    id="toc-real-world-scenarios-when-to-use-what">Real-World Scenarios:
+    When to Use What</a>
+    <ul>
+    <li><a href="#high-throughput-streaming-kafka"
+    id="toc-high-throughput-streaming-kafka">High-throughput streaming
+    (Kafka)</a></li>
+    <li><a href="#long-term-storage-parquet-s3"
+    id="toc-long-term-storage-parquet-s3">Long-term storage (Parquet,
+    S3)</a></li>
+    <li><a href="#low-latency-querying-duckdb-cassandra"
+    id="toc-low-latency-querying-duckdb-cassandra">Low-latency querying
+    (DuckDB, Cassandra)</a></li>
+    <li><a href="#cpumemory-constrained-environments"
+    id="toc-cpumemory-constrained-environments">CPU/memory constrained
+    environments</a></li>
+    <li><a
+    href="#fast-network-low-compression-benefit-datacenter-file-transfer"
+    id="toc-fast-network-low-compression-benefit-datacenter-file-transfer">Fast
+    network, low compression benefit (datacenter file transfer)</a></li>
+    <li><a href="#slow-network-or-internet-transfers"
+    id="toc-slow-network-or-internet-transfers">Slow network or internet
+    transfers</a></li>
+    </ul></li>
+    <li><a href="#what-to-remember" id="toc-what-to-remember">What to
+    Remember</a></li>
+    <li><a href="#whats-underneath-the-hood"
+    id="toc-whats-underneath-the-hood">What’s Underneath The
+    Hood</a></li>
+    <li><a href="#closing-thoughts" id="toc-closing-thoughts">Closing
+    Thoughts</a></li>
+    </ul>
+    </nav>
+
+    <div class="article-body">
+<h2 id="you-might-be-using-the-wrong-compression-algorithm">You Might Be
+Using The Wrong Compression Algorithm</h2>
+<p>If you work in data engineering, you’ve probably used
+<strong>gzip</strong>, <strong>Snappy</strong>, <strong>LZ4</strong>, or
+<strong>Zstandard (zstd)</strong>. More likely — you inherited them.
+Either the person who set these defaults is long gone, there’s never
+enough time to revisit the choice, or things work well enough and you’d
+rather not go digging.</p>
+<p>Most engineers stick with the defaults. Changing them feels risky.
+And let’s be honest — many don’t really know what these algorithms do or
+why one was chosen in the first place.</p>
+<p>I’ve been that person myself: <em>“Oh, we’re using Snappy? OK.”</em>
+Never thinking to ask why, or what else we could use.</p>
+<p>This post explains the most common compression algorithms, what makes
+them different, and when you should actually use each.</p>
+<h2 id="why-compression-choices-matter">Why Compression Choices
+Matter</h2>
+<p>Compression decisions aren’t just about saving space. They directly
+impact:</p>
+<ul>
+<li><strong>Storage costs</strong></li>
+<li><strong>CPU utilization</strong></li>
+<li><strong>Throughput</strong></li>
+<li><strong>Latency</strong></li>
+</ul>
+<p>In modern pipelines — Kafka, Parquet, column stores, data lakes — the
+wrong compression algorithm can degrade all of these.</p>
+<p>Two metrics matter most:</p>
+<ul>
+<li><strong>Compression ratio:</strong> How much smaller the data
+gets.</li>
+<li><strong>Throughput:</strong> How quickly data can be compressed and
+decompressed.</li>
+</ul>
+<p>Your workload — and whether you prioritize CPU, latency, or bandwidth
+— determines which trade-offs are acceptable.</p>
+<h2 id="main-culprits">Main Culprits</h2>
+<h3 id="gzip">gzip</h3>
+<ul>
+<li><strong>What it is:</strong> Uses the DEFLATE algorithm (LZ77 +
+Huffman coding).</li>
+<li><strong>Goal:</strong> Good compression ratio and broad
+compatibility.</li>
+<li><strong>Speed:</strong> Slow to compress; moderate decompression
+speed.</li>
+<li><strong>Strength:</strong> Ubiquitous. Supported everywhere.</li>
+<li><strong>Weakness:</strong> Outclassed in both speed and compression
+ratio by newer algorithms.</li>
+<li><strong>When to use:</strong> Archival, or compatibility with legacy
+tools. Otherwise, avoid.</li>
+</ul>
+<h3 id="snappy">Snappy</h3>
+<ul>
+<li><strong>What it is:</strong> Developed by Google. Based on LZ77
+without entropy coding.</li>
+<li><strong>Goal:</strong> Maximize speed, not compression ratio.</li>
+<li><strong>Speed:</strong> Very fast compression and
+decompression.</li>
+<li><strong>Strength:</strong> Low CPU overhead. Stable.
+Production-proven at Google scale.</li>
+<li><strong>Weakness:</strong> Larger compressed size than other
+options.</li>
+<li><strong>When to use:</strong> Real-time, low-CPU systems where
+latency matters more than storage — or if you’re stuck with it.</li>
+</ul>
+<h3 id="lz4">LZ4</h3>
+<ul>
+<li><strong>What it is:</strong> LZ77-based. Prioritizes speed.</li>
+<li><strong>Goal:</strong> Fast compression and decompression with a
+moderate compression ratio.</li>
+<li><strong>Speed:</strong> &gt; 500 MB/s compression; GB/s
+decompression.</li>
+<li><strong>Strength:</strong> Extremely fast. Low CPU usage.</li>
+<li><strong>Weakness:</strong> Compression ratio lower than gzip or
+zstd.</li>
+<li><strong>When to use:</strong> High-throughput, low-latency systems.
+Datacenter transfers. OLAP engines (DuckDB, Cassandra).</li>
+</ul>
+<h3 id="zstd-zstandard">zstd (Zstandard)</h3>
+<ul>
+<li><strong>What it is:</strong> Developed by Facebook. Combines LZ77,
+Huffman coding, and FSE.</li>
+<li><strong>Goal:</strong> High compression ratio with fast speed.</li>
+<li><strong>Speed:</strong> Compression 500+ MB/s; decompression ~1500+
+MB/s.</li>
+<li><strong>Strength:</strong> Tunable. Balances speed and compression.
+Strong performance across data types.</li>
+<li><strong>Weakness:</strong> Slightly more CPU than LZ4/Snappy at
+default settings.</li>
+<li><strong>When to use:</strong> General-purpose. Parquet files. Kafka.
+Data transfers. Usually the best all-around choice.</li>
+</ul>
+<h2 id="strengths-and-weaknesses-at-a-glance">Strengths and Weaknesses
+(At a Glance)</h2>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Compression Ratio</th>
+<th>Compression Speed</th>
+<th>Decompression Speed</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gzip</td>
+<td>Moderate</td>
+<td>Slow</td>
+<td>Moderate</td>
+<td>Archival, web content</td>
+</tr>
+<tr>
+<td>Snappy</td>
+<td>Low</td>
+<td>Very Fast</td>
+<td>Very Fast</td>
+<td>Real-time, low-CPU systems</td>
+</tr>
+<tr>
+<td>LZ4</td>
+<td>Moderate</td>
+<td>Extremely Fast</td>
+<td>Extremely Fast</td>
+<td>High-throughput, low-latency systems</td>
+</tr>
+<tr>
+<td>zstd</td>
+<td>High</td>
+<td>Fast</td>
+<td>Fast</td>
+<td>General-purpose, Parquet, Kafka, data transfers</td>
+</tr>
+</tbody>
+</table>
+<h2 id="real-world-scenarios-when-to-use-what">Real-World Scenarios:
+When to Use What</h2>
+<h3 id="high-throughput-streaming-kafka">High-throughput streaming
+(Kafka)</h3>
+<ul>
+<li><strong>Use:</strong> zstd or LZ4</li>
+<li><strong>Why:</strong> zstd gives better compression with good speed.
+LZ4 if latency is critical and CPU is limited. Snappy is acceptable if
+inherited, but usually not optimal anymore.</li>
+</ul>
+<h3 id="long-term-storage-parquet-s3">Long-term storage (Parquet,
+S3)</h3>
+<ul>
+<li><strong>Use:</strong> zstd</li>
+<li><strong>Why:</strong> Best compression ratio reduces storage cost
+and IO. The slight CPU trade-off is acceptable.</li>
+</ul>
+<h3 id="low-latency-querying-duckdb-cassandra">Low-latency querying
+(DuckDB, Cassandra)</h3>
+<ul>
+<li><strong>Use:</strong> LZ4</li>
+<li><strong>Why:</strong> Prioritize decompression speed for fast
+queries. LZ4 is the common choice in OLAP engines.</li>
+</ul>
+<h3 id="cpumemory-constrained-environments">CPU/memory constrained
+environments</h3>
+<ul>
+<li><strong>Use:</strong> Snappy or LZ4</li>
+<li><strong>Why:</strong> Low CPU overhead matters more than compression
+ratio. zstd can still be used at low compression levels if needed.</li>
+</ul>
+<h3
+id="fast-network-low-compression-benefit-datacenter-file-transfer">Fast
+network, low compression benefit (datacenter file transfer)</h3>
+<ul>
+<li><strong>Use:</strong> LZ4</li>
+<li><strong>Why:</strong> Minimal compression overhead. On fast
+networks, speed beats smaller file sizes.</li>
+</ul>
+<h3 id="slow-network-or-internet-transfers">Slow network or internet
+transfers</h3>
+<ul>
+<li><strong>Use:</strong> zstd</li>
+<li><strong>Why:</strong> Better compression reduces transfer time
+despite slightly higher CPU cost.</li>
+</ul>
+<h2 id="what-to-remember">What to Remember</h2>
+<ul>
+<li>No algorithm is best for every workload.</li>
+<li>zstd has become the Swiss Army knife of compression. Unless you have
+a good reason not to, it’s a smart pick.</li>
+<li>LZ4 is unbeatable when speed matters more than compression.</li>
+<li>Snappy is still acceptable in latency-sensitive, CPU-constrained
+setups but is generally being replaced.</li>
+<li>gzip remains for legacy systems or when maximum compatibility is
+required.</li>
+</ul>
+<h2 id="whats-underneath-the-hood">What’s Underneath The Hood</h2>
+<ul>
+<li><strong>LZ77</strong> — Replaces repeated sequences of data with
+references to earlier copies in the stream (a sliding window).</li>
+<li><strong>Huffman Coding</strong> — Assigns shorter codes to more
+frequent data patterns to save space.</li>
+<li><strong>FSE (Finite State Entropy)</strong> — An advanced entropy
+coding method that efficiently compresses sequences by balancing speed
+and compression ratio.</li>
+</ul>
+<p><strong>Why it matters:</strong> Most compression algorithms combine
+finding patterns (LZ77) with efficient encoding (Huffman, FSE) to shrink
+data without losing information.</p>
+<h2 id="closing-thoughts">Closing Thoughts</h2>
+<p>Compression choices tend to stick around. There’s rarely time to
+revisit legacy pipelines, and if something works, it’s easy to assume
+it’s good enough. But if you can make the time, you’re now better
+equipped to review your defaults — and see if a different choice might
+better fit your needs.</p>
+    </div>
+
+    <footer class="article-footer">
+      <p>Written by Nikhil Kumar &middot; <a href="/blog/">Back to all posts</a></p>
+    </footer>
+  </article>
+
+  <script>
+    (function () {
+      var themeToggle = document.getElementById('themeToggle');
+      if (!themeToggle) return;
+      var syncToggle = function () {
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        themeToggle.setAttribute('aria-pressed', String(isLight));
+        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      };
+      themeToggle.addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) { }
+        syncToggle();
+      });
+      syncToggle();
+    })();
+  </script>
+</body>
+
+</html>

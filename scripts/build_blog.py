@@ -28,6 +28,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 POSTS_DIR = ROOT / "posts"
 BLOG_DIR = ROOT / "blog"
 TEMPLATE = ROOT / "templates" / "post-template.html"
+STRIP_TITLE_FILTER = ROOT / "templates" / "strip-title.lua"
 WORDS_PER_MINUTE = 200
 
 
@@ -66,6 +67,8 @@ def word_count(docx: pathlib.Path) -> int:
         ["pandoc", str(docx), "--from", "docx", "--to", "plain"],
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=True,
     )
     return len(result.stdout.split())
@@ -97,6 +100,7 @@ def render_post(docx: pathlib.Path, slug: str, meta: dict, reading_time: int) ->
             "--standalone",
             "--template", str(TEMPLATE),
             "--metadata-file", meta_file,
+            "--lua-filter", str(STRIP_TITLE_FILTER),
             "--extract-media", str(media_dir),
             "--toc",
             "--toc-depth", "3",
@@ -135,8 +139,7 @@ def render_index(posts: list[dict]) -> None:
     listing = (
         "\n".join(cards)
         if cards
-        else '      <p class="empty">No posts yet. Drop a .docx in the '
-        "<code>posts/</code> folder to publish.</p>"
+        else '      <p class="empty">No posts yet.</p>'
     )
 
     (BLOG_DIR / "index.html").write_text(INDEX_TEMPLATE.format(cards=listing), encoding="utf-8")
@@ -148,6 +151,18 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {{
+      try {{
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') {{
+          t = 'light';
+        }}
+        document.documentElement.setAttribute('data-theme', t);
+      }} catch (e) {{ }}
+    }})();
+  </script>
   <title>Blog | Nikhil Kumar</title>
   <meta name="description" content="Technical write-ups on data engineering, Spark, Kafka, and cloud architecture by Nikhil Kumar.">
   <link rel="canonical" href="https://nk2242696.github.io/blog/">
@@ -168,6 +183,23 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       --accent-dim: #a1a1a6;
       --border: rgba(255, 255, 255, 0.08);
       --highlight: #e50914;
+      --code-bg: rgba(255, 255, 255, 0.08);
+      --shadow-card: rgba(0, 0, 0, 0.6);
+      --nav-bg: rgba(10, 10, 10, 0.9);
+    }}
+
+    html[data-theme="light"] {{
+      --bg-primary: #ffffff;
+      --bg-card: #f5f5f7;
+      --bg-card-hover: #ececf0;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --shadow-card: rgba(0, 0, 0, 0.1);
+      --nav-bg: rgba(255, 255, 255, 0.9);
     }}
 
     body {{
@@ -176,13 +208,16 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       color: var(--accent);
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
     }}
 
     .top-nav {{
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(10, 10, 10, 0.9);
+      display: flex;
+      align-items: center;
+      background: var(--nav-bg);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       padding: 1.2rem 5%;
@@ -197,6 +232,28 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     }}
 
     .top-nav a:hover {{ color: var(--accent); }}
+
+    .theme-toggle {{
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }}
+
+    .theme-toggle:hover {{ color: var(--accent); border-color: var(--accent); }}
+    .theme-toggle svg {{ display: block; }}
+    .theme-toggle .icon-moon {{ display: none; }}
+    html[data-theme="light"] .theme-toggle .icon-sun {{ display: none; }}
+    html[data-theme="light"] .theme-toggle .icon-moon {{ display: block; }}
 
     .blog-wrap {{ max-width: 900px; margin: 0 auto; padding: 5rem 5% 6rem; }}
 
@@ -231,7 +288,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     .post-card:hover {{
       background: var(--bg-card-hover);
       transform: translateY(-6px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px var(--shadow-card);
     }}
 
     .post-card h2 {{ font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.6rem; }}
@@ -251,8 +308,8 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     .tag {{
       display: inline-block;
       padding: 0.3rem 0.9rem;
-      background: rgba(229, 9, 20, 0.15);
-      border: 1px solid rgba(229, 9, 20, 0.3);
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
       color: var(--highlight);
       font-size: 0.78rem;
@@ -260,7 +317,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     }}
 
     .empty {{ color: var(--accent-dim); }}
-    .empty code {{ background: rgba(255,255,255,0.08); padding: 0.15em 0.4em; border-radius: 5px; }}
+    .empty code {{ background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 5px; }}
   </style>
 </head>
 
@@ -268,6 +325,15 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <nav class="top-nav">
     <a href="/">&larr; Portfolio</a>
     <a href="/blog/">All posts</a>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
   </nav>
 
   <main class="blog-wrap">
@@ -280,6 +346,25 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 {cards}
     </div>
   </main>
+
+  <script>
+    (function () {{
+      var themeToggle = document.getElementById('themeToggle');
+      if (!themeToggle) return;
+      var syncToggle = function () {{
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        themeToggle.setAttribute('aria-pressed', String(isLight));
+        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      }};
+      themeToggle.addEventListener('click', function () {{
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try {{ localStorage.setItem('theme', next); }} catch (e) {{ }}
+        syncToggle();
+      }});
+      syncToggle();
+    }})();
+  </script>
 </body>
 
 </html>
