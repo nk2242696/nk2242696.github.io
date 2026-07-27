@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
+  <title>Building a Governed Multi-Agent FinOps
+Platform | Nikhil Kumar</title>
+  <meta name="description" content="An engineering architecture for
+turning trusted cloud cost data into governed decisions using modular
+services, time-series storage, specialized AI agents, and human
+approval.">
+  <meta name="author" content="Nikhil Kumar">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Building a Governed Multi-Agent
+FinOps Platform">
+  <meta property="og:description" content="An engineering architecture
+for turning trusted cloud cost data into governed decisions using
+modular services, time-series storage, specialized AI agents, and human
+approval.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-family='Inter,Arial,sans-serif' font-size='30' font-weight='700' fill='%23e50914' text-anchor='middle' dominant-baseline='middle'%3ENK%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a2e;
+      --accent: #ffffff;
+      --accent-muted: #b3b3b3;
+      --accent-dim: #a1a1a6;
+      --border: rgba(255, 255, 255, 0.08);
+      --highlight: #e50914;
+      --link: #6ea8fe;
+      --text-body: #d4d4d8;
+      --code-bg: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(10, 10, 10, 0.9);
+    }
+
+    html[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #f5f5f7;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --link: #0071e3;
+      --text-body: #333336;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--accent);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 5%;
+    }
+
+    .top-nav a {
+      color: var(--accent-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 2rem;
+    }
+
+    .top-nav a:hover { color: var(--accent); text-decoration: none; }
+
+    .theme-toggle {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .theme-toggle svg { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 5% 6rem;
+    }
+
+    .article-header { margin-bottom: 3rem; }
+
+    .article-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
+      border-radius: 50px;
+      color: var(--highlight);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    #TOC {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+    }
+
+    #TOC::before {
+      content: 'Contents';
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--highlight);
+      margin-bottom: 1rem;
+    }
+
+    #TOC ul { list-style: none; }
+    #TOC li { margin: 0.4rem 0; }
+    #TOC a { color: var(--accent-muted); }
+    #TOC ul ul { padding-left: 1.2rem; }
+
+    .article-body h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 2.5rem 0 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p { color: var(--text-body); margin-bottom: 1.3rem; }
+    .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
+    .article-body li { margin-bottom: 0.5rem; }
+
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--highlight);
+      padding-left: 1.2rem;
+      margin: 1.5rem 0;
+      color: var(--accent-muted);
+      font-style: italic;
+    }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 5px;
+    }
+
+    .article-body pre {
+      background: #141414;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e6e6e6;
+    }
+
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .article-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .article-body th, .article-body td {
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+
+    .article-body th { background: var(--bg-card); }
+
+    .article-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    @media (max-width: 640px) {
+      .article-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <a href="/">&larr; Portfolio</a>
+    <a href="/blog/">All posts</a>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <article class="article-wrap">
+    <header class="article-header">
+      <h1 class="article-title">Building a Governed Multi-Agent FinOps
+Platform</h1>
+      <div class="article-meta">
+        <span>2026-07-28</span>
+        <span>&middot; 9 min read</span>
+        <span class="tag">FinOps</span>
+        <span class="tag">Multi-Agent AI</span>
+        <span class="tag">Azure</span>
+        <span class="tag">Cloud Architecture</span>
+        <span class="tag">AI Governance</span>
+      </div>
+    </header>
+
+    <nav id="TOC" role="doc-toc">
+    <ul>
+    <li><a href="#a-modular-core-keeps-change-local"
+    id="toc-a-modular-core-keeps-change-local">A modular core keeps
+    change local</a></li>
+    <li><a href="#why-postgresql-plus-timescaledb"
+    id="toc-why-postgresql-plus-timescaledb">Why PostgreSQL plus
+    TimescaleDB?</a></li>
+    <li><a href="#why-langgraph-instead-of-a-chain-of-prompts"
+    id="toc-why-langgraph-instead-of-a-chain-of-prompts">Why LangGraph
+    instead of a chain of prompts?</a></li>
+    <li><a
+    href="#personas-are-selected-by-evidence-neednot-by-job-title-theatre"
+    id="toc-personas-are-selected-by-evidence-neednot-by-job-title-theatre">Personas
+    are selected by evidence need—not by job-title theatre</a></li>
+    <li><a
+    href="#tools-are-the-anti-coupling-layer-between-ai-and-infrastructure"
+    id="toc-tools-are-the-anti-coupling-layer-between-ai-and-infrastructure">Tools
+    are the anti-coupling layer between AI and infrastructure</a></li>
+    <li><a href="#governance-is-part-of-the-graph-not-a-disclaimer"
+    id="toc-governance-is-part-of-the-graph-not-a-disclaimer">Governance
+    is part of the graph, not a disclaimer</a></li>
+    <li><a href="#why-docker-compose-for-the-reference-deployment"
+    id="toc-why-docker-compose-for-the-reference-deployment">Why Docker
+    Compose for the reference deployment?</a></li>
+    <li><a href="#how-the-architecture-extends"
+    id="toc-how-the-architecture-extends">How the architecture
+    extends</a></li>
+    <li><a href="#what-i-would-measure-next"
+    id="toc-what-i-would-measure-next">What I would measure
+    next</a></li>
+    <li><a href="#closing-perspective"
+    id="toc-closing-perspective">Closing perspective</a>
+    <ul>
+    <li><a href="#explore-the-implementation"
+    id="toc-explore-the-implementation">Explore the
+    implementation</a></li>
+    </ul></li>
+    </ul>
+    </nav>
+
+    <div class="article-body">
+<p>How modular boundaries, time-series data, specialized AI personas,
+and human governance turn cloud cost data into an extensible engineering
+platform</p>
+<p><strong>GitHub:</strong> <a
+href="https://github.com/nk2242696/CostMonitoringMultiAgent"><u>https://github.com/nk2242696/CostMonitoringMultiAgent</u></a></p>
+<p><img
+src="assets/building-a-governed-multi-agent-finops-platform/media/image1.png"
+style="width:6.37795in;height:3.72047in" /></p>
+<table>
+<caption><p>High-level architecture: evidence flows inward; governed
+decisions flow outward.</p></caption>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 97%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>The short version Treat AI as a reasoning layer over trusted FinOps
+evidence—not as the database, calculator, policy engine, or cloud
+executor.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p><em>It is deciding which responsibilities must remain deterministic
+and where probabilistic reasoning adds value.</em></p>
+<p>Cloud cost platforms begin simply: ingest billing data, calculate
+totals, and draw a dashboard. Complexity arrives when users ask
+higher-order questions—why did spend move, which resource is
+responsible, whether a recommendation is safe, and who should approve
+it. Those questions cross data, architecture, risk, and communication
+boundaries.</p>
+<p>A single service can answer all of them for a prototype. At scale,
+that design produces hidden coupling: collection code knows dashboard
+schemas, AI prompts know database tables, schedulers own business rules,
+and every provider change creates a cross-cutting rewrite. The system
+becomes difficult to test precisely because no component has a narrow
+contract.</p>
+<p>The design therefore starts with boundaries, not technologies.
+Collection produces canonical evidence. Domain services calculate
+financial facts. Agents coordinate investigation. Governance evaluates
+proposals. APIs and dashboards present outcomes. Infrastructure makes
+those modules repeatable and observable.</p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Architectural concern</strong></th>
+<th><strong>Decision</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Financial correctness</td>
+<td>Keep totals, budgets, forecasts, and reference savings deterministic
+and testable.</td>
+</tr>
+<tr>
+<td>Ambiguous investigation</td>
+<td>Use specialized agents to select evidence, reconcile findings, and
+explain trade-offs.</td>
+</tr>
+<tr>
+<td>Operational safety</td>
+<td>Make tools read-only and require human approval for every
+proposal.</td>
+</tr>
+<tr>
+<td>Evolution</td>
+<td>Connect modules through typed contracts and repositories rather than
+implementation details.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="a-modular-core-keeps-change-local">A modular core keeps change
+local</h1>
+<p><em>A senior architecture optimizes for the cost of the next change,
+not only the first release.</em></p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 36%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Module</strong></th>
+<th><strong>Owns</strong></th>
+<th><strong>Can change without rewriting</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure integration</td>
+<td>Authentication and provider API translation</td>
+<td>Domain logic, agents, dashboards</td>
+</tr>
+<tr>
+<td>Monitoring domain</td>
+<td>Costs, budgets, alerts, forecasts, recommendations</td>
+<td>Cloud SDKs and model providers</td>
+</tr>
+<tr>
+<td>Agent runtime</td>
+<td>Planning, evidence requests, governance, communication</td>
+<td>SQL schemas and Azure credentials</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>Repository contracts, migrations, checkpoints, audit</td>
+<td>API presentation and prompts</td>
+</tr>
+<tr>
+<td>API and CLI</td>
+<td>Transport, authentication context, response contracts</td>
+<td>Collection and graph internals</td>
+</tr>
+<tr>
+<td>Observability</td>
+<td>Metrics, health, dashboards</td>
+<td>Business workflows</td>
+</tr>
+</tbody>
+</table>
+<p>The important pattern is dependency direction. Business and agent
+code depend on interfaces—cost repositories, inventory tools, model
+factories—not on concrete SDK calls. Provider-specific details sit at
+the edge. This makes it possible to replace Azure OpenAI with an
+OpenAI-compatible endpoint, PostgreSQL with another repository
+implementation, or Grafana with another presentation layer without
+changing the reasoning model.</p>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 97%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Design heuristic If a model prompt contains SQL, a dashboard
+contains business rules, or a scheduler contains provider credentials, a
+boundary is probably missing.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h1 id="why-postgresql-plus-timescaledb">Why PostgreSQL plus
+TimescaleDB?</h1>
+<p><em>Cost data is relational in meaning and time-series in access
+pattern.</em></p>
+<p>Azure cost records have dimensions—subscription, service, resource,
+region, tags, currency—and a time axis. Most queries combine both:
+monthly spend by service, daily trend for a subscription, latest
+forecast versus budget, or cost before and after a recommendation. A
+general document store makes these relationships and aggregations
+harder; a metrics-only store is weak for transactions, joins, approvals,
+and audit records.</p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 28%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Option</strong></th>
+<th><strong>Strength</strong></th>
+<th><strong>Why it was or was not chosen</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL</td>
+<td>Transactions, joins, constraints, mature tooling</td>
+<td>Chosen as the canonical system of record.</td>
+</tr>
+<tr>
+<td>TimescaleDB extension</td>
+<td>Time partitioning and time-oriented aggregation</td>
+<td>Chosen to optimize cost history without introducing another
+database.</td>
+</tr>
+<tr>
+<td>Dedicated metrics store</td>
+<td>High-volume telemetry</td>
+<td>Used for Prometheus metrics, not financial records or audit
+state.</td>
+</tr>
+<tr>
+<td>Document database</td>
+<td>Flexible documents</td>
+<td>Not selected because financial dimensions, joins, and governance
+records benefit from explicit schemas.</td>
+</tr>
+<tr>
+<td>Data warehouse</td>
+<td>Large analytical workloads</td>
+<td>A future option when multi-year, multi-tenant scale exceeds the
+operational database boundary.</td>
+</tr>
+</tbody>
+</table>
+<p>This is a deliberately reversible choice. SQLAlchemy repositories
+isolate the application from storage details, while Alembic gives schema
+evolution an explicit lifecycle. If scale later requires a warehouse or
+lakehouse, ingestion can fan out without forcing the API and agent
+layers to understand the migration.</p>
+<h1 id="why-langgraph-instead-of-a-chain-of-prompts">Why LangGraph
+instead of a chain of prompts?</h1>
+<p><em>Coordination needs state, branching, fan-out, retries, budgets,
+and durable checkpoints.</em></p>
+<p><img
+src="assets/building-a-governed-multi-agent-finops-platform/media/image2.png"
+style="width:6.37795in;height:3.72047in" /></p>
+<p>The graph selects specialists, validates evidence, governs proposals,
+and permits only bounded refinement.</p>
+<p>A prompt chain works when every request follows the same path. FinOps
+investigations do not. A budget question may need only cost evidence. A
+rightsizing question needs inventory and architecture context. A
+high-risk proposal may require refinement; a simple explanation may not.
+A graph makes those routes explicit and testable.</p>
+<p>LangGraph was selected because it models conditional execution and
+durable state directly. Parallel specialists reduce latency, reducers
+define how evidence merges, checkpoints support continuity, and node
+boundaries create natural observability points. The trade-off is
+additional state design and dependency management; that complexity is
+justified only because the workflow genuinely branches and persists.</p>
+<h1
+id="personas-are-selected-by-evidence-neednot-by-job-title-theatre">Personas
+are selected by evidence need—not by job-title theatre</h1>
+<p><em>More agents are not automatically better. Each persona must own a
+distinct decision boundary.</em></p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 24%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>When the request needs…</strong></th>
+<th><strong>Persona selected</strong></th>
+<th><strong>Why</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intent classification and a bounded plan</td>
+<td>FinOps Orchestrator</td>
+<td>Keeps routing separate from specialist conclusions.</td>
+</tr>
+<tr>
+<td>Spend trend, top services, or cost concentration</td>
+<td>Cost Analyst</td>
+<td>Has access only to canonical cost-summary evidence.</td>
+</tr>
+<tr>
+<td>Resource shape, region, inventory, or architecture context</td>
+<td>Cloud Architect</td>
+<td>Adds technical context without calculating financial truth.</td>
+</tr>
+<tr>
+<td>A concrete action assembled from verified findings</td>
+<td>Optimization Specialist</td>
+<td>Separates evidence collection from recommendation synthesis.</td>
+</tr>
+<tr>
+<td>Risk, conflicts, uncertainty, or policy review</td>
+<td>Risk &amp; Governance Reviewer</td>
+<td>Creates an independent gate before communication.</td>
+</tr>
+<tr>
+<td>A decision-ready summary</td>
+<td>Executive Communicator</td>
+<td>Changes presentation, not evidence or approval state.</td>
+</tr>
+</tbody>
+</table>
+<p>The orchestrator does not call every persona by default. It selects
+the minimum evidence-producing specialists required by the question. The
+optimizer and governance reviewer are mandatory only for proposal
+workflows. The communicator runs after governance so that polished
+language cannot bypass the control point.</p>
+<p>A new persona is justified when it needs a distinct contract,
+evidence source, policy, or evaluation suite. It is not justified merely
+because another title sounds realistic. This rule keeps orchestration
+understandable and prevents token-heavy agent debates that produce no
+additional evidence.</p>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 97%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Extension example A Sustainability Analyst can be added later by
+registering carbon-intensity evidence, defining a narrow output
+contract, and adding one graph route—without changing cost collection or
+existing personas.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h1
+id="tools-are-the-anti-coupling-layer-between-ai-and-infrastructure">Tools
+are the anti-coupling layer between AI and infrastructure</h1>
+<p><em>The model asks for evidence; application code decides whether and
+how that evidence may be retrieved.</em></p>
+<p>Agents never receive database connections or Azure credentials. They
+receive schemas for allow-listed tools such as cost_summary and
+resource_inventory. The registry validates arguments, checks persona
+authorization, applies timeouts and call budgets, executes read-only
+code, and returns timestamped evidence IDs.</p>
+<p>This indirection is essential. Prompts can evolve without changing
+data access. Storage can evolve without changing prompts. Security
+policy remains enforceable in code rather than being expressed as a
+sentence the model may ignore. It also creates a clean extension point:
+add a tool adapter and evidence contract instead of teaching every
+persona a new backend.</p>
+<h1 id="governance-is-part-of-the-graph-not-a-disclaimer">Governance is
+part of the graph, not a disclaimer</h1>
+<p><em>A recommendation is useful only when its evidence, uncertainty,
+risk, and approval status travel with it.</em></p>
+<p><img
+src="assets/building-a-governed-multi-agent-finops-platform/media/image3.png"
+style="width:6.37795in;height:3.72047in" /></p>
+<p>Product audit records remain separate from framework checkpoint
+state.</p>
+<p>The proposal schema structurally requires human approval. Governance
+can accept a proposal for presentation, reject it, or request a bounded
+refinement. It cannot execute remediation. The runtime also limits model
+calls, tool calls, refinement rounds, and total duration before
+execution begins.</p>
+<p>Four domain tables capture runs, events, messages, and artifacts.
+LangGraph owns separate checkpoint tables for workflow continuation.
+This separation avoids coupling product APIs to framework internals: the
+business audit model can remain stable even if the orchestration library
+changes.</p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 48%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Persist</strong></th>
+<th><strong>Do not persist</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evidence IDs, sources, timestamps, findings, proposals, verdicts,
+model/tool metadata</td>
+<td>Credentials, raw secrets, hidden chain-of-thought, executable
+remediation</td>
+</tr>
+<tr>
+<td>Actor scope, workflow status, latency, prompt version, safe
+errors</td>
+<td>Provider stack traces or unbounded raw observations</td>
+</tr>
+</tbody>
+</table>
+<h1 id="why-docker-compose-for-the-reference-deployment">Why Docker
+Compose for the reference deployment?</h1>
+<p><em>The goal is a reproducible architecture boundary, not a claim
+that Compose is the final production platform.</em></p>
+<p>The reference stack packages PostgreSQL/TimescaleDB, a one-shot
+migration, FastAPI, a scheduler worker, Prometheus, and Grafana.
+Health-gated dependencies make startup deterministic, while sharing one
+application image across API, migration, and worker processes reduces
+drift.</p>
+<p>Compose is the right choice for local development, demonstrations,
+and integration tests because it exposes service contracts without
+adding orchestrator complexity. Production can move to managed
+PostgreSQL, Container Apps or Kubernetes, Key Vault, Managed Identity,
+and managed observability. The application modules do not need to change
+because deployment concerns remain outside them.</p>
+<h1 id="how-the-architecture-extends">How the architecture extends</h1>
+<p><em>Extension should mean adding a module or adapter—not editing
+every layer.</em></p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Future requirement</strong></th>
+<th><strong>Extension seam</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Another LLM provider</td>
+<td>Implement the shared model factory contract and configuration
+validation.</td>
+</tr>
+<tr>
+<td>New cloud or billing source</td>
+<td>Add an integration adapter that emits canonical cost/inventory
+evidence.</td>
+</tr>
+<tr>
+<td>New specialist persona</td>
+<td>Define a persona contract, structured output, allowed tools, and
+graph route.</td>
+</tr>
+<tr>
+<td>New evidence source</td>
+<td>Register a read-only tool with Pydantic input/output and evidence
+metadata.</td>
+</tr>
+<tr>
+<td>Warehouse analytics</td>
+<td>Fan out normalized records or replace the repository
+implementation.</td>
+</tr>
+<tr>
+<td>Different UI</td>
+<td>Consume versioned APIs and artifact provenance; no graph rewrite is
+required.</td>
+</tr>
+<tr>
+<td>Approval workflow</td>
+<td>Add a domain lifecycle around proposal artifacts without coupling
+approval to cloud execution.</td>
+</tr>
+<tr>
+<td>Safe remediation</td>
+<td>Introduce a separate least-privilege executor, dry-run, rollback,
+and separation of duties.</td>
+</tr>
+</tbody>
+</table>
+<p>The last item is intentionally not implemented. Advisory intelligence
+and cloud mutation have different threat models. Combining them early
+would increase blast radius and make human approval ambiguous. A mature
+architecture earns autonomy only after evidence quality, evaluation,
+identity, rollback, and operational ownership are proven.</p>
+<h1 id="what-i-would-measure-next">What I would measure next</h1>
+<p><em>Architecture quality should become visible through system
+behavior, not only diagrams.</em></p>
+<ul>
+<li><p>Evidence coverage: percentage of claims with valid, current
+evidence IDs.</p></li>
+<li><p>Governance quality: rejection and refinement rates by proposal
+type.</p></li>
+<li><p>Cost and latency: model/tool calls and end-to-end duration per
+workflow.</p></li>
+<li><p>Reliability: node failures, checkpoint resumes, timeouts, and
+provider fallback rates.</p></li>
+<li><p>Decision value: accepted proposals, validated savings, and time
+from insight to approval.</p></li>
+<li><p>Safety: unauthorized tool attempts, cross-actor access failures,
+and zero mutation events.</p></li>
+</ul>
+<h1 id="closing-perspective">Closing perspective</h1>
+<p><em>The most important AI decisions were conventional
+software-engineering decisions.</em></p>
+<p>The platform became extensible not because it used six personas, but
+because each responsibility gained a narrow boundary. Time-series
+financial data lives in a transactional system designed for its access
+pattern. Models operate through application-owned tools. Graph state is
+explicit. Governance is executable policy. Audit data is a product
+contract. Deployment and delivery are repeatable.</p>
+<p>That framing changes the role of AI. The model is no longer an
+all-knowing service hidden behind one endpoint. It is one replaceable
+reasoning dependency inside a system that controls evidence, authority,
+state, cost, and failure. This is the difference between adding an LLM
+feature and engineering an AI platform.</p>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 97%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Architecture takeaway Build deterministic foundations, expose narrow
+evidence contracts, add the minimum specialized reasoning roles, and
+make every autonomous step bounded and observable.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2 id="explore-the-implementation">Explore the implementation</h2>
+<p>The complete source, architecture documentation, tests, Docker
+environment, dashboards, and release workflow are available in the
+public repository:</p>
+<p><strong>GitHub repository →</strong> <a
+href="https://github.com/nk2242696/CostMonitoringMultiAgent"><u>https://github.com/nk2242696/CostMonitoringMultiAgent</u></a></p>
+<table style="width:96%;">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Project</strong></th>
+<th><strong>Azure Cost Monitoring Multi-Agent Platform</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Modular Python, FastAPI, LangGraph, PostgreSQL/TimescaleDB,
+Prometheus, Grafana</td>
+</tr>
+<tr>
+<td>Operating model</td>
+<td>Read-only investigation and human-approved proposals</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Docker-first reference stack with semantic release automation</td>
+</tr>
+<tr>
+<td>Author</td>
+<td>Nikhil Kumar</td>
+</tr>
+</tbody>
+</table>
+    </div>
+
+    <footer class="article-footer">
+      <p>Written by Nikhil Kumar &middot; <a href="/blog/">Back to all posts</a></p>
+    </footer>
+  </article>
+
+  <script>
+    (function () {
+      var themeToggle = document.getElementById('themeToggle');
+      if (!themeToggle) return;
+      var syncToggle = function () {
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        themeToggle.setAttribute('aria-pressed', String(isLight));
+        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      };
+      themeToggle.addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) { }
+        syncToggle();
+      });
+      syncToggle();
+    })();
+  </script>
+</body>
+
+</html>
