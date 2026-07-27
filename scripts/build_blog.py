@@ -75,7 +75,9 @@ def word_count(docx: pathlib.Path) -> int:
 
 
 def render_post(docx: pathlib.Path, slug: str, meta: dict, reading_time: int) -> None:
-    media_dir = BLOG_DIR / "assets" / slug
+    # Run Pandoc from the output directory so extracted media URLs remain
+    # portable browser-relative paths instead of absolute local file paths.
+    media_dir = pathlib.Path("assets") / slug
     metadata = {
         "title": meta["title"],
         "date": meta["date"],
@@ -101,13 +103,14 @@ def render_post(docx: pathlib.Path, slug: str, meta: dict, reading_time: int) ->
             "--template", str(TEMPLATE),
             "--metadata-file", meta_file,
             "--lua-filter", str(STRIP_TITLE_FILTER),
-            "--extract-media", str(media_dir),
+            "--extract-media", media_dir.as_posix(),
             "--toc",
             "--toc-depth", "3",
             "--highlight-style", "breezedark",
             "-o", str(BLOG_DIR / f"{slug}.html"),
         ],
         check=True,
+        cwd=BLOG_DIR,
     )
     pathlib.Path(meta_file).unlink(missing_ok=True)
 
@@ -377,7 +380,9 @@ def main() -> int:
         return 0
 
     BLOG_DIR.mkdir(parents=True, exist_ok=True)
-    docx_files = sorted(POSTS_DIR.glob("*.docx"))
+    docx_files = sorted(
+      path for path in POSTS_DIR.glob("*.docx") if not path.name.startswith("~$")
+    )
 
     posts: list[dict] = []
     for docx in docx_files:
