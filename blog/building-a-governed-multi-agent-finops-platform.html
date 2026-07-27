@@ -352,23 +352,23 @@ Platform</h1>
     </nav>
 
     <div class="article-body">
-<p>How modular boundaries, time-series data, specialized AI personas,
-and human governance turn cloud cost data into an extensible engineering
-platform</p>
+<p><strong>How modular boundaries, time-series data, specialized AI
+personas, and human governance turn cloud cost data into an extensible
+engineering platform</strong></p>
 <p><strong>GitHub:</strong> <a
 href="https://github.com/nk2242696/CostMonitoringMultiAgent"><u>https://github.com/nk2242696/CostMonitoringMultiAgent</u></a></p>
 <p><img
 src="assets/building-a-governed-multi-agent-finops-platform/media/image1.png"
 style="width:6.37795in;height:3.72047in" /></p>
+<p>High-level architecture: evidence flows inward; governed decisions
+flow outward.</p>
 <table>
-<caption><p>High-level architecture: evidence flows inward; governed
-decisions flow outward.</p></caption>
 <colgroup>
 <col style="width: 2%" />
 <col style="width: 97%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th></th>
 <th>The short version Treat AI as a reasoning layer over trusted FinOps
 evidence—not as the database, calculator, policy engine, or cloud
@@ -378,8 +378,9 @@ executor.</th>
 <tbody>
 </tbody>
 </table>
-<p><em>It is deciding which responsibilities must remain deterministic
-and where probabilistic reasoning adds value.</em></p>
+<p><em><strong><u>It is deciding which responsibilities must remain
+deterministic and where probabilistic reasoning adds
+value.</u></strong></em></p>
 <p>Cloud cost platforms begin simply: ingest billing data, calculate
 totals, and draw a dashboard. Complexity arrives when users ask
 higher-order questions—why did spend move, which resource is
@@ -397,34 +398,34 @@ Collection produces canonical evidence. Domain services calculate
 financial facts. Agents coordinate investigation. Governance evaluates
 proposals. APIs and dashboards present outcomes. Infrastructure makes
 those modules repeatable and observable.</p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 28%" />
-<col style="width: 67%" />
+<col style="width: 29%" />
+<col style="width: 70%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Architectural concern</strong></th>
 <th><strong>Decision</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Financial correctness</td>
 <td>Keep totals, budgets, forecasts, and reference savings deterministic
 and testable.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Ambiguous investigation</td>
 <td>Use specialized agents to select evidence, reconcile findings, and
 explain trade-offs.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Operational safety</td>
 <td>Make tools read-only and require human approval for every
 proposal.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Evolution</td>
 <td>Connect modules through typed contracts and repositories rather than
 implementation details.</td>
@@ -435,46 +436,46 @@ implementation details.</td>
 local</h1>
 <p><em>A senior architecture optimizes for the cost of the next change,
 not only the first release.</em></p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 21%" />
-<col style="width: 36%" />
-<col style="width: 38%" />
+<col style="width: 22%" />
+<col style="width: 37%" />
+<col style="width: 40%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Module</strong></th>
 <th><strong>Owns</strong></th>
 <th><strong>Can change without rewriting</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Azure integration</td>
 <td>Authentication and provider API translation</td>
 <td>Domain logic, agents, dashboards</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Monitoring domain</td>
 <td>Costs, budgets, alerts, forecasts, recommendations</td>
 <td>Cloud SDKs and model providers</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Agent runtime</td>
 <td>Planning, evidence requests, governance, communication</td>
 <td>SQL schemas and Azure credentials</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Persistence</td>
 <td>Repository contracts, migrations, checkpoints, audit</td>
 <td>API presentation and prompts</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>API and CLI</td>
 <td>Transport, authentication context, response contracts</td>
 <td>Collection and graph internals</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Observability</td>
 <td>Metrics, health, dashboards</td>
 <td>Business workflows</td>
@@ -494,7 +495,7 @@ changing the reasoning model.</p>
 <col style="width: 97%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th></th>
 <th>Design heuristic If a model prompt contains SQL, a dashboard
 contains business rules, or a scheduler contains provider credentials, a
@@ -515,44 +516,44 @@ forecast versus budget, or cost before and after a recommendation. A
 general document store makes these relationships and aggregations
 harder; a metrics-only store is weak for transactions, joins, approvals,
 and audit records.</p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 20%" />
-<col style="width: 28%" />
-<col style="width: 47%" />
+<col style="width: 21%" />
+<col style="width: 29%" />
+<col style="width: 49%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Option</strong></th>
 <th><strong>Strength</strong></th>
 <th><strong>Why it was or was not chosen</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>PostgreSQL</td>
 <td>Transactions, joins, constraints, mature tooling</td>
 <td>Chosen as the canonical system of record.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>TimescaleDB extension</td>
 <td>Time partitioning and time-oriented aggregation</td>
 <td>Chosen to optimize cost history without introducing another
 database.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Dedicated metrics store</td>
 <td>High-volume telemetry</td>
 <td>Used for Prometheus metrics, not financial records or audit
 state.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Document database</td>
 <td>Flexible documents</td>
 <td>Not selected because financial dimensions, joins, and governance
 records benefit from explicit schemas.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Data warehouse</td>
 <td>Large analytical workloads</td>
 <td>A future option when multi-year, multi-tenant scale exceeds the
@@ -590,46 +591,46 @@ id="personas-are-selected-by-evidence-neednot-by-job-title-theatre">Personas
 are selected by evidence need—not by job-title theatre</h1>
 <p><em>More agents are not automatically better. Each persona must own a
 distinct decision boundary.</em></p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 33%" />
-<col style="width: 24%" />
-<col style="width: 37%" />
+<col style="width: 35%" />
+<col style="width: 25%" />
+<col style="width: 38%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>When the request needs…</strong></th>
 <th><strong>Persona selected</strong></th>
 <th><strong>Why</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Intent classification and a bounded plan</td>
 <td>FinOps Orchestrator</td>
 <td>Keeps routing separate from specialist conclusions.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Spend trend, top services, or cost concentration</td>
 <td>Cost Analyst</td>
 <td>Has access only to canonical cost-summary evidence.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Resource shape, region, inventory, or architecture context</td>
 <td>Cloud Architect</td>
 <td>Adds technical context without calculating financial truth.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>A concrete action assembled from verified findings</td>
 <td>Optimization Specialist</td>
 <td>Separates evidence collection from recommendation synthesis.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Risk, conflicts, uncertainty, or policy review</td>
 <td>Risk &amp; Governance Reviewer</td>
 <td>Creates an independent gate before communication.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>A decision-ready summary</td>
 <td>Executive Communicator</td>
 <td>Changes presentation, not evidence or approval state.</td>
@@ -652,7 +653,7 @@ additional evidence.</p>
 <col style="width: 97%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th></th>
 <th>Extension example A Sustainability Analyst can be added later by
 registering carbon-intensity evidence, defining a narrow output
@@ -698,25 +699,25 @@ LangGraph owns separate checkpoint tables for workflow continuation.
 This separation avoids coupling product APIs to framework internals: the
 business audit model can remain stable even if the orchestration library
 changes.</p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 48%" />
-<col style="width: 48%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Persist</strong></th>
 <th><strong>Do not persist</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Evidence IDs, sources, timestamps, findings, proposals, verdicts,
 model/tool metadata</td>
 <td>Credentials, raw secrets, hidden chain-of-thought, executable
 remediation</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Actor scope, workflow status, latency, prompt version, safe
 errors</td>
 <td>Provider stack traces or unbounded raw observations</td>
@@ -741,54 +742,54 @@ because deployment concerns remain outside them.</p>
 <h1 id="how-the-architecture-extends">How the architecture extends</h1>
 <p><em>Extension should mean adding a module or adapter—not editing
 every layer.</em></p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 31%" />
-<col style="width: 65%" />
+<col style="width: 32%" />
+<col style="width: 67%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Future requirement</strong></th>
 <th><strong>Extension seam</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Another LLM provider</td>
 <td>Implement the shared model factory contract and configuration
 validation.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>New cloud or billing source</td>
 <td>Add an integration adapter that emits canonical cost/inventory
 evidence.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>New specialist persona</td>
 <td>Define a persona contract, structured output, allowed tools, and
 graph route.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>New evidence source</td>
 <td>Register a read-only tool with Pydantic input/output and evidence
 metadata.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Warehouse analytics</td>
 <td>Fan out normalized records or replace the repository
 implementation.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Different UI</td>
 <td>Consume versioned APIs and artifact provenance; no graph rewrite is
 required.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Approval workflow</td>
 <td>Add a domain lifecycle around proposal artifacts without coupling
 approval to cloud execution.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Safe remediation</td>
 <td>Introduce a separate least-privilege executor, dry-run, rollback,
 and separation of duties.</td>
@@ -837,7 +838,7 @@ feature and engineering an AI platform.</p>
 <col style="width: 97%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th></th>
 <th>Architecture takeaway Build deterministic foundations, expose narrow
 evidence contracts, add the minimum specialized reasoning roles, and
@@ -853,32 +854,32 @@ environment, dashboards, and release workflow are available in the
 public repository:</p>
 <p><strong>GitHub repository →</strong> <a
 href="https://github.com/nk2242696/CostMonitoringMultiAgent"><u>https://github.com/nk2242696/CostMonitoringMultiAgent</u></a></p>
-<table style="width:96%;">
+<table>
 <colgroup>
-<col style="width: 22%" />
-<col style="width: 73%" />
+<col style="width: 23%" />
+<col style="width: 76%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Project</strong></th>
 <th><strong>Azure Cost Monitoring Multi-Agent Platform</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Architecture</td>
 <td>Modular Python, FastAPI, LangGraph, PostgreSQL/TimescaleDB,
 Prometheus, Grafana</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Operating model</td>
 <td>Read-only investigation and human-approved proposals</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Deployment</td>
 <td>Docker-first reference stack with semantic release automation</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Author</td>
 <td>Nikhil Kumar</td>
 </tr>
