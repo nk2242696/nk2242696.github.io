@@ -18,6 +18,7 @@ import datetime as _dt
 import html
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -78,6 +79,7 @@ def render_post(docx: pathlib.Path, slug: str, meta: dict, reading_time: int) ->
     # Run Pandoc from the output directory so extracted media URLs remain
     # portable browser-relative paths instead of absolute local file paths.
     media_dir = pathlib.Path("assets") / slug
+    shutil.rmtree(BLOG_DIR / media_dir, ignore_errors=True)
     metadata = {
         "title": meta["title"],
         "date": meta["date"],
