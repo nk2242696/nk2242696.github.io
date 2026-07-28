@@ -1,8 +1,9 @@
-title: "Compression Algorithms You Probably Inherited: gzip, Snappy, LZ4, zstd"
-date: "2026-07-22"
-description: "A practical guide to gzip, Snappy, LZ4, and zstd - what makes them different and when to use each in real data pipelines."
+title: "Compression Algorithms You Probably Inherited: gzip, Snappy, LZ4, zstd — and What’s Newer"
+date: "2026-07-28"
+description: "A practical, benchmark-backed comparison of gzip, Snappy, LZ4, zstd, Brotli, and XZ across public text, JSON, mixed-file, and audio datasets."
 tags:
   - Data Engineering
   - Compression
   - Performance
   - Kafka
+  - Benchmarking
