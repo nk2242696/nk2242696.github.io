@@ -88,6 +88,8 @@ def render_post(docx: pathlib.Path, slug: str, meta: dict, reading_time: int) ->
     }
     if meta.get("description"):
         metadata["description"] = meta["description"]
+    if meta.get("hide_header"):
+      metadata["hide-header"] = True
 
     with tempfile.NamedTemporaryFile(
         "w", suffix=".yaml", delete=False, encoding="utf-8"

@@ -55,6 +55,9 @@ in real data pipelines.">
       --text-body: #d4d4d8;
       --code-bg: rgba(255, 255, 255, 0.08);
       --nav-bg: rgba(10, 10, 10, 0.9);
+      --callout-bg: #17253a;
+      --callout-border: #5aa7ff;
+      --heading-rule: rgba(255, 255, 255, 0.12);
     }
 
     html[data-theme="light"] {
@@ -70,6 +73,9 @@ in real data pipelines.">
       --text-body: #333336;
       --code-bg: rgba(0, 0, 0, 0.06);
       --nav-bg: rgba(255, 255, 255, 0.9);
+      --callout-bg: #eef6ff;
+      --callout-border: #80bfff;
+      --heading-rule: rgba(0, 113, 227, 0.18);
     }
 
     body {
@@ -188,11 +194,25 @@ in real data pipelines.">
     #TOC ul ul { padding-left: 1.2rem; }
 
     .article-body h2 {
-      font-size: 1.8rem;
+      font-size: 1.65rem;
       font-weight: 700;
       letter-spacing: -0.5px;
-      margin: 2.5rem 0 1rem;
-      padding-top: 0.5rem;
+      line-height: 1.3;
+      margin: 3.5rem 0 1.2rem;
+      padding: 1.35rem 0 0;
+      border-top: 1px solid var(--heading-rule);
+      position: relative;
+    }
+
+    .article-body h2::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      width: 3.5rem;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--highlight);
     }
 
     .article-body h3 {
@@ -205,6 +225,13 @@ in real data pipelines.">
       color: var(--text-body);
       margin-bottom: 1.3rem;
       overflow-wrap: anywhere;
+    }
+
+    .article-body .article-lead p {
+      color: var(--accent);
+      font-size: 1.12rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
     }
     .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
     .article-body li { margin-bottom: 0.5rem; }
@@ -269,17 +296,20 @@ in real data pipelines.">
 
     .article-body th { background: var(--bg-card); }
 
-    /* Word text boxes and code blocks are emitted by Pandoc as 1%-wide,
-       single-cell tables. Override that inline width so they fill the article. */
+     /* Word text boxes and code blocks are emitted by Pandoc as 1%-wide,
+       single-cell tables. Override the unusable inline width while leaving
+       breathing room around these supporting elements. */
     .article-body table[style*="width:1%"] {
       display: block;
-      width: 100% !important;
-      max-width: 100%;
+      width: 92% !important;
+      max-width: 92%;
       overflow-x: auto;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--highlight);
-      border-radius: 10px;
-      background: var(--bg-card);
+      margin: 1.8rem auto;
+      border: 1px solid var(--callout-border);
+      border-left: 4px solid var(--callout-border);
+      border-radius: 14px;
+      background: var(--callout-bg);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--callout-border) 10%, transparent);
     }
 
     .article-body table[style*="width:1%"] tbody,
@@ -292,31 +322,58 @@ in real data pipelines.">
     .article-body table[style*="width:1%"] td {
       min-width: 100%;
       border: 0;
-      padding: 1rem 1.2rem;
+      padding: 1.15rem 1.3rem;
     }
 
     .article-body table[style*="width:1%"] td p:last-child {
       margin-bottom: 0;
     }
 
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child {
+      margin-bottom: 0.65rem;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child strong {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--callout-border) 18%, transparent);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
     /* Single-cell boxes without a bold label are source-code snippets. */
     .article-body table[style*="width:1%"]:not(:has(strong)) {
+      width: 94% !important;
+      max-width: 94%;
+      border-color: rgba(255, 255, 255, 0.12);
       border-left-width: 1px;
+      border-radius: 12px;
       background: #141414;
+      box-shadow: none;
     }
 
     .article-body table[style*="width:1%"]:not(:has(strong)) td {
       min-width: max-content;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.88rem;
-      line-height: 1.65;
+      font-size: 0.84rem;
+      line-height: 1.45;
       color: #e6e6e6;
+      padding: 0.9rem 1.1rem;
     }
 
     .article-body table[style*="width:1%"]:not(:has(strong)) p {
       margin: 0;
       color: inherit;
       white-space: pre;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p:empty {
+      display: none;
     }
 
     .article-footer {
@@ -331,6 +388,10 @@ in real data pipelines.">
 
     @media (max-width: 640px) {
       .article-title { font-size: 2rem; }
+      .article-body table[style*="width:1%"] {
+        width: 100% !important;
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -365,6 +426,11 @@ Inherited: gzip, Snappy, LZ4, zstd</h1>
     </header>
 
     <nav id="TOC" role="doc-toc">
+    <ul>
+    <li><a
+    href="#compression-algorithms-you-probably-inherited-gzip-snappy-lz4-zstd"
+    id="toc-compression-algorithms-you-probably-inherited-gzip-snappy-lz4-zstd">Compression
+    Algorithms You Probably Inherited: gzip, Snappy, LZ4, zstd</a>
     <ul>
     <li><a href="#you-might-be-using-the-wrong-compression-algorithm"
     id="toc-you-might-be-using-the-wrong-compression-algorithm">You
@@ -415,10 +481,14 @@ Inherited: gzip, Snappy, LZ4, zstd</h1>
     Hood</a></li>
     <li><a href="#closing-thoughts" id="toc-closing-thoughts">Closing
     Thoughts</a></li>
+    </ul></li>
     </ul>
     </nav>
 
     <div class="article-body">
+<h1
+id="compression-algorithms-you-probably-inherited-gzip-snappy-lz4-zstd">Compression
+Algorithms You Probably Inherited: gzip, Snappy, LZ4, zstd</h1>
 <h2 id="you-might-be-using-the-wrong-compression-algorithm">You Might Be
 Using The Wrong Compression Algorithm</h2>
 <p>If you work in data engineering, you’ve probably used
@@ -513,16 +583,16 @@ Data transfers. Usually the best all-around choice.</li>
 </ul>
 <h2 id="strengths-and-weaknesses-at-a-glance">Strengths and Weaknesses
 (At a Glance)</h2>
-<table>
+<table style="width:85%;">
 <colgroup>
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Algorithm</th>
 <th>Compression Ratio</th>
 <th>Compression Speed</th>
@@ -531,28 +601,28 @@ Data transfers. Usually the best all-around choice.</li>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>gzip</td>
 <td>Moderate</td>
 <td>Slow</td>
 <td>Moderate</td>
 <td>Archival, web content</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Snappy</td>
 <td>Low</td>
 <td>Very Fast</td>
 <td>Very Fast</td>
 <td>Real-time, low-CPU systems</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>LZ4</td>
 <td>Moderate</td>
 <td>Extremely Fast</td>
 <td>Extremely Fast</td>
 <td>High-throughput, low-latency systems</td>
 </tr>
-<tr class="even">
+<tr>
 <td>zstd</td>
 <td>High</td>
 <td>Fast</td>
