@@ -615,16 +615,16 @@ When to use: One-time archival or static distribution, not
 latency-sensitive pipelines.
 <h2 id="strengths-and-weaknesses-at-a-glance">Strengths and Weaknesses
 (At a Glance)</h2>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>Algorithm</th>
 <th>Compression Ratio</th>
 <th>Compression Speed</th>
@@ -633,42 +633,42 @@ latency-sensitive pipelines.
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>gzip</td>
 <td>Moderate</td>
 <td>Slow</td>
 <td>Moderate</td>
 <td>Archival, web content</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Snappy</td>
 <td>Low</td>
 <td>Very Fast</td>
 <td>Very Fast</td>
 <td>Real-time, low-CPU systems</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>LZ4</td>
 <td>Moderate</td>
 <td>Extremely Fast</td>
 <td>Extremely Fast</td>
 <td>High-throughput, low-latency systems</td>
 </tr>
-<tr>
+<tr class="even">
 <td>zstd</td>
 <td>High</td>
 <td>Fast</td>
 <td>Fast</td>
 <td>General-purpose, Parquet, Kafka, data transfers</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Brotli</td>
 <td>High</td>
 <td>Slow</td>
 <td>Fast</td>
 <td>HTTP and static web content</td>
 </tr>
-<tr>
+<tr class="even">
 <td>XZ/LZMA</td>
 <td>Very High</td>
 <td>Extremely Slow</td>
@@ -690,7 +690,7 @@ enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
 <col style="width: 20%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>Codec</th>
 <th>Ratio</th>
 <th>Compress MB/s</th>
@@ -699,42 +699,42 @@ enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>gzip 6</td>
 <td>3.09×</td>
 <td>18</td>
 <td>178</td>
 <td>30.5</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Snappy 1</td>
 <td>1.97×</td>
 <td>313</td>
 <td>358</td>
 <td>35.4</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>LZ4 0</td>
 <td>1.96×</td>
 <td>344</td>
 <td>634</td>
 <td>33.0</td>
 </tr>
-<tr>
+<tr class="even">
 <td>zstd 3</td>
 <td>3.19×</td>
 <td>114</td>
 <td>142</td>
 <td>41.9</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Brotli 5</td>
 <td>3.60×</td>
 <td>34</td>
 <td>219</td>
 <td>60.8</td>
 </tr>
-<tr>
+<tr class="even">
 <td>XZ 6</td>
 <td>4.34×</td>
 <td>1.3</td>
