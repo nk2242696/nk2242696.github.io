@@ -201,7 +201,11 @@ in real data pipelines.">
       margin: 2rem 0 0.8rem;
     }
 
-    .article-body p { color: var(--text-body); margin-bottom: 1.3rem; }
+    .article-body p {
+      color: var(--text-body);
+      margin-bottom: 1.3rem;
+      overflow-wrap: anywhere;
+    }
     .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
     .article-body li { margin-bottom: 0.5rem; }
 
@@ -248,7 +252,10 @@ in real data pipelines.">
     }
 
     .article-body table {
-      width: 100%;
+      display: block;
+      width: 100% !important;
+      max-width: 100%;
+      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
@@ -261,6 +268,56 @@ in real data pipelines.">
     }
 
     .article-body th { background: var(--bg-card); }
+
+    /* Word text boxes and code blocks are emitted by Pandoc as 1%-wide,
+       single-cell tables. Override that inline width so they fill the article. */
+    .article-body table[style*="width:1%"] {
+      display: block;
+      width: 100% !important;
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--highlight);
+      border-radius: 10px;
+      background: var(--bg-card);
+    }
+
+    .article-body table[style*="width:1%"] tbody,
+    .article-body table[style*="width:1%"] tr,
+    .article-body table[style*="width:1%"] td {
+      display: block;
+      width: auto !important;
+    }
+
+    .article-body table[style*="width:1%"] td {
+      min-width: 100%;
+      border: 0;
+      padding: 1rem 1.2rem;
+    }
+
+    .article-body table[style*="width:1%"] td p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Single-cell boxes without a bold label are source-code snippets. */
+    .article-body table[style*="width:1%"]:not(:has(strong)) {
+      border-left-width: 1px;
+      background: #141414;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) td {
+      min-width: max-content;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: #e6e6e6;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p {
+      margin: 0;
+      color: inherit;
+      white-space: pre;
+    }
 
     .article-footer {
       margin-top: 4rem;
