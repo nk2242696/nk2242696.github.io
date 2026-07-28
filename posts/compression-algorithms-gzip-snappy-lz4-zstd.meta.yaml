@@ -1,5 +1,5 @@
 title: "Compression Algorithms You Probably Inherited: gzip, Snappy, LZ4, zstd — and What’s Newer"
-date: "2026-07-28"
+date: "2026-07-24"
 description: "A practical, benchmark-backed comparison of gzip, Snappy, LZ4, zstd, Brotli, and XZ across public text, JSON, mixed-file, and audio datasets."
 tags:
   - Data Engineering

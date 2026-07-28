@@ -56,7 +56,9 @@ function Pandoc(doc)
   for index, block in ipairs(doc.blocks) do
     local text = text_of(block)
     local in_intro = index <= 6
-    local duplicate_title = in_intro and is_strong_only(block) and text == title
+    local duplicate_title = in_intro
+      and text == title
+      and (is_strong_only(block) or (block.t == "Header" and block.level == 1))
     local duplicate_date = in_intro and text:match("^%d%d%d%d%-%d%d%-%d%d%s+·%s+%d+%s+min read$")
     local duplicate_tags = in_intro and is_emph_only(block) and text:find("·", 1, true)
 
