@@ -474,7 +474,7 @@ internet access with an explicit, controlled path</strong></p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>THE SHORT VERSION<br />
 </strong>Private subnet does not mean no internet. It means no implicit
 internet path. If a workload needs a public endpoint, create and
@@ -511,7 +511,7 @@ because the VM started the conversation.</p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>SIMPLE MENTAL MODEL<br />
 </strong>Outbound connectivity is the controlled exit door for a private
 workload. Security depends on knowing where that door is, who owns it,
@@ -547,25 +547,25 @@ how the traffic leaves.</p>
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Implicit default</strong></th>
 <th><strong>Explicit outbound</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Internet access appears automatically</td>
 <td>Internet access is an intentional design decision</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Public identity is Microsoft-owned and can change</td>
 <td>The team owns or selects the public identity</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>The path is easy to overlook</td>
 <td>The path can be reviewed, logged, and governed</td>
 </tr>
-<tr>
+<tr class="even">
 <td>A fallback can survive unnoticed</td>
 <td>Removing the outbound resource removes the path</td>
 </tr>
@@ -576,7 +576,7 @@ how the traffic leaves.</p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>PRIVATE DOES NOT MEAN ISOLATED<br />
 </strong>Setting defaultOutboundAccess to false removes Azure's implicit
 fallback. A private subnet can still reach approved public destinations
@@ -627,7 +627,7 @@ ownership problems.</em></p>
 <col style="width: 25%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Choice</strong></th>
 <th><strong>Think of it as</strong></th>
 <th><strong>Good introductory use case</strong></th>
@@ -635,33 +635,33 @@ ownership problems.</em></p>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>NAT Gateway</td>
 <td>A shared exit for a subnet</td>
 <td>Private application servers need predictable internet access</td>
 <td>Stable identity, but it does not decide which websites are
 allowed</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Azure Firewall</td>
 <td>A guarded and inspected exit</td>
 <td>A regulated service must restrict and log destinations</td>
 <td>More control, with more cost and operational complexity</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>VM public IP</td>
 <td>A personal street address</td>
 <td>A small, justified standalone system needs its own identity</td>
 <td>Simple, but increases per-VM public exposure and governance</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Load Balancer rules</td>
 <td>An exit shared by one backend pool</td>
 <td>An existing load-balanced application reuses its frontend IP</td>
 <td>Explicit, but less flexible for uneven or rapidly scaling
 workloads</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Private Link</td>
 <td>No public exit for that service</td>
 <td>A VM reaches Storage, SQL, or Key Vault privately</td>
@@ -723,7 +723,7 @@ fully removed.</p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>REMEMBER THE ORDER<br />
 </strong>Understand the need → create the explicit path → test it →
 disable the default. Disabling first can break updates, package
