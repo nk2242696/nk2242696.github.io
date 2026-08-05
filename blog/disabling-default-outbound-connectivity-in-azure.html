@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
+  <title>Disabling Default Outbound Connectivity in
+Azure | Nikhil Kumar</title>
+  <meta name="description" content="An introductory security guide to
+Azure default outbound access, explicit egress, and choosing a
+controlled internet path.">
+  <meta name="author" content="Nikhil Kumar">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Disabling Default Outbound
+Connectivity in Azure">
+  <meta property="og:description" content="An introductory security
+guide to Azure default outbound access, explicit egress, and choosing a
+controlled internet path.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-family='Inter,Arial,sans-serif' font-size='30' font-weight='700' fill='%23e50914' text-anchor='middle' dominant-baseline='middle'%3ENK%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a2e;
+      --accent: #ffffff;
+      --accent-muted: #b3b3b3;
+      --accent-dim: #a1a1a6;
+      --border: rgba(255, 255, 255, 0.08);
+      --highlight: #e50914;
+      --link: #6ea8fe;
+      --text-body: #d4d4d8;
+      --code-bg: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(10, 10, 10, 0.9);
+      --callout-bg: #17253a;
+      --callout-border: #5aa7ff;
+      --heading-rule: rgba(255, 255, 255, 0.12);
+    }
+
+    html[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #f5f5f7;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --link: #0071e3;
+      --text-body: #333336;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --callout-bg: #eef6ff;
+      --callout-border: #80bfff;
+      --heading-rule: rgba(0, 113, 227, 0.18);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--accent);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 5%;
+    }
+
+    .top-nav a {
+      color: var(--accent-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 2rem;
+    }
+
+    .top-nav a:hover { color: var(--accent); text-decoration: none; }
+
+    .theme-toggle {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .theme-toggle svg { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 5% 6rem;
+    }
+
+    .article-header { margin-bottom: 3rem; }
+
+    .article-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
+      border-radius: 50px;
+      color: var(--highlight);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    #TOC {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+    }
+
+    #TOC::before {
+      content: 'Contents';
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--highlight);
+      margin-bottom: 1rem;
+    }
+
+    #TOC ul { list-style: none; }
+    #TOC li { margin: 0.4rem 0; }
+    #TOC a { color: var(--accent-muted); }
+    #TOC ul ul { padding-left: 1.2rem; }
+
+    .article-body h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+      margin: 3.5rem 0 1.2rem;
+      padding: 1.35rem 0 0;
+      border-top: 1px solid var(--heading-rule);
+      position: relative;
+    }
+
+    .article-body h2::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      width: 3.5rem;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--highlight);
+    }
+
+    .article-body h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p {
+      color: var(--text-body);
+      margin-bottom: 1.3rem;
+      overflow-wrap: anywhere;
+    }
+
+    .article-body .article-lead p {
+      color: var(--accent);
+      font-size: 1.12rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+    .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
+    .article-body li { margin-bottom: 0.5rem; }
+
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--highlight);
+      padding-left: 1.2rem;
+      margin: 1.5rem 0;
+      color: var(--accent-muted);
+      font-style: italic;
+    }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 5px;
+    }
+
+    .article-body pre {
+      background: #141414;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e6e6e6;
+    }
+
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .article-body table {
+      display: block;
+      width: 100% !important;
+      max-width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .article-body th, .article-body td {
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+
+    .article-body th { background: var(--bg-card); }
+
+     /* Word text boxes and code blocks are emitted by Pandoc as 1%-wide,
+       single-cell tables. Override the unusable inline width while leaving
+       breathing room around these supporting elements. */
+    .article-body table[style*="width:1%"] {
+      display: block;
+      width: 92% !important;
+      max-width: 92%;
+      overflow-x: auto;
+      margin: 1.8rem auto;
+      border: 1px solid var(--callout-border);
+      border-left: 4px solid var(--callout-border);
+      border-radius: 14px;
+      background: var(--callout-bg);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--callout-border) 10%, transparent);
+    }
+
+    .article-body table[style*="width:1%"] tbody,
+    .article-body table[style*="width:1%"] tr,
+    .article-body table[style*="width:1%"] td {
+      display: block;
+      width: auto !important;
+    }
+
+    .article-body table[style*="width:1%"] td {
+      min-width: 100%;
+      border: 0;
+      padding: 1.15rem 1.3rem;
+    }
+
+    .article-body table[style*="width:1%"] td p:last-child {
+      margin-bottom: 0;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child {
+      margin-bottom: 0.65rem;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child strong {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--callout-border) 18%, transparent);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Single-cell boxes without a bold label are source-code snippets. */
+    .article-body table[style*="width:1%"]:not(:has(strong)) {
+      width: 94% !important;
+      max-width: 94%;
+      border-color: rgba(255, 255, 255, 0.12);
+      border-left-width: 1px;
+      border-radius: 12px;
+      background: #141414;
+      box-shadow: none;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) td {
+      min-width: max-content;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: #e6e6e6;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p {
+      margin: 0;
+      color: inherit;
+      white-space: pre;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p:empty {
+      display: none;
+    }
+
+    .article-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    @media (max-width: 640px) {
+      .article-title { font-size: 2rem; }
+      .article-body table[style*="width:1%"] {
+        width: 100% !important;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <a href="/">&larr; Portfolio</a>
+    <a href="/blog/">All posts</a>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <article class="article-wrap">
+    <header class="article-header">
+      <h1 class="article-title">Disabling Default Outbound Connectivity
+in Azure</h1>
+      <div class="article-meta">
+        <span>2026-08-05</span>
+        <span>&middot; 7 min read</span>
+        <span class="tag">Azure</span>
+        <span class="tag">Networking</span>
+        <span class="tag">Security</span>
+        <span class="tag">Zero Trust</span>
+        <span class="tag">Cloud Architecture</span>
+      </div>
+    </header>
+
+    <nav id="TOC" role="doc-toc">
+    <ul>
+    <li><a href="#what-outbound-connectivity-actually-means"
+    id="toc-what-outbound-connectivity-actually-means"><strong>What
+    outbound connectivity actually means</strong></a></li>
+    <li><a
+    href="#the-old-convenience-internet-access-without-an-explicit-door"
+    id="toc-the-old-convenience-internet-access-without-an-explicit-door"><strong>The
+    old convenience: internet access without an explicit
+    door</strong></a></li>
+    <li><a href="#why-disabling-the-default-improves-security"
+    id="toc-why-disabling-the-default-improves-security"><strong>Why
+    disabling the default improves security</strong></a></li>
+    <li><a href="#the-main-choices-without-the-product-manual"
+    id="toc-the-main-choices-without-the-product-manual"><strong>The
+    main choices, without the product manual</strong></a></li>
+    <li><a href="#two-examples-that-make-the-difference-concrete"
+    id="toc-two-examples-that-make-the-difference-concrete"><strong>Two
+    examples that make the difference concrete</strong></a>
+    <ul>
+    <li><a href="#example-1-an-application-server-downloading-updates"
+    id="toc-example-1-an-application-server-downloading-updates"><strong>Example
+    1: an application server downloading updates</strong></a></li>
+    <li><a href="#example-2-a-compromised-vm-trying-to-send-data-out"
+    id="toc-example-2-a-compromised-vm-trying-to-send-data-out"><strong>Example
+    2: a compromised VM trying to send data out</strong></a></li>
+    </ul></li>
+    <li><a href="#a-safe-way-to-think-about-the-change"
+    id="toc-a-safe-way-to-think-about-the-change"><strong>A safe way to
+    think about the change</strong></a></li>
+    <li><a href="#the-idea-to-take-away"
+    id="toc-the-idea-to-take-away"><strong>The idea to take
+    away</strong></a></li>
+    <li><a href="#further-reading"
+    id="toc-further-reading"><strong>Further reading</strong></a></li>
+    </ul>
+    </nav>
+
+    <div class="article-body">
+<div class="article-lead">
+<p><strong>An introductory security guide to replacing invisible
+internet access with an explicit, controlled path</strong></p>
+</div>
+<table>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>THE SHORT VERSION<br />
+</strong>Private subnet does not mean no internet. It means no implicit
+internet path. If a workload needs a public endpoint, create and
+validate an explicit egress path before setting defaultOutboundAccess to
+false.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2 id="what-outbound-connectivity-actually-means"><strong>What outbound
+connectivity actually means</strong></h2>
+<p>Imagine a private virtual machine that needs to download an
+operating-system update or call a payment API. The VM starts the
+conversation, so the traffic is outbound. Its source address might be
+10.20.1.4, an address that works inside the virtual network but cannot
+be used on the public internet. Before the packet leaves Azure, that
+private source must be represented by a public address.</p>
+<p><img
+src="assets/disabling-default-outbound-connectivity-in-azure/media/image1.png"
+style="width:6.25in;height:2.63889in"
+alt="A private virtual machine sends a packet through an outbound service, which translates its source before reaching a public service." /></p>
+<p><em>Figure 1. An outbound service gives a private workload a public
+identity for the connection and remembers where the reply
+belongs.</em></p>
+<p>This translation is called Source Network Address Translation, or
+SNAT. The outbound service temporarily maps the VM's private address and
+port to a public address and port. When the reply returns, the saved
+mapping sends it back to the correct VM. This does not mean the internet
+can freely start connections to the VM; the return packet is accepted
+because the VM started the conversation.</p>
+<table>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>SIMPLE MENTAL MODEL<br />
+</strong>Outbound connectivity is the controlled exit door for a private
+workload. Security depends on knowing where that door is, who owns it,
+and what traffic is allowed through it.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2
+id="the-old-convenience-internet-access-without-an-explicit-door"><strong>The
+old convenience: internet access without an explicit door</strong></h2>
+<p>For many years, Azure made this feel automatic. If a VM had no public
+IP, NAT Gateway, Load Balancer outbound rule, or firewall path, Azure
+could still give it default outbound access through a Microsoft-owned
+public IP. The VM reached the internet even though the team had not
+created an outbound resource.</p>
+<p><img
+src="assets/disabling-default-outbound-connectivity-in-azure/media/image2.png"
+style="width:6.25in;height:2.43056in"
+alt="A private virtual machine reaches a public service through hidden Azure platform translation." /></p>
+<p><em>Figure 2. Default outbound access hid the public egress path
+behind platform behavior.</em></p>
+<p>The problem is not that every VM suddenly becomes an inbound web
+server. The security problem is that public reachability exists by
+default. A compromised process can call an unknown internet destination
+through the same invisible path, and operators may not have a stable
+public IP, a central inspection point, or even a clear diagram showing
+how the traffic leaves.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Implicit default</strong></th>
+<th><strong>Explicit outbound</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Internet access appears automatically</td>
+<td>Internet access is an intentional design decision</td>
+</tr>
+<tr>
+<td>Public identity is Microsoft-owned and can change</td>
+<td>The team owns or selects the public identity</td>
+</tr>
+<tr>
+<td>The path is easy to overlook</td>
+<td>The path can be reviewed, logged, and governed</td>
+</tr>
+<tr>
+<td>A fallback can survive unnoticed</td>
+<td>Removing the outbound resource removes the path</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>PRIVATE DOES NOT MEAN ISOLATED<br />
+</strong>Setting defaultOutboundAccess to false removes Azure's implicit
+fallback. A private subnet can still reach approved public destinations
+through an explicit NAT Gateway or firewall.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2 id="why-disabling-the-default-improves-security"><strong>Why
+disabling the default improves security</strong></h2>
+<p>Zero Trust starts with an uncomplicated question: why should this
+workload be allowed to communicate? Default outbound access answers that
+question with 'because nothing explicitly stopped it.' Explicit outbound
+connectivity changes the answer to 'because we created a known path for
+a known need.'</p>
+<blockquote>
+<p><strong>•</strong> Intent becomes visible. A network diagram and
+deployment template show that internet access is required.</p>
+<p><strong>•</strong> The public identity becomes predictable. Partners
+can allow-list an address owned by the workload team.</p>
+<p><strong>•</strong> Monitoring has a natural place. NAT or firewall
+logs can show which destinations workloads contact.</p>
+<p><strong>•</strong> Policy can be stronger. A firewall can restrict
+destinations instead of giving every allowed packet the same
+unrestricted exit.</p>
+<p><strong>•</strong> Removing access becomes deliberate. A subnet
+without an explicit outbound method does not silently retain an internet
+fallback.</p>
+</blockquote>
+<p>As of March 31, 2026, new Azure virtual networks use private subnets
+by default under the new API behavior. Existing virtual networks are not
+automatically changed, which is why older environments still need to
+identify and replace their implicit dependency.</p>
+<h2 id="the-main-choices-without-the-product-manual"><strong>The main
+choices, without the product manual</strong></h2>
+<p><img
+src="assets/disabling-default-outbound-connectivity-in-azure/media/image3.png"
+style="width:6.25in;height:3.64583in"
+alt="A private workload can use NAT Gateway, Load Balancer outbound rules, Firewall, a public IP, or Private Link depending on its need." /></p>
+<p><em>Figure 3. Different outbound methods solve different security and
+ownership problems.</em></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Choice</strong></th>
+<th><strong>Think of it as</strong></th>
+<th><strong>Good introductory use case</strong></th>
+<th><strong>Security tradeoff</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NAT Gateway</td>
+<td>A shared exit for a subnet</td>
+<td>Private application servers need predictable internet access</td>
+<td>Stable identity, but it does not decide which websites are
+allowed</td>
+</tr>
+<tr>
+<td>Azure Firewall</td>
+<td>A guarded and inspected exit</td>
+<td>A regulated service must restrict and log destinations</td>
+<td>More control, with more cost and operational complexity</td>
+</tr>
+<tr>
+<td>VM public IP</td>
+<td>A personal street address</td>
+<td>A small, justified standalone system needs its own identity</td>
+<td>Simple, but increases per-VM public exposure and governance</td>
+</tr>
+<tr>
+<td>Load Balancer rules</td>
+<td>An exit shared by one backend pool</td>
+<td>An existing load-balanced application reuses its frontend IP</td>
+<td>Explicit, but less flexible for uneven or rapidly scaling
+workloads</td>
+</tr>
+<tr>
+<td>Private Link</td>
+<td>No public exit for that service</td>
+<td>A VM reaches Storage, SQL, or Key Vault privately</td>
+<td>Strongest public-path reduction, but only for supported
+services</td>
+</tr>
+</tbody>
+</table>
+<p>For a typical private application subnet that simply needs a stable
+way to call public services, NAT Gateway is usually the easiest explicit
+choice. If the organization must control destinations or inspect
+traffic, Azure Firewall is the more appropriate boundary. For supported
+Azure services, Private Link can remove the public journey entirely.</p>
+<h2 id="two-examples-that-make-the-difference-concrete"><strong>Two
+examples that make the difference concrete</strong></h2>
+<h3
+id="example-1-an-application-server-downloading-updates"><strong>Example
+1: an application server downloading updates</strong></h3>
+<p>A team runs ten private VMs. They need operating-system updates and
+must call one external API. With default outbound access, the calls work
+through a hidden public identity. The team instead attaches a NAT
+Gateway to the subnet and uses its known public IP. The VMs remain
+private, the external API can allow-list one stable address, and the
+internet path now exists because the team deliberately created it.</p>
+<p><strong>Security lesson:</strong> NAT Gateway makes the exit explicit
+and predictable, but an NSG or NAT Gateway alone does not provide
+website-level filtering. If the VMs must reach only approved
+destinations, place the policy at a firewall or another suitable control
+point.</p>
+<h3
+id="example-2-a-compromised-vm-trying-to-send-data-out"><strong>Example
+2: a compromised VM trying to send data out</strong></h3>
+<p>Suppose an attacker gains control of an application process and tries
+to send data to an unfamiliar internet domain. Default outbound access
+may provide a route even though nobody designed one. A NAT Gateway makes
+the source identity visible, but it still permits general outbound
+connections unless other controls restrict them. A centrally governed
+firewall can allow required destinations, deny the unfamiliar domain,
+and record the attempt for investigation.</p>
+<p><strong>Security lesson:</strong> Disabling default access removes an
+accidental path. It does not automatically create least privilege. The
+explicit replacement must still match the security requirement.</p>
+<p><img
+src="assets/disabling-default-outbound-connectivity-in-azure/media/image4.png"
+style="width:6.25in;height:3.68056in"
+alt="A simple decision tree recommends Private Link for supported private services, NAT Gateway for general egress, and Firewall for inspected egress." /></p>
+<p><em>Figure 4. First avoid public access where possible; then decide
+whether remaining internet traffic needs inspection.</em></p>
+<h2 id="a-safe-way-to-think-about-the-change"><strong>A safe way to
+think about the change</strong></h2>
+<p>Before disabling the default, ask what the workload genuinely needs
+to reach. Move supported Azure services to Private Link where that makes
+sense. Give the remaining public traffic an explicit path, test it, and
+only then set defaultOutboundAccess to false. Existing VMs may need to
+be stopped and deallocated before their old default outbound identity is
+fully removed.</p>
+<table>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>REMEMBER THE ORDER<br />
+</strong>Understand the need → create the explicit path → test it →
+disable the default. Disabling first can break updates, package
+downloads, monitoring agents, and external APIs.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2 id="the-idea-to-take-away"><strong>The idea to take
+away</strong></h2>
+<p>The goal is not to make every private workload unable to use the
+internet. The goal is to stop internet access from appearing as an
+invisible default. Once the exit is explicit, teams can choose a stable
+identity, add the right inspection and logging, and explain why the
+connection is allowed. That is the security improvement: replacing
+convenience by accident with access by design.</p>
+<h2 id="further-reading"><strong>Further reading</strong></h2>
+<p>These Microsoft Learn pages cover the implementation details when you
+are ready to apply the design:</p>
+<p>• <a
+href="https://learn.microsoft.com/azure/virtual-network/ip-services/default-outbound-access"><u>Default
+outbound access in Azure</u></a></p>
+<p>• <a
+href="https://learn.microsoft.com/azure/nat-gateway/nat-overview"><u>What
+is Azure NAT Gateway?</u></a></p>
+<p>• <a
+href="https://learn.microsoft.com/azure/firewall/overview"><u>Azure
+Firewall overview</u></a></p>
+<p>• <a
+href="https://learn.microsoft.com/azure/private-link/private-endpoint-overview"><u>Azure
+Private Endpoint overview</u></a></p>
+    </div>
+
+    <footer class="article-footer">
+      <p>Written by Nikhil Kumar &middot; <a href="/blog/">Back to all posts</a></p>
+    </footer>
+  </article>
+
+  <script>
+    (function () {
+      var themeToggle = document.getElementById('themeToggle');
+      if (!themeToggle) return;
+      var syncToggle = function () {
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        themeToggle.setAttribute('aria-pressed', String(isLight));
+        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      };
+      themeToggle.addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) { }
+        syncToggle();
+      });
+      syncToggle();
+    })();
+  </script>
+</body>
+
+</html>

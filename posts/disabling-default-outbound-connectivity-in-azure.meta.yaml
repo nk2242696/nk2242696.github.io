@@ -1,0 +1,9 @@
+title: "Disabling Default Outbound Connectivity in Azure"
+date: "2026-08-05"
+description: "An introductory security guide to Azure default outbound access, explicit egress, and choosing a controlled internet path."
+tags:
+  - Azure
+  - Networking
+  - Security
+  - Zero Trust
+  - Cloud Architecture
