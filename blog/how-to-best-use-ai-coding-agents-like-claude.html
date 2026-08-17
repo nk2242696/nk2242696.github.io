@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
+  <title>How to Best Use AI Coding Agents Like
+Claude | Nikhil Kumar</title>
+  <meta name="description" content="A practical field guide to memory,
+Agent Skills, subagent personas, and MCP connectors — the four levers
+that turn Claude from autocomplete into a teammate.">
+  <meta name="author" content="Nikhil Kumar">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Best Use AI Coding Agents
+Like Claude">
+  <meta property="og:description" content="A practical field guide to
+memory, Agent Skills, subagent personas, and MCP connectors — the four
+levers that turn Claude from autocomplete into a teammate.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-family='Inter,Arial,sans-serif' font-size='30' font-weight='700' fill='%23e50914' text-anchor='middle' dominant-baseline='middle'%3ENK%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a2e;
+      --accent: #ffffff;
+      --accent-muted: #b3b3b3;
+      --accent-dim: #a1a1a6;
+      --border: rgba(255, 255, 255, 0.08);
+      --highlight: #e50914;
+      --link: #6ea8fe;
+      --text-body: #d4d4d8;
+      --code-bg: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(10, 10, 10, 0.9);
+      --callout-bg: #17253a;
+      --callout-border: #5aa7ff;
+      --heading-rule: rgba(255, 255, 255, 0.12);
+    }
+
+    html[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #f5f5f7;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --link: #0071e3;
+      --text-body: #333336;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --callout-bg: #eef6ff;
+      --callout-border: #80bfff;
+      --heading-rule: rgba(0, 113, 227, 0.18);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--accent);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 5%;
+    }
+
+    .top-nav a {
+      color: var(--accent-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 2rem;
+    }
+
+    .top-nav a:hover { color: var(--accent); text-decoration: none; }
+
+    .theme-toggle {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .theme-toggle svg { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 5% 6rem;
+    }
+
+    .article-header { margin-bottom: 3rem; }
+
+    .article-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
+      border-radius: 50px;
+      color: var(--highlight);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    #TOC {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+    }
+
+    #TOC::before {
+      content: 'Contents';
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--highlight);
+      margin-bottom: 1rem;
+    }
+
+    #TOC ul { list-style: none; }
+    #TOC li { margin: 0.4rem 0; }
+    #TOC a { color: var(--accent-muted); }
+    #TOC ul ul { padding-left: 1.2rem; }
+
+    .article-body h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+      margin: 3.5rem 0 1.2rem;
+      padding: 1.35rem 0 0;
+      border-top: 1px solid var(--heading-rule);
+      position: relative;
+    }
+
+    .article-body h2::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      width: 3.5rem;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--highlight);
+    }
+
+    .article-body h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p {
+      color: var(--text-body);
+      margin-bottom: 1.3rem;
+      overflow-wrap: anywhere;
+    }
+
+    .article-body .article-lead p {
+      color: var(--accent);
+      font-size: 1.12rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+    .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
+    .article-body li { margin-bottom: 0.5rem; }
+
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--highlight);
+      padding-left: 1.2rem;
+      margin: 1.5rem 0;
+      color: var(--accent-muted);
+      font-style: italic;
+    }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 5px;
+    }
+
+    .article-body pre {
+      background: #141414;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e6e6e6;
+    }
+
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .article-body table {
+      display: block;
+      width: 100% !important;
+      max-width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .article-body th, .article-body td {
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+
+    .article-body th { background: var(--bg-card); }
+
+     /* Word text boxes and code blocks are emitted by Pandoc as 1%-wide,
+       single-cell tables. Override the unusable inline width while leaving
+       breathing room around these supporting elements. */
+    .article-body table[style*="width:1%"] {
+      display: block;
+      width: 92% !important;
+      max-width: 92%;
+      overflow-x: auto;
+      margin: 1.8rem auto;
+      border: 1px solid var(--callout-border);
+      border-left: 4px solid var(--callout-border);
+      border-radius: 14px;
+      background: var(--callout-bg);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--callout-border) 10%, transparent);
+    }
+
+    .article-body table[style*="width:1%"] tbody,
+    .article-body table[style*="width:1%"] tr,
+    .article-body table[style*="width:1%"] td {
+      display: block;
+      width: auto !important;
+    }
+
+    .article-body table[style*="width:1%"] td {
+      min-width: 100%;
+      border: 0;
+      padding: 1.15rem 1.3rem;
+    }
+
+    .article-body table[style*="width:1%"] td p:last-child {
+      margin-bottom: 0;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child {
+      margin-bottom: 0.65rem;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child strong {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--callout-border) 18%, transparent);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Single-cell boxes without a bold label are source-code snippets. */
+    .article-body table[style*="width:1%"]:not(:has(strong)) {
+      width: 94% !important;
+      max-width: 94%;
+      border-color: rgba(255, 255, 255, 0.12);
+      border-left-width: 1px;
+      border-radius: 12px;
+      background: #141414;
+      box-shadow: none;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) td {
+      min-width: max-content;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: #e6e6e6;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p {
+      margin: 0;
+      color: inherit;
+      white-space: pre;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p:empty {
+      display: none;
+    }
+
+    .article-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    @media (max-width: 640px) {
+      .article-title { font-size: 2rem; }
+      .article-body table[style*="width:1%"] {
+        width: 100% !important;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="top-nav">
+    <a href="/">&larr; Portfolio</a>
+    <a href="/blog/">All posts</a>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <article class="article-wrap">
+    <header class="article-header">
+      <h1 class="article-title">How to Best Use AI Coding Agents Like
+Claude</h1>
+      <div class="article-meta">
+        <span>2026-08-17</span>
+        <span>&middot; 11 min read</span>
+        <span class="tag">AI</span>
+        <span class="tag">Claude</span>
+        <span class="tag">AI Agents</span>
+        <span class="tag">Developer Tools</span>
+        <span class="tag">Productivity</span>
+      </div>
+    </header>
+
+    <nav id="TOC" role="doc-toc">
+    <ul>
+    <li><a href="#from-autocomplete-to-agent"
+    id="toc-from-autocomplete-to-agent">From autocomplete to
+    agent</a></li>
+    <li><a href="#give-it-memory-before-you-give-it-tasks"
+    id="toc-give-it-memory-before-you-give-it-tasks">Give it memory
+    before you give it tasks</a>
+    <ul>
+    <li><a href="#what-it-is" id="toc-what-it-is">What it is</a></li>
+    <li><a href="#why-this-matters" id="toc-why-this-matters">Why this
+    matters</a></li>
+    <li><a href="#if-you-skip-it" id="toc-if-you-skip-it">If you skip
+    it</a></li>
+    </ul></li>
+    <li><a href="#package-repeatable-work-as-agent-skills"
+    id="toc-package-repeatable-work-as-agent-skills">Package repeatable
+    work as Agent Skills</a>
+    <ul>
+    <li><a href="#what-it-is-1" id="toc-what-it-is-1">What it
+    is</a></li>
+    <li><a href="#why-this-matters-1" id="toc-why-this-matters-1">Why
+    this matters</a></li>
+    <li><a href="#if-you-skip-it-1" id="toc-if-you-skip-it-1">If you
+    skip it</a></li>
+    </ul></li>
+    <li><a href="#delegate-to-the-right-persona"
+    id="toc-delegate-to-the-right-persona">Delegate to the right
+    persona</a>
+    <ul>
+    <li><a href="#what-it-is-2" id="toc-what-it-is-2">What it
+    is</a></li>
+    <li><a href="#why-this-matters-2" id="toc-why-this-matters-2">Why
+    this matters</a></li>
+    <li><a href="#if-you-skip-it-2" id="toc-if-you-skip-it-2">If you
+    skip it</a></li>
+    </ul></li>
+    <li><a href="#connect-it-to-where-the-work-already-lives"
+    id="toc-connect-it-to-where-the-work-already-lives">Connect it to
+    where the work already lives</a>
+    <ul>
+    <li><a href="#what-it-is-3" id="toc-what-it-is-3">What it
+    is</a></li>
+    <li><a href="#why-this-matters-3" id="toc-why-this-matters-3">Why
+    this matters</a></li>
+    <li><a href="#if-you-skip-it-3" id="toc-if-you-skip-it-3">If you
+    skip it</a></li>
+    </ul></li>
+    <li><a href="#guardrails-and-verification"
+    id="toc-guardrails-and-verification">Guardrails and
+    verification</a></li>
+    <li><a href="#the-idea-to-take-away"
+    id="toc-the-idea-to-take-away">The idea to take away</a></li>
+    <li><a href="#further-reading" id="toc-further-reading">Further
+    reading</a></li>
+    </ul>
+    </nav>
+
+    <div class="article-body">
+<div class="article-lead">
+<p><strong>A practical field guide to memory, Agent Skills, subagent
+personas, and connectors — the four levers that turn Claude from
+autocomplete into a teammate.</strong></p>
+</div>
+<h2 id="from-autocomplete-to-agent">From autocomplete to agent</h2>
+<p>If you have only ever used inline code completion, it is easy to
+bring the wrong mental model to a coding agent like Claude. Completion
+finishes the line you are typing, using only what is nearby. An
+<strong>agent</strong> runs a <em>loop</em>: it reads the relevant files
+and history, forms a plan, takes actions through tools such as editing
+files or running commands, and then checks its own work before handing
+control back to you. That loop, repeated until the task is actually
+done, is the entire reason the rest of this guide matters — memory,
+Skills, personas, and connectors are not separate features to collect.
+They are four different ways of feeding <em>better inputs</em> into that
+same loop, at the point where each one helps most.</p>
+<figure>
+<img
+src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId9.png"
+style="width:5.83333in;height:2.59259in"
+alt="The agentic loop: Read, Plan, Act, Verify, looping back until the change is verified." />
+<figcaption aria-hidden="true"><p>The agentic loop: Read, Plan, Act,
+Verify, looping back until the change is verified.</p></figcaption>
+</figure>
+<p><em>Figure 1. Every lever in this guide feeds one of these four
+stages — better memory improves Read, a Skill improves Plan, the right
+persona improves Act, and a connector improves what Read can see in the
+first place.</em></p>
+<p>Treat the agent like a capable new hire on day one: able to get
+through an enormous amount of work in very little time, with
+<strong>zero institutional memory</strong> unless you write it down, and
+a strong tendency to do exactly what you asked rather than what you
+meant. Everything below is about closing that gap — deliberately, one
+lever at a time.</p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 84%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>THE SHORT VERSION</strong> — A coding agent’s output quality
+is mostly a function of its inputs, not the model. Memory gives it
+standing context, Skills give it your process, personas give it the
+right scope, connectors give it live facts. Skip a lever and the agent
+quietly falls back to guessing.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<figure>
+<img
+src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId12.png"
+style="width:5.83333in;height:3.0463in"
+alt="Four independent levers around a coding agent: Memory, Agent Skills, Personas, and Connectors." />
+<figcaption aria-hidden="true"><p>Four independent levers around a
+coding agent: Memory, Agent Skills, Personas, and
+Connectors.</p></figcaption>
+</figure>
+<p><em>Figure 2. The four levers this guide walks through, in the order
+below. None of them depend on each other — each one solves a different,
+specific kind of friction.</em></p>
+<h2 id="give-it-memory-before-you-give-it-tasks">Give it memory before
+you give it tasks</h2>
+<h3 id="what-it-is">What it is</h3>
+<p>The single highest-leverage thing you can do is stop re-explaining
+your project on every new conversation. A <strong>project instructions
+file</strong> — commonly named <code>CLAUDE.md</code> — sits at the root
+of your repository and is read automatically at the start of every
+session. It records the standing facts an agent should always know: how
+to run the tests, which folders are generated and off-limits, which
+shortcuts are explicitly forbidden, what “done” looks like for a pull
+request in your team.</p>
+<p><strong>Persistent memory</strong> is a related but different thing:
+instead of facts about the <em>project</em>, it is facts about <em>how
+you like to work</em>, carried forward automatically across sessions — a
+correction you gave last week, a decision you already made and don’t
+want re-litigated, a note that you prefer small commits over one giant
+diff. Where <code>CLAUDE.md</code> is written once and read by anyone
+touching the repo, persistent memory accumulates quietly in the
+background as you work.</p>
+<h3 id="why-this-matters">Why this matters</h3>
+<p>Without either one, every session starts from a blank slate. The
+agent has excellent reasoning but no history with <em>you</em> — so it
+will re-derive your conventions from whatever it can infer from the
+code, which is slower and often wrong. Writing the rules down once is
+the cheapest form of leverage in this entire guide: a five-minute file
+pays for itself on the very next session, and every session after
+that.</p>
+<h3 id="if-you-skip-it">If you skip it</h3>
+<p>Expect to have the <em>same argument</em> with the agent repeatedly —
+correcting the same formatting choice, re-explaining the same deployment
+step, watching it re-discover a constraint that was already explained
+three sessions ago. Nothing catastrophic happens, but real time leaks
+out in small amounts, in every single session, forever. It is the
+AI-agent equivalent of onboarding a new contractor every Monday
+morning.</p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 84%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>THE SHORT VERSION</strong> — Write the ground rules once, in
+a file the agent reads automatically. Every session after that starts
+smarter instead of starting from zero.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2 id="package-repeatable-work-as-agent-skills">Package repeatable work
+as Agent Skills</h2>
+<h3 id="what-it-is-1">What it is</h3>
+<p>A <strong>Skill</strong> is a small, self-contained package — a
+<code>SKILL.md</code> file, plus optional scripts or reference material
+— that captures a process you would otherwise re-explain by hand every
+time: a code-review checklist, a release runbook, a pull-request
+description template, a company-specific style guide. The file has a
+<em>name</em> and a <em>description</em>; the description is what the
+agent silently matches against your request to decide whether to pull
+the Skill in automatically. This means writing a <strong>specific,
+trigger-worthy description</strong> matters far more than writing a long
+one — a vague description never fires, and an overly broad one fires on
+the wrong requests.</p>
+<p>A minimal example:</p>
+<pre><code>---
+name: release-checklist
+description: Use when the user asks to cut a release, tag a version,
+  or prepare a changelog for this repo.
+---
+
+1. Confirm all CI checks are green on main.
+2. Bump the version in package.json and CHANGELOG.md.
+3. Tag the release as v&lt;version&gt; and push tags.
+4. Draft release notes from merged PR titles since the last tag.</code></pre>
+<h3 id="why-this-matters-1">Why this matters</h3>
+<p>A good rule of thumb: the <em>third</em> time you catch yourself
+typing the same multi-step instructions, that is a Skill, not a habit.
+Packaging a process means it is executed the same way regardless of who
+is running the session, regardless of how much context is left in the
+conversation, and regardless of whether anyone remembers every step. It
+turns tribal knowledge that lives in one person’s head into something
+the agent can carry out consistently, on demand.</p>
+<h3 id="if-you-skip-it-1">If you skip it</h3>
+<p>Every recurring process stays <em>ad hoc</em>. Quality drifts session
+to session depending on how carefully the instructions happen to get
+typed that day. Steps get silently dropped under time pressure — the
+checklist step nobody explicitly asked for this time simply doesn’t
+happen. And you keep paying the re-explanation cost that Skills are
+specifically designed to eliminate.</p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th>One-off prompt</th>
+<th>Agent Skill</th>
+<th>Subagent persona</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A task you’ll likely phrase differently next time</td>
+<td>A process you follow the same way every time</td>
+<td>A role that needs its own tools, focus, or isolation</td>
+</tr>
+<tr>
+<td>Fastest to write, zero setup</td>
+<td>Reusable across sessions and projects</td>
+<td>Reusable <em>and</em> isolated from the main conversation</td>
+</tr>
+<tr>
+<td>Best for: exploratory, one-shot questions</td>
+<td>Best for: checklists, runbooks, templates</td>
+<td>Best for: research, review, parallel investigation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="delegate-to-the-right-persona">Delegate to the right
+persona</h2>
+<h3 id="what-it-is-2">What it is</h3>
+<p><strong>Subagents</strong> are specialized configurations of the same
+underlying agent: their own instructions, their own restricted set of
+tools, sometimes even their own model. A read-only <em>“Explorer”</em>
+persona can search and read a codebase but cannot edit a single file. A
+<em>“Planner”</em> persona is built to design an approach and stop — no
+code changes happen until you say so. A <em>“Reviewer”</em> persona is
+tuned to find bugs and gaps, not to fix them itself. None of this is
+about raw capability; every persona is built on the same underlying
+model. It is entirely about <em>scope</em>.</p>
+<figure>
+<img
+src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId24.png"
+style="width:5.83333in;height:3.0463in"
+alt="Main conversation delegating to Explorer, Planner, and Reviewer personas, each scoped to different tools, reporting back." />
+<figcaption aria-hidden="true"><p>Main conversation delegating to
+Explorer, Planner, and Reviewer personas, each scoped to different
+tools, reporting back.</p></figcaption>
+</figure>
+<p><em>Figure 3. The main conversation stays the source of truth for the
+plan and the diffs. Each persona is dispatched for a narrow job and
+reports back — it does not inherit the full toolset.</em></p>
+<h3 id="why-this-matters-2">Why this matters</h3>
+<p>A narrower persona is <u>safer to run unsupervised</u>, because a
+read-only agent simply cannot cause a destructive edit, no matter how it
+misunderstands the task. It is also easier to run <em>several at
+once</em> — three independent “where is X defined” questions can be
+answered in parallel by three Explorer instances instead of one agent
+working through them serially. And it keeps the main conversation clean:
+a long, noisy investigation happens inside a subagent and comes back as
+a short summary, instead of filling up the main thread’s context with
+every file it had to open along the way.</p>
+<h3 id="if-you-skip-it-2">If you skip it</h3>
+<p>A single general-purpose agent, given full tool access even for a
+simple lookup, is carrying more risk than the task requires — the blast
+radius of a mistake is as large as its full permission set, every single
+time. Long investigations bloat the main conversation’s context with
+exploration noise, which measurably degrades the quality of later
+reasoning in that same session (sometimes called <em>context rot</em>).
+And tasks that could have run concurrently end up running one after
+another, which is simply slower for no benefit.</p>
+<p>Use a persona when a task has a genuinely different <em>shape</em>
+from “write code now”: a research question, an architectural decision,
+or several independent checks you want to run at once. Skip it for
+small, single-file changes — spinning up a specialist for a one-line fix
+is pure overhead.</p>
+<h2 id="connect-it-to-where-the-work-already-lives">Connect it to where
+the work already lives</h2>
+<h3 id="what-it-is-3">What it is</h3>
+<p>An agent that can only see your local files will always be missing
+context that lives somewhere else: the ticket that actually specifies
+the change, the Slack thread where the priority was decided last week,
+the design doc with the real constraints. <strong>Connectors</strong>,
+built on the <strong>Model Context Protocol (MCP)</strong>, let the
+agent reach into those systems directly instead of waiting for you to
+paste them in. In practice that means: pull a <strong>GitHub</strong>
+pull request’s open review comments, look up a <strong>Jira</strong> or
+<strong>Linear</strong> ticket by number, search a
+<strong>Slack</strong> channel for the decision that was made, or read a
+spec out of <strong>Google Drive</strong> or <strong>Microsoft
+365</strong>.</p>
+<figure>
+<img
+src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId31.png"
+style="width:5.83333in;height:3.0463in"
+alt="Claude connecting through MCP to GitHub, Slack, Jira/Linear, Google Drive, and Microsoft 365, each authorized independently." />
+<figcaption aria-hidden="true"><p>Claude connecting through MCP to
+GitHub, Slack, Jira/Linear, Google Drive, and Microsoft 365, each
+authorized independently.</p></figcaption>
+</figure>
+<p><em>Figure 4. MCP is the protocol layer, not a single integration —
+each connector on the right is authorized and scoped independently, and
+the agent only ever sees what that connector was granted.</em></p>
+<h3 id="why-this-matters-3">Why this matters</h3>
+<p>The payoff is not incremental, it is structural: you stop being the
+human copy-paste layer standing between your tools and your agent.
+Context that used to go stale between “I read the ticket” and “I
+explained the ticket to the agent” is now read directly, at the moment
+it’s needed. This compounds — the more of your actual workflow is
+reachable, the less of every conversation is spent re-establishing facts
+that already exist somewhere else.</p>
+<h3 id="if-you-skip-it-3">If you skip it</h3>
+<p>You remain the integration layer by hand: opening tabs, copying
+ticket descriptions, summarizing Slack threads, pasting screenshots of
+dashboards. It works, but it is slow, it is easy to leave out a detail
+that turns out to matter, and the context you did paste in starts going
+stale the moment you paste it. Worse, without direct access the agent
+will sometimes <em>infer</em> details it was never actually given —
+which reads as confidence but is really a gap you didn’t close.</p>
+<p>The payoff comes with a real trade-off, though — connectors widen
+what the agent can reach, which is exactly why they need their own
+guardrail.</p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 84%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>GRANT LEAST PRIVILEGE</strong> — Connectors are scoped
+through OAuth, so give each one only the access it actually needs,
+nothing broader “to be safe later.” And treat anything pulled in from an
+external source — a ticket description, a Slack message, a shared doc —
+as <em>untrusted data to read</em>, never as an instruction to follow. A
+ticket that says “also delete the staging database” is not a command, no
+matter where it came from.</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<h2 id="guardrails-and-verification">Guardrails and verification</h2>
+<p>The last lever is not a feature you install — it is a habit you keep.
+Match how much you supervise to how <em>reversible</em> the action is.
+Editing a local file and running a test are cheap to undo; let the agent
+move fast there. Pushing to a shared branch, deleting data, or calling a
+paid API is not cheap to undo; ask to see the plan first, every time, no
+exceptions.</p>
+<p>Either way, <strong>verify the result yourself</strong>: run the
+tests, read the diff line by line, click through the feature in an
+actual browser. An agent’s summary of what it did is a <em>claim</em>,
+not a receipt — the same way you wouldn’t merge a colleague’s pull
+request purely because their commit message said “fixes the bug.”</p>
+<p><em>If you skip this one:</em> a wrong assumption made early in a
+task compounds silently into a much larger diff than you asked for, a
+destructive command runs unchecked because nobody was watching, or a bug
+ships because “the tests passed” got mistaken for “the feature actually
+works.” None of the other three levers protect you from this — they make
+the agent more capable, which is exactly why verification has to scale
+alongside them.</p>
+<h2 id="the-idea-to-take-away">The idea to take away</h2>
+<p>Memory, Skills, personas, and connectors are <strong>four independent
+levers</strong>, not one big setting you flip on once and forget. Pull
+each one in only when the friction it solves actually shows up:
+repeating yourself is a memory problem, repeating a <em>process</em> is
+a Skills problem, a task with the wrong shape is a persona problem, and
+missing context is a connector problem. Reach for the lever that matches
+the friction you’re actually feeling, verify what comes back, and the
+rest of the workflow stays simple.</p>
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a
+href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code
+documentation</a></li>
+<li><a href="https://modelcontextprotocol.io/">Model Context Protocol
+specification</a></li>
+</ul>
+    </div>
+
+    <footer class="article-footer">
+      <p>Written by Nikhil Kumar &middot; <a href="/blog/">Back to all posts</a></p>
+    </footer>
+  </article>
+
+  <script>
+    (function () {
+      var themeToggle = document.getElementById('themeToggle');
+      if (!themeToggle) return;
+      var syncToggle = function () {
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        themeToggle.setAttribute('aria-pressed', String(isLight));
+        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      };
+      themeToggle.addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) { }
+        syncToggle();
+      });
+      syncToggle();
+    })();
+  </script>
+</body>
+
+</html>
