@@ -502,14 +502,12 @@ done, is the entire reason the rest of this guide matters — memory,
 Skills, personas, and connectors are not separate features to collect.
 They are four different ways of feeding <em>better inputs</em> into that
 same loop, at the point where each one helps most.</p>
-<figure>
-<img
+<p><img
 src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId9.png"
 style="width:5.83333in;height:2.59259in"
-alt="The agentic loop: Read, Plan, Act, Verify, looping back until the change is verified." />
-<figcaption aria-hidden="true"><p>The agentic loop: Read, Plan, Act,
-Verify, looping back until the change is verified.</p></figcaption>
-</figure>
+alt="The agentic loop: Read, Plan, Act, Verify, looping back until the change is verified." /></p>
+<p>The agentic loop: Read, Plan, Act, Verify, looping back until the
+change is verified.</p>
 <p><em>Figure 1. Every lever in this guide feeds one of these four
 stages — better memory improves Read, a Skill improves Plan, the right
 persona improves Act, and a connector improves what Read can see in the
@@ -520,12 +518,12 @@ through an enormous amount of work in very little time, with
 a strong tendency to do exactly what you asked rather than what you
 meant. Everything below is about closing that gap — deliberately, one
 lever at a time.</p>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 84%" />
+<col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>THE SHORT VERSION</strong> — A coding agent’s output quality
 is mostly a function of its inputs, not the model. Memory gives it
 standing context, Skills give it your process, personas give it the
@@ -536,15 +534,12 @@ quietly falls back to guessing.</th>
 <tbody>
 </tbody>
 </table>
-<figure>
-<img
+<p><img
 src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId12.png"
 style="width:5.83333in;height:3.0463in"
-alt="Four independent levers around a coding agent: Memory, Agent Skills, Personas, and Connectors." />
-<figcaption aria-hidden="true"><p>Four independent levers around a
-coding agent: Memory, Agent Skills, Personas, and
-Connectors.</p></figcaption>
-</figure>
+alt="Four independent levers around a coding agent: Memory, Agent Skills, Personas, and Connectors." /></p>
+<p>Four independent levers around a coding agent: Memory, Agent Skills,
+Personas, and Connectors.</p>
 <p><em>Figure 2. The four levers this guide walks through, in the order
 below. None of them depend on each other — each one solves a different,
 specific kind of friction.</em></p>
@@ -583,12 +578,12 @@ three sessions ago. Nothing catastrophic happens, but real time leaks
 out in small amounts, in every single session, forever. It is the
 AI-agent equivalent of onboarding a new contractor every Monday
 morning.</p>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 84%" />
+<col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>THE SHORT VERSION</strong> — Write the ground rules once, in
 a file the agent reads automatically. Every session after that starts
 smarter instead of starting from zero.</th>
@@ -637,31 +632,31 @@ typed that day. Steps get silently dropped under time pressure — the
 checklist step nobody explicitly asked for this time simply doesn’t
 happen. And you keep paying the re-explanation cost that Skills are
 specifically designed to eliminate.</p>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 28%" />
-<col style="width: 28%" />
-<col style="width: 28%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>One-off prompt</th>
 <th>Agent Skill</th>
 <th>Subagent persona</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>A task you’ll likely phrase differently next time</td>
 <td>A process you follow the same way every time</td>
 <td>A role that needs its own tools, focus, or isolation</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Fastest to write, zero setup</td>
 <td>Reusable across sessions and projects</td>
 <td>Reusable <em>and</em> isolated from the main conversation</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Best for: exploratory, one-shot questions</td>
 <td>Best for: checklists, runbooks, templates</td>
 <td>Best for: research, review, parallel investigation</td>
@@ -680,15 +675,12 @@ code changes happen until you say so. A <em>“Reviewer”</em> persona is
 tuned to find bugs and gaps, not to fix them itself. None of this is
 about raw capability; every persona is built on the same underlying
 model. It is entirely about <em>scope</em>.</p>
-<figure>
-<img
+<p><img
 src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId24.png"
 style="width:5.83333in;height:3.0463in"
-alt="Main conversation delegating to Explorer, Planner, and Reviewer personas, each scoped to different tools, reporting back." />
-<figcaption aria-hidden="true"><p>Main conversation delegating to
-Explorer, Planner, and Reviewer personas, each scoped to different
-tools, reporting back.</p></figcaption>
-</figure>
+alt="Main conversation delegating to Explorer, Planner, and Reviewer personas, each scoped to different tools, reporting back." /></p>
+<p>Main conversation delegating to Explorer, Planner, and Reviewer
+personas, each scoped to different tools, reporting back.</p>
 <p><em>Figure 3. The main conversation stays the source of truth for the
 plan and the diffs. Each persona is dispatched for a narrow job and
 reports back — it does not inherit the full toolset.</em></p>
@@ -731,15 +723,12 @@ pull request’s open review comments, look up a <strong>Jira</strong> or
 <strong>Slack</strong> channel for the decision that was made, or read a
 spec out of <strong>Google Drive</strong> or <strong>Microsoft
 365</strong>.</p>
-<figure>
-<img
+<p><img
 src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId31.png"
 style="width:5.83333in;height:3.0463in"
-alt="Claude connecting through MCP to GitHub, Slack, Jira/Linear, Google Drive, and Microsoft 365, each authorized independently." />
-<figcaption aria-hidden="true"><p>Claude connecting through MCP to
-GitHub, Slack, Jira/Linear, Google Drive, and Microsoft 365, each
-authorized independently.</p></figcaption>
-</figure>
+alt="Claude connecting through MCP to GitHub, Slack, Jira/Linear, Google Drive, and Microsoft 365, each authorized independently." /></p>
+<p>Claude connecting through MCP to GitHub, Slack, Jira/Linear, Google
+Drive, and Microsoft 365, each authorized independently.</p>
 <p><em>Figure 4. MCP is the protocol layer, not a single integration —
 each connector on the right is authorized and scoped independently, and
 the agent only ever sees what that connector was granted.</em></p>
@@ -762,12 +751,12 @@ which reads as confidence but is really a gap you didn’t close.</p>
 <p>The payoff comes with a real trade-off, though — connectors widen
 what the agent can reach, which is exactly why they need their own
 guardrail.</p>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 84%" />
+<col style="width: 100%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>GRANT LEAST PRIVILEGE</strong> — Connectors are scoped
 through OAuth, so give each one only the access it actually needs,
 nothing broader “to be safe later.” And treat anything pulled in from an
