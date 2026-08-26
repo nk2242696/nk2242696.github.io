@@ -18,18 +18,20 @@
   </script>
   <title>How to Best Use AI Coding Agents Like
 Claude | Nikhil Kumar</title>
-  <meta name="description" content="A practical field guide to memory,
-Agent Skills, subagent personas, and MCP connectors — the four levers
-that turn Claude from autocomplete into a teammate.">
+  <meta name="description" content="The climb from ‘fancy autocomplete’
+to orchestrating a team of agents in parallel — a six-level guide
+covering briefing, CLAUDE.md memory, Skills, subagents, MCP connectors,
+and parallel worktree workflows.">
   <meta name="author" content="Nikhil Kumar">
 
   <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="How to Best Use AI Coding Agents
 Like Claude">
-  <meta property="og:description" content="A practical field guide to
-memory, Agent Skills, subagent personas, and MCP connectors — the four
-levers that turn Claude from autocomplete into a teammate.">
+  <meta property="og:description" content="The climb from ‘fancy
+autocomplete’ to orchestrating a team of agents in parallel — a
+six-level guide covering briefing, CLAUDE.md memory, Skills, subagents,
+MCP connectors, and parallel worktree workflows.">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon"
@@ -417,7 +419,7 @@ levers that turn Claude from autocomplete into a teammate.">
 Claude</h1>
       <div class="article-meta">
         <span>2026-08-17</span>
-        <span>&middot; 11 min read</span>
+        <span>&middot; 12 min read</span>
         <span class="tag">AI</span>
         <span class="tag">Claude</span>
         <span class="tag">AI Agents</span>
@@ -428,57 +430,34 @@ Claude</h1>
 
     <nav id="TOC" role="doc-toc">
     <ul>
-    <li><a href="#from-autocomplete-to-agent"
-    id="toc-from-autocomplete-to-agent">From autocomplete to
-    agent</a></li>
-    <li><a href="#give-it-memory-before-you-give-it-tasks"
-    id="toc-give-it-memory-before-you-give-it-tasks">Give it memory
-    before you give it tasks</a>
-    <ul>
-    <li><a href="#what-it-is" id="toc-what-it-is">What it is</a></li>
-    <li><a href="#why-this-matters" id="toc-why-this-matters">Why this
-    matters</a></li>
-    <li><a href="#if-you-skip-it" id="toc-if-you-skip-it">If you skip
-    it</a></li>
-    </ul></li>
-    <li><a href="#package-repeatable-work-as-agent-skills"
-    id="toc-package-repeatable-work-as-agent-skills">Package repeatable
-    work as Agent Skills</a>
-    <ul>
-    <li><a href="#what-it-is-1" id="toc-what-it-is-1">What it
-    is</a></li>
-    <li><a href="#why-this-matters-1" id="toc-why-this-matters-1">Why
-    this matters</a></li>
-    <li><a href="#if-you-skip-it-1" id="toc-if-you-skip-it-1">If you
-    skip it</a></li>
-    </ul></li>
-    <li><a href="#delegate-to-the-right-persona"
-    id="toc-delegate-to-the-right-persona">Delegate to the right
-    persona</a>
-    <ul>
-    <li><a href="#what-it-is-2" id="toc-what-it-is-2">What it
-    is</a></li>
-    <li><a href="#why-this-matters-2" id="toc-why-this-matters-2">Why
-    this matters</a></li>
-    <li><a href="#if-you-skip-it-2" id="toc-if-you-skip-it-2">If you
-    skip it</a></li>
-    </ul></li>
-    <li><a href="#connect-it-to-where-the-work-already-lives"
-    id="toc-connect-it-to-where-the-work-already-lives">Connect it to
-    where the work already lives</a>
-    <ul>
-    <li><a href="#what-it-is-3" id="toc-what-it-is-3">What it
-    is</a></li>
-    <li><a href="#why-this-matters-3" id="toc-why-this-matters-3">Why
-    this matters</a></li>
-    <li><a href="#if-you-skip-it-3" id="toc-if-you-skip-it-3">If you
-    skip it</a></li>
-    </ul></li>
-    <li><a href="#guardrails-and-verification"
-    id="toc-guardrails-and-verification">Guardrails and
-    verification</a></li>
-    <li><a href="#the-idea-to-take-away"
-    id="toc-the-idea-to-take-away">The idea to take away</a></li>
+    <li><a href="#the-vending-machine-trap"
+    id="toc-the-vending-machine-trap">The vending-machine trap</a></li>
+    <li><a href="#the-one-reframe-everything-hangs-on"
+    id="toc-the-one-reframe-everything-hangs-on">The one reframe
+    everything hangs on</a></li>
+    <li><a href="#level-1-converse-like-youre-briefing-a-teammate"
+    id="toc-level-1-converse-like-youre-briefing-a-teammate">Level 1 —
+    Converse like you’re briefing a teammate</a></li>
+    <li><a href="#level-2-give-it-a-memory"
+    id="toc-level-2-give-it-a-memory">Level 2 — Give it a
+    memory</a></li>
+    <li><a href="#level-3-teach-it-your-moves"
+    id="toc-level-3-teach-it-your-moves">Level 3 — Teach it your
+    moves</a></li>
+    <li><a href="#level-4-stop-doing-everything-in-one-chat"
+    id="toc-level-4-stop-doing-everything-in-one-chat">Level 4 — Stop
+    doing everything in one chat</a></li>
+    <li><a href="#level-5-plug-it-into-your-actual-world"
+    id="toc-level-5-plug-it-into-your-actual-world">Level 5 — Plug it
+    into your actual world</a></li>
+    <li><a href="#level-6-run-a-team-not-a-chat"
+    id="toc-level-6-run-a-team-not-a-chat">Level 6 — Run a team, not a
+    chat</a></li>
+    <li><a href="#the-habit-that-outranks-all-six-levels"
+    id="toc-the-habit-that-outranks-all-six-levels">The habit that
+    outranks all six levels</a></li>
+    <li><a href="#where-to-start-tomorrow"
+    id="toc-where-to-start-tomorrow">Where to start tomorrow</a></li>
     <li><a href="#further-reading" id="toc-further-reading">Further
     reading</a></li>
     </ul>
@@ -486,324 +465,304 @@ Claude</h1>
 
     <div class="article-body">
 <div class="article-lead">
-<p><strong>A practical field guide to memory, Agent Skills, subagent
-personas, and connectors — the four levers that turn Claude from
-autocomplete into a teammate.</strong></p>
+<p><strong>Most people never get past the tutorial version of Claude.
+This is the climb from “fancy autocomplete” to running a team of agents
+in parallel — one level at a time.</strong></p>
 </div>
-<h2 id="from-autocomplete-to-agent">From autocomplete to agent</h2>
-<p>If you have only ever used inline code completion, it is easy to
-bring the wrong mental model to a coding agent like Claude. Completion
-finishes the line you are typing, using only what is nearby. An
-<strong>agent</strong> runs a <em>loop</em>: it reads the relevant files
-and history, forms a plan, takes actions through tools such as editing
-files or running commands, and then checks its own work before handing
-control back to you. That loop, repeated until the task is actually
-done, is the entire reason the rest of this guide matters — memory,
-Skills, personas, and connectors are not separate features to collect.
-They are four different ways of feeding <em>better inputs</em> into that
-same loop, at the point where each one helps most.</p>
-<p><img
-src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId9.png"
-style="width:5.83333in;height:2.59259in"
-alt="The agentic loop: Read, Plan, Act, Verify, looping back until the change is verified." /></p>
-<p>The agentic loop: Read, Plan, Act, Verify, looping back until the
-change is verified.</p>
-<p><em>Figure 1. Every lever in this guide feeds one of these four
-stages — better memory improves Read, a Skill improves Plan, the right
-persona improves Act, and a connector improves what Read can see in the
-first place.</em></p>
-<p>Treat the agent like a capable new hire on day one: able to get
-through an enormous amount of work in very little time, with
-<strong>zero institutional memory</strong> unless you write it down, and
-a strong tendency to do exactly what you asked rather than what you
-meant. Everything below is about closing that gap — deliberately, one
-lever at a time.</p>
-<table>
+<h2 id="the-vending-machine-trap">The vending-machine trap</h2>
+<p>The first time most people use a coding agent, they treat it like a
+vending machine. Type a request, wait, take whatever drops out.
+Sometimes it’s exactly right and feels like magic. More often it’s
+<em>almost</em> right, you sigh, you fix it by hand, and you quietly
+file the whole thing under “overhyped.”</p>
+<p>Here’s the part nobody tells you: the person who’s disappointed by
+Claude and the person who just shipped a week of work before lunch are
+using the <strong>same model</strong>. Same weights, same context
+window, same price. The entire difference is in how they drive it.</p>
+<p>That’s the good news. The bottleneck isn’t the intelligence on the
+other side of the prompt — it’s a skill <em>you</em> can learn. This
+post is that skill, laid out as six levels. Each one is a small change
+in how you work, and each one compounds on the last.</p>
+<h2 id="the-one-reframe-everything-hangs-on">The one reframe everything
+hangs on</h2>
+<p>Before Level 1, the mindset. Stop thinking of Claude as a tool you
+operate, like a compiler or a search bar. Start thinking of it as a
+teammate you <em>delegate</em> to.</p>
+<p>The distinction sounds soft until you feel its consequences. A tool
+does exactly what you click. A teammate does what they
+<em>understood</em> you to mean — which means the quality of their work
+is capped by the quality of your brief. Claude will cheerfully build the
+wrong thing at superhuman speed if you let it. A vague prompt doesn’t
+get you a vague answer; it gets you a confident, specific, wrong
+one.</p>
+<p>So every level below is really the same move, applied with more
+range: <strong>give the agent what a sharp new hire would need, then get
+out of the way and check the work.</strong></p>
+<figure>
+<img
+src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId10.png"
+style="width:5.83333in;height:3.14102in"
+alt="From typist to orchestrator: a six-level climb where leverage rises with deliberate skill." />
+<figcaption aria-hidden="true"><p>From typist to orchestrator: a
+six-level climb where leverage rises with deliberate
+skill.</p></figcaption>
+</figure>
+<h2 id="level-1-converse-like-youre-briefing-a-teammate">Level 1 —
+Converse like you’re briefing a teammate</h2>
+<p>This is where 90% of the gains live, and where almost nobody spends
+time because it feels too basic to matter. It isn’t.</p>
+<p>Watch the difference. Here’s the vending-machine prompt:</p>
+<blockquote>
+<p>fix the login bug</p>
+</blockquote>
+<p>And here’s a brief:</p>
+<blockquote>
+<p>Users on Safari get logged out after ~5 minutes. It doesn’t happen on
+Chrome. Auth lives in <code>src/auth/session.ts</code>. I think it’s a
+cookie <code>SameSite</code> issue but I’m not sure. Find the root cause
+first and tell me what you find before changing anything.</p>
+</blockquote>
+<p>Same bug. The second version gives the agent a symptom, a boundary, a
+location, a hypothesis, and a <em>stop condition</em>. You’ll get a
+diagnosis instead of a guess. Notice the last sentence especially —
+telling it to investigate and report <strong>before</strong> editing is
+the single highest-return habit in this whole guide. It turns a
+black-box gamble into a conversation you can steer.</p>
+<p>A good brief usually has four things: the goal, the constraints,
+where to look, and what “done” means. You don’t need a template — you
+need the reflex to spend thirty seconds saying what you actually want.
+When the task is big or you’re not sure the agent sees it your way, ask
+it to <strong>plan first and wait for your go-ahead</strong>. Reading a
+plan takes ten seconds and saves you from watching it confidently
+refactor the wrong module.</p>
+<blockquote>
+<p>The blank prompt is the first five minutes with a contractor who is
+brilliant, tireless, and has never once seen your codebase. Talk to it
+like that.</p>
+</blockquote>
+<h2 id="level-2-give-it-a-memory">Level 2 — Give it a memory</h2>
+<p>Once you’re briefing well, you’ll notice something annoying: you’re
+saying the same things every session. “We use pnpm, not npm.” “Tests go
+next to the file.” “Never touch the generated folder.” By the third
+repeat it stops being instruction and starts being a chore.</p>
+<p>That’s the signal for Level 2. Put the standing rules in a file the
+agent reads automatically — a <code>CLAUDE.md</code> at the root of your
+repo. Running <code>/init</code> gets you a starting draft it writes by
+reading your project; you trim it to the things that are actually true
+and actually matter. Good <code>CLAUDE.md</code> entries are the stuff
+you’d tell a new engineer on day one:</p>
+<pre><code>- Package manager: pnpm (never npm/yarn)
+- Run tests: pnpm test --filter &lt;package&gt;
+- `packages/*/dist` is generated — never edit by hand
+- Prefer small PRs; one concern per branch</code></pre>
+<p>The payoff is quiet but relentless: every session now <em>starts</em>
+smart instead of starting over. You stop having the same argument on
+Monday that you settled on Friday. It’s the cheapest leverage on this
+entire list — five minutes of writing that pays out on every
+conversation you’ll ever have in that repo.</p>
+<h2 id="level-3-teach-it-your-moves">Level 3 — Teach it your moves</h2>
+<p>Memory handles standing facts. Level 3 handles <em>repeated
+procedures</em> — the multi-step things you find yourself explaining the
+same way every time. Cutting a release. Writing a postmortem. Reviewing
+a PR against your team’s checklist.</p>
+<p>The rule of thumb is simple: <strong>the third time you type the same
+instructions, stop typing them and package them.</strong> In Claude Code
+you do this two ways, and it’s worth knowing which is which.</p>
+<p>A <strong>custom slash command</strong> is a prompt you’ve saved.
+Drop a markdown file in <code>.claude/commands/</code> and it becomes
+<code>/its-filename</code>, ready to fire whenever you want it. Great
+for “do this exact thing on demand.”</p>
+<p>A <strong>Skill</strong> goes further. It’s a folder with a
+<code>SKILL.md</code> — a name, a description, and instructions, plus
+optional scripts the agent can run. The description is the clever part:
+Claude reads it and pulls the Skill in <em>by itself</em> when your
+request matches, no command needed. You’re not just saving a prompt,
+you’re teaching a capability the agent knows when to reach for.</p>
+<table style="width:85%;">
 <colgroup>
-<col style="width: 100%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
 </colgroup>
 <thead>
-<tr class="header">
-<th><strong>THE SHORT VERSION</strong> — A coding agent’s output quality
-is mostly a function of its inputs, not the model. Memory gives it
-standing context, Skills give it your process, personas give it the
-right scope, connectors give it live facts. Skip a lever and the agent
-quietly falls back to guessing.</th>
+<tr>
+<th>You want…</th>
+<th>Reach for</th>
+<th>Fires when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A saved prompt you trigger yourself</td>
+<td>Custom slash command</td>
+<td>You type <code>/name</code></td>
+</tr>
+<tr>
+<td>A capability the agent invokes on its own</td>
+<td>Skill (<code>SKILL.md</code>)</td>
+<td>Your request matches its description</td>
+</tr>
+<tr>
+<td>A one-off, phrased fresh each time</td>
+<td>Just ask</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Write the description like you’re telling a colleague when to
+interrupt you: specific enough to fire on the right requests, not so
+broad it jumps in on everything.</p>
+<h2 id="level-4-stop-doing-everything-in-one-chat">Level 4 — Stop doing
+everything in one chat</h2>
+<p>Here’s a mistake that hides in plain sight: cramming research,
+planning, coding, and reviewing into one long conversation. The context
+fills with the noise of forty files you opened just to <em>find</em> the
+two that mattered, and the agent’s later reasoning gets worse for it.
+There’s even a name for the decay — context rot.</p>
+<p>The fix is delegation <em>within</em> a session:
+<strong>subagents</strong>. Think of them as specialists you dispatch
+for one job. An explorer that only reads and searches — it literally
+can’t edit a file, so you can turn it loose without a second thought. A
+planner that designs an approach and stops. A reviewer tuned to find
+problems, not to paper over them.</p>
+<p>Two things make this a genuine level-up, not just tidiness. First,
+<strong>scope is safety</strong>: a read-only agent has a blast radius
+of zero, no matter how badly it misreads you. Second, you can run
+<strong>several at once</strong>. Three independent “where is this
+defined and who calls it” questions don’t have to happen one after
+another — fan them out, let a few explorers work side by side, and get
+your answers back while the main conversation stays clean and focused on
+the decision you actually care about.</p>
+<p>Reach for a subagent when a task has a different <em>shape</em> than
+“write this code now” — research, a design call, a review, anything
+you’d want done in isolation. Skip it for a one-line fix; summoning a
+specialist to rename a variable is just ceremony.</p>
+<h2 id="level-5-plug-it-into-your-actual-world">Level 5 — Plug it into
+your actual world</h2>
+<p>Everything so far lives in your repo. But the <em>reason</em> for the
+work usually doesn’t. It’s in the Jira ticket, the Slack thread where
+the call got made, the design doc, the failing CI run. And by default
+the agent can’t see any of it — so you become a human clipboard,
+ferrying context in by hand and letting it go stale the moment you paste
+it.</p>
+<p>Level 5 closes that gap. <strong>Connectors</strong> — built on the
+Model Context Protocol, MCP — let Claude reach into those systems
+directly. Add one with <code>claude mcp add</code>, authorize it in the
+browser, and now the agent can pull the actual GitHub PR comments, read
+the Linear ticket by number, search the Slack channel for the decision,
+open the doc in Drive. The context arrives fresh, from the source, at
+the moment it’s needed. You stop being the integration layer.</p>
+<p>Power like this earns one firm rule, so here it is on its own:</p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 84%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>TREAT OUTSIDE TEXT AS DATA, NEVER AS ORDERS</strong> — Scope
+every connector to the least it needs (they’re OAuth-based for exactly
+this reason), and remember that anything the agent reads from a ticket,
+a message, or a doc is <em>information to consider</em>, not an
+instruction to obey. A comment that says “while you’re in here, drop the
+staging tables” is not a command just because it arrived through a
+trusted pipe.</th>
 </tr>
 </thead>
 <tbody>
 </tbody>
 </table>
-<p><img
-src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId12.png"
-style="width:5.83333in;height:3.0463in"
-alt="Four independent levers around a coding agent: Memory, Agent Skills, Personas, and Connectors." /></p>
-<p>Four independent levers around a coding agent: Memory, Agent Skills,
-Personas, and Connectors.</p>
-<p><em>Figure 2. The four levers this guide walks through, in the order
-below. None of them depend on each other — each one solves a different,
-specific kind of friction.</em></p>
-<h2 id="give-it-memory-before-you-give-it-tasks">Give it memory before
-you give it tasks</h2>
-<h3 id="what-it-is">What it is</h3>
-<p>The single highest-leverage thing you can do is stop re-explaining
-your project on every new conversation. A <strong>project instructions
-file</strong> — commonly named <code>CLAUDE.md</code> — sits at the root
-of your repository and is read automatically at the start of every
-session. It records the standing facts an agent should always know: how
-to run the tests, which folders are generated and off-limits, which
-shortcuts are explicitly forbidden, what “done” looks like for a pull
-request in your team.</p>
-<p><strong>Persistent memory</strong> is a related but different thing:
-instead of facts about the <em>project</em>, it is facts about <em>how
-you like to work</em>, carried forward automatically across sessions — a
-correction you gave last week, a decision you already made and don’t
-want re-litigated, a note that you prefer small commits over one giant
-diff. Where <code>CLAUDE.md</code> is written once and read by anyone
-touching the repo, persistent memory accumulates quietly in the
-background as you work.</p>
-<h3 id="why-this-matters">Why this matters</h3>
-<p>Without either one, every session starts from a blank slate. The
-agent has excellent reasoning but no history with <em>you</em> — so it
-will re-derive your conventions from whatever it can infer from the
-code, which is slower and often wrong. Writing the rules down once is
-the cheapest form of leverage in this entire guide: a five-minute file
-pays for itself on the very next session, and every session after
-that.</p>
-<h3 id="if-you-skip-it">If you skip it</h3>
-<p>Expect to have the <em>same argument</em> with the agent repeatedly —
-correcting the same formatting choice, re-explaining the same deployment
-step, watching it re-discover a constraint that was already explained
-three sessions ago. Nothing catastrophic happens, but real time leaks
-out in small amounts, in every single session, forever. It is the
-AI-agent equivalent of onboarding a new contractor every Monday
-morning.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>THE SHORT VERSION</strong> — Write the ground rules once, in
-a file the agent reads automatically. Every session after that starts
-smarter instead of starting from zero.</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-<h2 id="package-repeatable-work-as-agent-skills">Package repeatable work
-as Agent Skills</h2>
-<h3 id="what-it-is-1">What it is</h3>
-<p>A <strong>Skill</strong> is a small, self-contained package — a
-<code>SKILL.md</code> file, plus optional scripts or reference material
-— that captures a process you would otherwise re-explain by hand every
-time: a code-review checklist, a release runbook, a pull-request
-description template, a company-specific style guide. The file has a
-<em>name</em> and a <em>description</em>; the description is what the
-agent silently matches against your request to decide whether to pull
-the Skill in automatically. This means writing a <strong>specific,
-trigger-worthy description</strong> matters far more than writing a long
-one — a vague description never fires, and an overly broad one fires on
-the wrong requests.</p>
-<p>A minimal example:</p>
-<pre><code>---
-name: release-checklist
-description: Use when the user asks to cut a release, tag a version,
-  or prepare a changelog for this repo.
----
-
-1. Confirm all CI checks are green on main.
-2. Bump the version in package.json and CHANGELOG.md.
-3. Tag the release as v&lt;version&gt; and push tags.
-4. Draft release notes from merged PR titles since the last tag.</code></pre>
-<h3 id="why-this-matters-1">Why this matters</h3>
-<p>A good rule of thumb: the <em>third</em> time you catch yourself
-typing the same multi-step instructions, that is a Skill, not a habit.
-Packaging a process means it is executed the same way regardless of who
-is running the session, regardless of how much context is left in the
-conversation, and regardless of whether anyone remembers every step. It
-turns tribal knowledge that lives in one person’s head into something
-the agent can carry out consistently, on demand.</p>
-<h3 id="if-you-skip-it-1">If you skip it</h3>
-<p>Every recurring process stays <em>ad hoc</em>. Quality drifts session
-to session depending on how carefully the instructions happen to get
-typed that day. Steps get silently dropped under time pressure — the
-checklist step nobody explicitly asked for this time simply doesn’t
-happen. And you keep paying the re-explanation cost that Skills are
-specifically designed to eliminate.</p>
-<table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>One-off prompt</th>
-<th>Agent Skill</th>
-<th>Subagent persona</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>A task you’ll likely phrase differently next time</td>
-<td>A process you follow the same way every time</td>
-<td>A role that needs its own tools, focus, or isolation</td>
-</tr>
-<tr class="even">
-<td>Fastest to write, zero setup</td>
-<td>Reusable across sessions and projects</td>
-<td>Reusable <em>and</em> isolated from the main conversation</td>
-</tr>
-<tr class="odd">
-<td>Best for: exploratory, one-shot questions</td>
-<td>Best for: checklists, runbooks, templates</td>
-<td>Best for: research, review, parallel investigation</td>
-</tr>
-</tbody>
-</table>
-<h2 id="delegate-to-the-right-persona">Delegate to the right
-persona</h2>
-<h3 id="what-it-is-2">What it is</h3>
-<p><strong>Subagents</strong> are specialized configurations of the same
-underlying agent: their own instructions, their own restricted set of
-tools, sometimes even their own model. A read-only <em>“Explorer”</em>
-persona can search and read a codebase but cannot edit a single file. A
-<em>“Planner”</em> persona is built to design an approach and stop — no
-code changes happen until you say so. A <em>“Reviewer”</em> persona is
-tuned to find bugs and gaps, not to fix them itself. None of this is
-about raw capability; every persona is built on the same underlying
-model. It is entirely about <em>scope</em>.</p>
-<p><img
-src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId24.png"
-style="width:5.83333in;height:3.0463in"
-alt="Main conversation delegating to Explorer, Planner, and Reviewer personas, each scoped to different tools, reporting back." /></p>
-<p>Main conversation delegating to Explorer, Planner, and Reviewer
-personas, each scoped to different tools, reporting back.</p>
-<p><em>Figure 3. The main conversation stays the source of truth for the
-plan and the diffs. Each persona is dispatched for a narrow job and
-reports back — it does not inherit the full toolset.</em></p>
-<h3 id="why-this-matters-2">Why this matters</h3>
-<p>A narrower persona is <u>safer to run unsupervised</u>, because a
-read-only agent simply cannot cause a destructive edit, no matter how it
-misunderstands the task. It is also easier to run <em>several at
-once</em> — three independent “where is X defined” questions can be
-answered in parallel by three Explorer instances instead of one agent
-working through them serially. And it keeps the main conversation clean:
-a long, noisy investigation happens inside a subagent and comes back as
-a short summary, instead of filling up the main thread’s context with
-every file it had to open along the way.</p>
-<h3 id="if-you-skip-it-2">If you skip it</h3>
-<p>A single general-purpose agent, given full tool access even for a
-simple lookup, is carrying more risk than the task requires — the blast
-radius of a mistake is as large as its full permission set, every single
-time. Long investigations bloat the main conversation’s context with
-exploration noise, which measurably degrades the quality of later
-reasoning in that same session (sometimes called <em>context rot</em>).
-And tasks that could have run concurrently end up running one after
-another, which is simply slower for no benefit.</p>
-<p>Use a persona when a task has a genuinely different <em>shape</em>
-from “write code now”: a research question, an architectural decision,
-or several independent checks you want to run at once. Skip it for
-small, single-file changes — spinning up a specialist for a one-line fix
-is pure overhead.</p>
-<h2 id="connect-it-to-where-the-work-already-lives">Connect it to where
-the work already lives</h2>
-<h3 id="what-it-is-3">What it is</h3>
-<p>An agent that can only see your local files will always be missing
-context that lives somewhere else: the ticket that actually specifies
-the change, the Slack thread where the priority was decided last week,
-the design doc with the real constraints. <strong>Connectors</strong>,
-built on the <strong>Model Context Protocol (MCP)</strong>, let the
-agent reach into those systems directly instead of waiting for you to
-paste them in. In practice that means: pull a <strong>GitHub</strong>
-pull request’s open review comments, look up a <strong>Jira</strong> or
-<strong>Linear</strong> ticket by number, search a
-<strong>Slack</strong> channel for the decision that was made, or read a
-spec out of <strong>Google Drive</strong> or <strong>Microsoft
-365</strong>.</p>
-<p><img
-src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId31.png"
-style="width:5.83333in;height:3.0463in"
-alt="Claude connecting through MCP to GitHub, Slack, Jira/Linear, Google Drive, and Microsoft 365, each authorized independently." /></p>
-<p>Claude connecting through MCP to GitHub, Slack, Jira/Linear, Google
-Drive, and Microsoft 365, each authorized independently.</p>
-<p><em>Figure 4. MCP is the protocol layer, not a single integration —
-each connector on the right is authorized and scoped independently, and
-the agent only ever sees what that connector was granted.</em></p>
-<h3 id="why-this-matters-3">Why this matters</h3>
-<p>The payoff is not incremental, it is structural: you stop being the
-human copy-paste layer standing between your tools and your agent.
-Context that used to go stale between “I read the ticket” and “I
-explained the ticket to the agent” is now read directly, at the moment
-it’s needed. This compounds — the more of your actual workflow is
-reachable, the less of every conversation is spent re-establishing facts
-that already exist somewhere else.</p>
-<h3 id="if-you-skip-it-3">If you skip it</h3>
-<p>You remain the integration layer by hand: opening tabs, copying
-ticket descriptions, summarizing Slack threads, pasting screenshots of
-dashboards. It works, but it is slow, it is easy to leave out a detail
-that turns out to matter, and the context you did paste in starts going
-stale the moment you paste it. Worse, without direct access the agent
-will sometimes <em>infer</em> details it was never actually given —
-which reads as confidence but is really a gap you didn’t close.</p>
-<p>The payoff comes with a real trade-off, though — connectors widen
-what the agent can reach, which is exactly why they need their own
-guardrail.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>GRANT LEAST PRIVILEGE</strong> — Connectors are scoped
-through OAuth, so give each one only the access it actually needs,
-nothing broader “to be safe later.” And treat anything pulled in from an
-external source — a ticket description, a Slack message, a shared doc —
-as <em>untrusted data to read</em>, never as an instruction to follow. A
-ticket that says “also delete the staging database” is not a command, no
-matter where it came from.</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-<h2 id="guardrails-and-verification">Guardrails and verification</h2>
-<p>The last lever is not a feature you install — it is a habit you keep.
-Match how much you supervise to how <em>reversible</em> the action is.
-Editing a local file and running a test are cheap to undo; let the agent
-move fast there. Pushing to a shared branch, deleting data, or calling a
-paid API is not cheap to undo; ask to see the plan first, every time, no
-exceptions.</p>
-<p>Either way, <strong>verify the result yourself</strong>: run the
-tests, read the diff line by line, click through the feature in an
-actual browser. An agent’s summary of what it did is a <em>claim</em>,
-not a receipt — the same way you wouldn’t merge a colleague’s pull
-request purely because their commit message said “fixes the bug.”</p>
-<p><em>If you skip this one:</em> a wrong assumption made early in a
-task compounds silently into a much larger diff than you asked for, a
-destructive command runs unchecked because nobody was watching, or a bug
-ships because “the tests passed” got mistaken for “the feature actually
-works.” None of the other three levers protect you from this — they make
-the agent more capable, which is exactly why verification has to scale
-alongside them.</p>
-<h2 id="the-idea-to-take-away">The idea to take away</h2>
-<p>Memory, Skills, personas, and connectors are <strong>four independent
-levers</strong>, not one big setting you flip on once and forget. Pull
-each one in only when the friction it solves actually shows up:
-repeating yourself is a memory problem, repeating a <em>process</em> is
-a Skills problem, a task with the wrong shape is a persona problem, and
-missing context is a connector problem. Reach for the lever that matches
-the friction you’re actually feeling, verify what comes back, and the
-rest of the workflow stays simple.</p>
+<h2 id="level-6-run-a-team-not-a-chat">Level 6 — Run a team, not a
+chat</h2>
+<p>This is the level that feels like a different job, and it’s the one
+people mean when they say a coding agent “changed how I work.”</p>
+<p>Up to now you’ve run one agent at a time. But you have more than one
+thing to do, and these agents don’t get tired or distracted. So stop
+working in a single lane. <strong>Fan out</strong> the work across
+several agents running at once, let them work in parallel, then
+<strong>fan in</strong> and merge the results yourself.</p>
+<p>The catch is obvious the first time you try it naively: two agents
+editing the same working directory will trip over each other instantly.
+The fix is a piece of git that was practically designed for this moment
+— <strong>worktrees</strong>. A worktree is a second (or third, or
+fourth) checkout of the same repo, on its own branch, in its own folder.
+Give each agent its own worktree and they can’t collide.</p>
+<pre><code># one isolated checkout per parallel task
+git worktree add ../app-api    -b feature/api
+git worktree add ../app-ui     -b feature/ui
+git worktree add ../app-tests  -b feature/tests</code></pre>
+<p>Now open a terminal tab in each folder, start <code>claude</code> in
+each, and brief them separately: one builds the endpoint, one builds the
+screen, one writes the tests. Three streams of work advancing at the
+same time. You move between them like a lead reviewing three open PRs —
+because that’s essentially what they’ll become.</p>
+<figure>
+<img
+src="assets/how-to-best-use-ai-coding-agents-like-claude/media/rId19.png"
+style="width:5.83333in;height:2.80449in"
+alt="Fan out one task across parallel agents in isolated git worktrees, then fan in to review and merge." />
+<figcaption aria-hidden="true"><p>Fan out one task across parallel
+agents in isolated git worktrees, then fan in to review and
+merge.</p></figcaption>
+</figure>
+<p>When they’re done, <em>you</em> are the merge step. Read each diff,
+resolve the overlaps, and bring the branches together. That “you” is not
+incidental. Fanning out multiplies how much gets <em>produced</em>; it
+does nothing for how much gets <em>verified</em>. The judgment stays
+yours, and that’s the whole point.</p>
+<p>A couple of moves that make this sing once you’re comfortable:</p>
+<ul>
+<li><strong>Turn agents on each other.</strong> Have one session review
+another’s branch. A fresh agent with no memory of <em>writing</em> the
+code is a genuinely better critic of it — it reads what’s there, not
+what it meant to write.</li>
+<li><strong>Go headless for the rote stuff.</strong>
+<code>claude -p "summarize what changed on this branch"</code> runs
+non-interactively and prints to stdout, so you can pipe it, drop it in a
+script, or wire it into CI. Parallelism doesn’t have to mean five
+terminals you babysit; some of your fleet can just be commands.</li>
+</ul>
+<p>Fan out to produce. Fan in to decide. That rhythm — many hands, one
+reviewer — is what “orchestrator” actually means.</p>
+<h2 id="the-habit-that-outranks-all-six-levels">The habit that outranks
+all six levels</h2>
+<p>You can climb every level above and still get burned by skipping this
+one, so it doesn’t get a number — it sits underneath all of them.</p>
+<p><strong>Match your supervision to how hard the action is to
+undo.</strong> Editing a file, running a test, scratch work on a branch
+— cheap to reverse, let the agent fly. Pushing to a shared branch,
+deleting data, calling something that costs money or pages a human —
+expensive to reverse, so you look before it leaps, every time.</p>
+<p>And whatever comes back, verify it yourself. Run the tests. Read the
+diff line by line. Click the actual button in the actual browser. An
+agent’s summary of what it did is a <em>claim</em>, not a receipt — you
+wouldn’t merge a teammate’s PR on the strength of their commit message
+alone, and “the tests passed” has never once been the same sentence as
+“the feature works.” Every level in this guide makes the agent more
+capable. This habit is the one that keeps <em>more capable</em> from
+quietly becoming <em>more wrong, faster</em>.</p>
+<h2 id="where-to-start-tomorrow">Where to start tomorrow</h2>
+<p>Don’t try to install all six levels at once — that’s its own kind of
+vending-machine thinking. Pick the friction you actually feel this
+week.</p>
+<p>Repeating yourself every session? Write a <code>CLAUDE.md</code>.
+Re-explaining the same procedure? Package a Skill. Drowning in one giant
+conversation? Delegate to a subagent. Copy-pasting tickets by hand? Add
+a connector. Genuinely capacity-bound? Fan out across worktrees.</p>
+<p>Each level is a rung, and the nice thing about rungs is you only ever
+need the next one. Reach for it when the work asks for it, keep your
+hand on the verification rail the whole way up, and you’ll look back in
+a month genuinely surprised at what “using Claude” has come to mean for
+you.</p>
 <h2 id="further-reading">Further reading</h2>
 <ul>
 <li><a
 href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code
 documentation</a></li>
-<li><a href="https://modelcontextprotocol.io/">Model Context Protocol
-specification</a></li>
+<li><a
+href="https://docs.claude.com/en/docs/claude-code/common-workflows">Common
+workflows: subagents, worktrees, and parallel sessions</a></li>
+<li><a href="https://modelcontextprotocol.io/">Model Context
+Protocol</a></li>
 </ul>
     </div>
 
