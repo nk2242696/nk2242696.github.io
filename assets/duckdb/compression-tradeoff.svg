@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
+  <title id="title">Smaller is useful. Decoding still costs.</title>
+  <desc id="desc">Two bar charts reproduce an illustrative DuckDB 0.10.0 release benchmark from February 2024. Size: Patas 275 MB, ALP 184 MB, uncompressed 489 MB. Query time: Patas 80 milliseconds, ALP 20 milliseconds, uncompressed 12 milliseconds. Both charts start at zero. These are not cross-engine or laptop benchmark results.</desc>
+  <rect width="1440" height="760" rx="28" fill="#101d38"/>
+  <g font-family="Arial, sans-serif">
+    <text x="60" y="63" fill="#62e2cc" font-size="21" font-weight="700" letter-spacing="4">COMPRESSION = LESS I/O + DECODING WORK</text>
+    <text x="60" y="121" fill="#ffffff" font-size="45" font-weight="700">Smaller is useful. Decoding still costs.</text>
+    <text x="60" y="165" fill="#c5d3ea" font-size="24">Historical example from DuckDB 0.10.0 (February 2024). Lower is better.</text>
+    <rect x="48" y="208" width="660" height="365" rx="20" fill="#20304f"/>
+    <rect x="732" y="208" width="660" height="365" rx="20" fill="#20304f"/>
+    <text x="76" y="255" fill="#ffffff" font-size="29" font-weight="700">Storage size</text>
+    <text x="760" y="255" fill="#ffffff" font-size="29" font-weight="700">Query time</text>
+    <g fill="#c5d3ea" font-size="23">
+      <text x="76" y="331">Patas</text><text x="76" y="407">ALP</text><text x="76" y="483">Uncompressed</text>
+      <text x="760" y="331">Patas</text><text x="760" y="407">ALP</text><text x="760" y="483">Uncompressed</text>
+    </g>
+    <g fill="#ffc16d"><rect x="255" y="299" width="206.25" height="45" rx="5"/><rect x="939" y="299" width="320" height="45" rx="5"/></g>
+    <g fill="#62e2cc"><rect x="255" y="375" width="138" height="45" rx="5"/><rect x="939" y="375" width="80" height="45" rx="5"/></g>
+    <g fill="#b59bff"><rect x="255" y="451" width="366.75" height="45" rx="5"/><rect x="939" y="451" width="48" height="45" rx="5"/></g>
+    <g font-size="23" fill="#ffffff" font-weight="700">
+      <text x="474" y="330">275 MB</text><text x="406" y="406">184 MB</text><text x="632" y="482">489</text>
+      <text x="1272" y="330">80 ms</text><text x="1032" y="406">20 ms</text><text x="1000" y="482">12 ms</text>
+    </g>
+    <g fill="none" stroke="#869bbf" stroke-width="2"><path d="M255 286 V516 H630"/><path d="M939 286 V516 H1259"/></g>
+    <g fill="#c5d3ea" font-size="20"><text x="249" y="546">0</text><text x="587" y="546">500 MB</text><text x="933" y="546">0</text><text x="1221" y="546">80 ms</text></g>
+    <text x="60" y="629" fill="#ffffff" font-size="27" font-weight="700">ALP: less storage and faster queries than Patas in this example.</text>
+    <text x="60" y="671" fill="#c5d3ea" font-size="24">Uncompressed was faster still. Do not extrapolate a universal speedup.</text>
+    <text x="60" y="717" fill="#9eafc9" font-size="19">Source: duckdb.org/2024/02/13/announcing-duckdb-0100 | Native storage codecs, not a rewrite of existing Parquet.</text>
+  </g>
+</svg>

@@ -1,0 +1,8 @@
+title: "DuckDB: Big Analytics, Small Footprint"
+date: "2026-10-21"
+description: "Several GB, one Python process: how DuckDB works, why vectorization and compression matter, and when to choose pandas, Polars, Spark, Snowflake, or Databricks instead."
+tags:
+  - DuckDB
+  - Python
+  - Data Engineering
+  - Performance

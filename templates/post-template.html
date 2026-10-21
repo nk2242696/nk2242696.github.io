@@ -132,9 +132,9 @@ $endif$
     html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 
     .article-wrap {
-      max-width: 780px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 4rem 5% 6rem;
+      padding: 4rem clamp(1rem, 4vw, 3rem) 6rem;
     }
 
     .article-header { margin-bottom: 3rem; }
@@ -240,6 +240,12 @@ $endif$
       border-radius: 12px;
       margin: 1.5rem 0;
       border: 1px solid var(--border);
+    }
+
+    .article-body figure img {
+      display: block;
+      width: 100% !important;
+      height: auto !important;
     }
 
     .article-body blockquote {

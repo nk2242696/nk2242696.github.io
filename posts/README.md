@@ -34,3 +34,52 @@ python scripts/build_blog.py
 
 Generated files land in `blog/` (post HTML + `blog/assets/<slug>/` for images).
 Do not edit files in `blog/` by hand — they are overwritten on each build.
+
+## Editing the DuckDB article
+
+`duckdb-big-analytics-small-footprint.md` is the editable authoring source.
+The matching `.docx` is the publishing input for the existing workflow.
+Original diagrams live in `assets/duckdb/` as SVGs with PNG exports embedded
+in the Word document. To regenerate after edits, from the repository root:
+
+```bash
+# Requires librsvg's rsvg-convert and the normal blog build dependencies.
+for name in toolkit vector-pipeline compression-tradeoff; do
+  rsvg-convert -o "assets/duckdb/$name.png" "assets/duckdb/$name.svg"
+done
+(cd posts && pandoc duckdb-big-analytics-small-footprint.md \
+  --from markdown --to docx \
+  -o duckdb-big-analytics-small-footprint.docx)
+python3 scripts/build_blog.py
+```
+
+Commit both authoring and publishing sources so automated builds retain edits.
+
+### Reproducing the example and measurements
+
+The article links to `scripts/benchmark_duckdb_blog.py`. From the repository root,
+create the example files with only DuckDB installed:
+
+```bash
+python3 scripts/benchmark_duckdb_blog.py --generate-only --rows 5000000
+```
+
+This creates `events/` and refuses to overwrite an existing directory. Run the
+article's Python example from the repository root. Increase `--rows` to change
+the input size; supply a different `--directory` to retain previous data.
+
+For the four-engine benchmark on macOS/Linux, `uv` reads pinned dependencies
+from the script's inline metadata:
+
+```bash
+uv run --python 3.11.16 scripts/benchmark_duckdb_blog.py --reuse \
+  --report benchmark-results.json
+```
+
+Without `--reuse`, the benchmark first generates a new dataset. The checked-in
+observations are in `assets/duckdb/benchmark-results.json`. Imports are outside
+the timers; read/filter/aggregate/sort/materialize are inside. Each engine runs
+twice in its own process; OS caches are not flushed. RSS is lifetime peak,
+including imports. Results are compared with relative tolerance `1e-12` and
+absolute tolerance `1e-8` for floating-point currency conversion. The synthetic
+input is null-free and this small workload is not a spill benchmark.

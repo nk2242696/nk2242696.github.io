@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
+  <title id="title">Read less. Work in batches. Return less.</title>
+  <desc id="desc">Conceptual DuckDB plan for a filtered aggregation, not literal EXPLAIN output. Parquet pruning reduces input. Native operators process column batches, typically 2048 rows per vector. Aggregations maintain state and supported blocking operators can spill to SSD.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#a7b8d3" stroke-width="2"/></marker></defs>
+  <rect width="1440" height="760" rx="28" fill="#101d38"/>
+  <g font-family="Arial, sans-serif">
+    <text x="60" y="63" fill="#62e2cc" font-size="21" font-weight="700" letter-spacing="4">INSIDE ONE PYTHON PROCESS</text>
+    <text x="60" y="121" fill="#ffffff" font-size="45" font-weight="700">Read less. Work in batches. Return less.</text>
+    <text x="60" y="165" fill="#c5d3ea" font-size="24">Conceptual filtered aggregation, not literal EXPLAIN output.</text>
+    <g stroke-width="2">
+      <rect x="60" y="220" width="300" height="280" rx="20" fill="#20304f" stroke="#b59bff"/>
+      <rect x="415" y="220" width="300" height="280" rx="20" fill="#173d49" stroke="#62e2cc"/>
+      <rect x="770" y="220" width="300" height="280" rx="20" fill="#34344a" stroke="#ffc16d"/>
+      <rect x="1125" y="220" width="255" height="280" rx="20" fill="#20304f" stroke="#8cc5ff"/>
+    </g>
+    <g font-size="28" font-weight="700" fill="#ffffff">
+      <text x="86" y="266">1. Parquet scan</text>
+      <text x="441" y="266">2. Filter + project</text>
+      <text x="796" y="266">3. Aggregate</text>
+      <text x="1151" y="266">4. Top 10</text>
+    </g>
+    <g fill="#c5d3ea" font-size="23">
+      <text x="86" y="311">Prune row groups.</text><text x="86" y="347">Read selected columns.</text>
+      <text x="441" y="311">Typed column batches.</text><text x="441" y="347">Native operators.</text>
+      <text x="796" y="311">State per group.</text><text x="796" y="347">Parallel partial results.</text>
+      <text x="1151" y="311">Small result.</text><text x="1151" y="347">Back to Python.</text>
+    </g>
+    <g fill="#b59bff"><rect x="88" y="388" width="43" height="75" rx="5"/><rect x="148" y="388" width="43" height="75" rx="5"/></g>
+    <g fill="none" stroke="#667697" stroke-width="2" stroke-dasharray="6 5"><rect x="208" y="388" width="43" height="75" rx="5"/><rect x="268" y="388" width="43" height="75" rx="5"/></g>
+    <g fill="#62e2cc"><rect x="443" y="391" width="236" height="15" rx="4"/><rect x="443" y="420" width="236" height="15" rx="4"/><rect x="443" y="449" width="236" height="15" rx="4"/></g>
+    <g fill="#ffc16d"><rect x="800" y="398" width="56" height="62" rx="5"/><rect x="875" y="418" width="56" height="42" rx="5"/><rect x="950" y="380" width="56" height="80" rx="5"/></g>
+    <g fill="#8cc5ff"><rect x="1153" y="393" width="196" height="12" rx="4"/><rect x="1153" y="420" width="156" height="12" rx="4"/><rect x="1153" y="447" width="113" height="12" rx="4"/></g>
+    <g stroke="#a7b8d3" stroke-width="3" marker-end="url(#arrow)"><path d="M368 360 H402"/><path d="M723 360 H757"/><path d="M1078 360 H1112"/><path d="M920 508 V559"/></g>
+    <rect x="60" y="558" width="645" height="135" rx="18" fill="#173d49"/>
+    <text x="86" y="602" fill="#78f0da" font-size="27" font-weight="700">Default vector size: 2,048 rows</text>
+    <text x="86" y="642" fill="#c5d3ea" font-size="23">Batching reduces per-row dispatch and improves locality.</text>
+    <rect x="770" y="574" width="610" height="119" rx="18" fill="#34344a"/>
+    <text x="796" y="614" fill="#ffd295" font-size="27" font-weight="700">Intermediate state can spill to SSD</text>
+    <text x="796" y="654" fill="#c5d3ea" font-size="23">Supported operators only. Extra I/O is not free.</text>
+  </g>
+</svg>

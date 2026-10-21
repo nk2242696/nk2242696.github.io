@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="700" viewBox="0 0 1440 700" role="img" aria-labelledby="title desc">
+  <title id="title">A needle, a knife, or a workshop?</title>
+  <desc id="desc">Choose tools by workload and operating needs, not data size alone. pandas suits flexible notebook work, DuckDB and Polars suit local analytical execution, and Spark and managed platforms serve scale-out or shared requirements.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101d38"/><stop offset="1" stop-color="#192b48"/></linearGradient>
+  </defs>
+  <rect width="1440" height="700" rx="28" fill="url(#bg)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="66" y="65" fill="#62e2cc" font-size="21" font-weight="700" letter-spacing="4">THE RIGHT TOOL, NOT THE BIGGEST TOOL</text>
+    <text x="66" y="125" fill="#ffffff" font-size="46" font-weight="700">A needle, a knife, or a workshop?</text>
+    <text x="66" y="170" fill="#c5d3ea" font-size="25">Match the execution model and the operating requirements.</text>
+    <rect x="56" y="214" width="426" height="355" rx="22" fill="#20304f" stroke="#b59bff" stroke-width="2"/>
+    <rect x="506" y="214" width="426" height="355" rx="22" fill="#173d49" stroke="#62e2cc" stroke-width="2"/>
+    <rect x="956" y="214" width="426" height="355" rx="22" fill="#34344a" stroke="#ffc16d" stroke-width="2"/>
+    <g fill="none" stroke="#b59bff" stroke-width="5" stroke-linecap="round">
+      <path d="M108 330 L170 250 Q187 228 190 253 L116 337 Z"/>
+      <path d="M174 250 L179 260"/>
+    </g>
+    <g stroke="#62e2cc" stroke-width="4" stroke-linejoin="round">
+      <path d="M555 312 L659 250 Q673 281 645 306 L580 331 Z" fill="#62e2cc"/>
+      <path d="M580 331 L557 351 Q549 355 543 346 L537 339 L555 312" fill="#12303c"/>
+    </g>
+    <g fill="none" stroke="#ffc16d" stroke-width="5" stroke-linejoin="round">
+      <path d="M998 330 V281 L1042 303 V281 L1086 303 V259 H1118 V330 Z"/>
+      <path d="M1014 315 H1029 M1054 315 H1069 M1092 315 H1105"/>
+    </g>
+    <text x="88" y="400" fill="#d4c7ff" font-size="31" font-weight="700">Precise notebook work</text>
+    <text x="88" y="442" fill="#ffffff" font-size="25">pandas</text>
+    <text x="88" y="490" fill="#c5d3ea" font-size="23">Flexible, familiar, in-memory.</text>
+    <text x="88" y="527" fill="#c5d3ea" font-size="23">Keep Python's ecosystem close.</text>
+    <text x="538" y="400" fill="#78f0da" font-size="31" font-weight="700">Local analytics</text>
+    <text x="538" y="442" fill="#ffffff" font-size="25">DuckDB / Polars</text>
+    <text x="538" y="490" fill="#c5d3ea" font-size="23">Native, parallel query engines.</text>
+    <text x="538" y="527" fill="#c5d3ea" font-size="23">SQL or lazy expressions.</text>
+    <text x="988" y="400" fill="#ffd295" font-size="31" font-weight="700">Scale-out / shared service</text>
+    <text x="988" y="442" fill="#ffffff" font-size="24">Spark / Snowflake / Databricks</text>
+    <text x="988" y="490" fill="#c5d3ea" font-size="23">Capacity, coordination, governance.</text>
+    <text x="988" y="527" fill="#c5d3ea" font-size="23">Different tools and platforms.</text>
+    <text x="66" y="636" fill="#ffffff" font-size="26" font-weight="700">GB alone is not the boundary.</text>
+    <text x="461" y="636" fill="#c5d3ea" font-size="25">Working state, latency, concurrency, and governance are.</text>
+  </g>
+</svg>
