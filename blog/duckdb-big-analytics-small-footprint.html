@@ -598,15 +598,14 @@ service, or network hop is required.</p>
     </ul>
         </nav>
       </details>
-<figure>
-<img src="assets/duckdb-big-analytics-small-footprint/media/rId9.png"
+<div class="article-figure">
+<p><img src="assets/duckdb-big-analytics-small-footprint/media/rId9.png"
 loading="lazy" decoding="async"
-alt="Choose the tool by the job: pandas for precise notebook work, DuckDB or Polars for local analytics, and distributed platforms for shared or scale-out workloads." />
-<figcaption aria-hidden="true"><p>Choose the tool by the job: pandas for
-precise notebook work, DuckDB or Polars for local analytics, and
-distributed platforms for shared or scale-out
-workloads.</p></figcaption>
-</figure>
+alt="Choose the tool by the job: pandas for precise notebook work, DuckDB or Polars for local analytics, and distributed platforms for shared or scale-out workloads." /></p>
+</div>
+<p>Choose the tool by the job: pandas for precise notebook work, DuckDB
+or Polars for local analytics, and distributed platforms for shared or
+scale-out workloads.</p>
 <h2 id="the-philosophy-bring-the-engine-to-the-data">1. The philosophy:
 bring the engine to the data</h2>
 <p>Think of pandas as a needle: excellent for precise, flexible work
@@ -641,15 +640,15 @@ its filter columns. Parquet lets DuckDB avoid reading the other 36,
 rather than load and discard them. Date pruning helps most when row
 groups cover narrow date ranges; if every group spans the whole year, a
 September filter may skip very little.</p>
-<figure>
-<img src="assets/duckdb-big-analytics-small-footprint/media/rId13.png"
+<div class="article-figure">
+<p><img
+src="assets/duckdb-big-analytics-small-footprint/media/rId13.png"
 loading="lazy" decoding="async"
-alt="A conceptual query pipeline: prune Parquet data, scan selected columns, filter column batches, aggregate, and return a small result. Blocking operators may spill intermediate state to SSD." />
-<figcaption aria-hidden="true"><p>A conceptual query pipeline: prune
-Parquet data, scan selected columns, filter column batches, aggregate,
-and return a small result. Blocking operators may spill intermediate
-state to SSD.</p></figcaption>
-</figure>
+alt="A conceptual query pipeline: prune Parquet data, scan selected columns, filter column batches, aggregate, and return a small result. Blocking operators may spill intermediate state to SSD." /></p>
+</div>
+<p>A conceptual query pipeline: prune Parquet data, scan selected
+columns, filter column batches, aggregate, and return a small result.
+Blocking operators may spill intermediate state to SSD.</p>
 <p>DuckDB’s documented default vector size is <strong>2,048
 rows</strong>. Processing typed column batches reduces per-row overhead
 and improves CPU-cache locality. Multiple threads can process different
@@ -734,15 +733,16 @@ deserve different tools. [4]</p>
 Floating-Point Compression)</strong> arrived in DuckDB 0.10.0. It
 exploits decimal-like structure where suitable, with exception/fallback
 paths that preserve values exactly. [5]</p>
-<figure>
-<img src="assets/duckdb-big-analytics-small-footprint/media/rId19.png"
+<div class="article-figure">
+<p><img
+src="assets/duckdb-big-analytics-small-footprint/media/rId19.png"
 loading="lazy" decoding="async"
-alt="Historical DuckDB 0.10.0 example: Patas used 275 MB with an 80 ms query, ALP used 184 MB with a 20 ms query, and uncompressed used 489 MB with a 12 ms query. Lower is better; this is not a cross-engine benchmark." />
-<figcaption aria-hidden="true"><p>Historical DuckDB 0.10.0 example:
-Patas used 275 MB with an 80 ms query, ALP used 184 MB with a 20 ms
-query, and uncompressed used 489 MB with a 12 ms query. Lower is better;
-this is not a cross-engine benchmark.</p></figcaption>
-</figure>
+alt="Historical DuckDB 0.10.0 example: Patas used 275 MB with an 80 ms query, ALP used 184 MB with a 20 ms query, and uncompressed used 489 MB with a 12 ms query. Lower is better; this is not a cross-engine benchmark." /></p>
+</div>
+<p>Historical DuckDB 0.10.0 example: Patas used 275 MB with an 80 ms
+query, ALP used 184 MB with a 20 ms query, and uncompressed used 489 MB
+with a 12 ms query. Lower is better; this is not a cross-engine
+benchmark.</p>
 <p>In that historical example, ALP was smaller and faster than Patas;
 uncompressed execution was faster still. <strong>Compression pays when
 saved data movement outweighs decoding work.</strong></p>
@@ -751,42 +751,42 @@ native DuckDB codecs. Parquet’s own encodings and page compression apply
 there.</p>
 <h2 id="duckdb-pandas-polars-or-dask">5. DuckDB, pandas, Polars, or
 Dask?</h2>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 28%" />
-<col style="width: 28%" />
-<col style="width: 28%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>Tool</th>
 <th>Start here when…</th>
 <th>Watch for…</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>pandas</td>
 <td>Data fits comfortably; exploratory manipulation and Python-library
 compatibility dominate.</td>
 <td>Eager intermediates and object-heavy columns can inflate memory.
 Vectorized pandas is not a Python row loop.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>DuckDB</td>
 <td>The question is naturally SQL: joins, aggregations, windows, and
 file-based analytics.</td>
 <td>Large intermediate state, result materialization, and the limits of
 one host.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Polars</td>
 <td>You prefer a DataFrame expression API with a lazy, parallel query
 engine.</td>
 <td>Use lazy scans for pushdown; streaming support and memory needs
 depend on the query.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Dask</td>
 <td>You need partitioned Python/DataFrame computation, custom task
 graphs, or a path to multiple workers.</td>
@@ -805,45 +805,45 @@ RAM use.</p>
 <p>Hardware: Apple M5 Max, 48 GiB RAM, local storage; Python 3.11.16,
 PyArrow 26.0.0. Native thread pools were capped at four where
 configurable; pandas aggregation was not made parallel.</p>
-<table style="width:85%;">
+<table>
 <colgroup>
-<col style="width: 21%" />
-<col style="width: 21%" />
-<col style="width: 21%" />
-<col style="width: 21%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>Engine/version</th>
-<th style="text-align: right;">First query</th>
-<th style="text-align: right;">Repeat query</th>
-<th style="text-align: right;">Peak process RSS</th>
+<th>First query</th>
+<th>Repeat query</th>
+<th>Peak process RSS</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>DuckDB 1.4.5</td>
-<td style="text-align: right;">178.3 ms</td>
-<td style="text-align: right;">18.3 ms</td>
-<td style="text-align: right;">129 MiB</td>
+<td>178.3 ms</td>
+<td>18.3 ms</td>
+<td>129 MiB</td>
 </tr>
-<tr>
+<tr class="even">
 <td>pandas 3.0.6</td>
-<td style="text-align: right;">67.0 ms</td>
-<td style="text-align: right;">41.5 ms</td>
-<td style="text-align: right;">389 MiB</td>
+<td>67.0 ms</td>
+<td>41.5 ms</td>
+<td>389 MiB</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Polars 2.0.0</td>
-<td style="text-align: right;">17.7 ms</td>
-<td style="text-align: right;">15.5 ms</td>
-<td style="text-align: right;">140 MiB</td>
+<td>17.7 ms</td>
+<td>15.5 ms</td>
+<td>140 MiB</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Dask 2026.8.0</td>
-<td style="text-align: right;">32.1 ms</td>
-<td style="text-align: right;">23.6 ms</td>
-<td style="text-align: right;">390 MiB</td>
+<td>32.1 ms</td>
+<td>23.6 ms</td>
+<td>390 MiB</td>
 </tr>
 </tbody>
 </table>

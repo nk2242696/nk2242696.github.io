@@ -612,12 +612,12 @@ loading="lazy" decoding="async" /></p>
 </div>
 <p><em>High-level architecture: evidence flows inward; governed
 decisions flow outward.</em></p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p><strong>The short version</strong></p>
 <p>Treat AI as a reasoning layer over trusted FinOps evidence — not as
 the database, calculator, policy engine, or cloud executor. The
@@ -629,7 +629,6 @@ reasoning actually adds value.</p></td>
 </table>
 <h2 id="why-a-cost-dashboard-becomes-an-architecture-problem">Why a cost
 dashboard becomes an architecture problem</h2>
-<hr />
 <p>Cloud cost platforms begin simply: ingest billing data, calculate
 totals, and draw a dashboard. The complexity arrives later, when users
 start asking higher-order questions — why did spend move, which resource
@@ -655,28 +654,28 @@ nothing more.</p>
 <col style="width: 67%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Architectural concern</strong></th>
 <th><strong>Decision</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Financial correctness</td>
 <td>Keep totals, budgets, forecasts, and reference savings deterministic
 and testable.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Ambiguous investigation</td>
 <td>Use specialized agents to select evidence, reconcile findings, and
 explain trade-offs.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Operational safety</td>
 <td>Make tools read-only and require human approval for every
 proposal.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Evolution</td>
 <td>Connect modules through typed contracts and repositories rather than
 implementation details.</td>
@@ -685,7 +684,6 @@ implementation details.</td>
 </table>
 <h2 id="a-modular-core-keeps-change-local">A modular core keeps change
 local</h2>
-<hr />
 <p>A senior architecture optimizes for the cost of the next change, not
 just the first release. In this platform, ownership is split along the
 lines a team would actually need to change independently: Azure
@@ -704,39 +702,39 @@ is the same one enforced by the import graph.</p>
 <col style="width: 35%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Module</strong></th>
 <th><strong>Owns</strong></th>
 <th><strong>Can change without rewriting</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Azure integration</td>
 <td>Authentication and provider API translation</td>
 <td>Domain logic, agents, dashboards</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Monitoring domain</td>
 <td>Costs, budgets, alerts, forecasts, recommendations</td>
 <td>Cloud SDKs and model providers</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Agent runtime</td>
 <td>Planning, evidence requests, governance, communication</td>
 <td>SQL schemas and Azure credentials</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Persistence</td>
 <td>Repository contracts, migrations, checkpoints, audit</td>
 <td>API presentation and prompts</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>API and CLI</td>
 <td>Transport, authentication context, response contracts</td>
 <td>Collection and graph internals</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Observability</td>
 <td>Metrics, health, dashboards</td>
 <td>Business workflows</td>
@@ -751,12 +749,12 @@ to swap Azure OpenAI for an OpenAI-compatible endpoint, replace
 PostgreSQL with another repository implementation, or present through
 something other than Grafana without touching the reasoning model at
 all.</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p><strong>Design heuristic</strong></p>
 <p>If a model prompt contains SQL, a dashboard contains business rules,
 or a scheduler contains provider credentials, a boundary is probably
@@ -766,7 +764,6 @@ missing.</p></td>
 </table>
 <h2 id="why-postgresql-plus-timescaledb">Why PostgreSQL plus
 TimescaleDB</h2>
-<hr />
 <p><em>Cost data is relational in meaning and time-series in access
 pattern.</em></p>
 <p>Azure cost records have dimensions — subscription, service, resource,
@@ -784,37 +781,37 @@ same data.</p>
 <col style="width: 48%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Option</strong></th>
 <th><strong>Strength</strong></th>
 <th><strong>Why it was, or wasn't, chosen</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>PostgreSQL</td>
 <td>Transactions, joins, constraints, mature tooling</td>
 <td>Chosen as the canonical system of record.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>TimescaleDB extension</td>
 <td>Time partitioning and time-oriented aggregation</td>
 <td>Chosen to optimize cost history without introducing another
 database.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Dedicated metrics store</td>
 <td>High-volume telemetry</td>
 <td>Used for Prometheus metrics, not financial records or audit
 state.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Document database</td>
 <td>Flexible documents</td>
 <td>Not selected — financial dimensions, joins, and governance records
 benefit from explicit schemas.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Data warehouse</td>
 <td>Large analytical workloads</td>
 <td>A future option once multi-year, multi-tenant scale exceeds the
@@ -829,7 +826,6 @@ lakehouse, ingestion can fan out to it without forcing the API and agent
 layers to understand the migration.</p>
 <h2 id="why-langgraph-instead-of-a-chain-of-prompts">Why LangGraph
 instead of a chain of prompts</h2>
-<hr />
 <p><em>Coordination needs state, branching, fan-out, retries, budgets,
 and durable checkpoints.</em></p>
 <div class="article-figure">
@@ -858,12 +854,12 @@ could ignore. The orchestrator's plan produces a list of selected
 personas; a routing function filters that list against the personas
 actually allowed to produce evidence, then fans out one graph branch per
 persona:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p>EVIDENCE_PERSONAS = frozenset({"cost_analyst",
 "cloud_architect"})</p>
 <p>def _route_specialists(state: AgentState) -&gt; list[Send]:</p>
@@ -884,12 +880,12 @@ decides which ones are actually allowed to run.</em></p>
 request refinement from specific personas, but only up to a fixed round
 limit, and only for personas on the evidence allow-list — so a model
 can't argue its way into an unbounded loop:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p>def _route_after_governance(state: AgentState,
 max_refinement_rounds: int):</p>
 <p>verdict = state.get("governance_verdict", {})</p>
@@ -912,7 +908,6 @@ stop.</em></p>
 <h2
 id="personas-are-selected-by-evidence-need-not-by-job-title-theatre">Personas
 are selected by evidence need — not by job-title theatre</h2>
-<hr />
 <p><em>More agents are not automatically better. Each persona must own a
 distinct decision boundary.</em></p>
 <table>
@@ -922,39 +917,39 @@ distinct decision boundary.</em></p>
 <col style="width: 38%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>When the request needs...</strong></th>
 <th><strong>Persona selected</strong></th>
 <th><strong>Why</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Intent classification and a bounded plan</td>
 <td>FinOps Orchestrator</td>
 <td>Keeps routing separate from specialist conclusions.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Spend trend, top services, or cost concentration</td>
 <td>Cost Analyst</td>
 <td>Has access only to canonical cost-summary evidence.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Resource shape, region, inventory, or architecture context</td>
 <td>Cloud Architect</td>
 <td>Adds technical context without calculating financial truth.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>A concrete action assembled from verified findings</td>
 <td>Optimization Specialist</td>
 <td>Separates evidence collection from recommendation synthesis.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Risk, conflicts, uncertainty, or policy review</td>
 <td>Risk &amp; Governance Reviewer</td>
 <td>Creates an independent gate before communication.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>A decision-ready summary</td>
 <td>Executive Communicator</td>
 <td>Changes presentation, not evidence or approval state.</td>
@@ -971,12 +966,12 @@ around the control point.</p>
 personality. A persona's system prompt, prompt version, and — critically
 — its allowed tool list are declared once as data, not re-derived from a
 role description scattered across prompts:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p>@dataclass(frozen=True)</p>
 <p>class PersonaContract:</p>
 <p>name: str</p>
@@ -1009,12 +1004,12 @@ evidence source, policy, or evaluation suite — not merely because
 another title sounds plausible. That rule keeps orchestration
 understandable and avoids token-heavy agent debates that produce no
 additional evidence.</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p><strong>Extension example</strong></p>
 <p>A Sustainability Analyst can be added later by registering
 carbon-intensity evidence, defining a narrow output contract, and adding
@@ -1026,7 +1021,6 @@ personas.</p></td>
 <h2
 id="tools-are-the-anti-coupling-layer-between-ai-and-infrastructure">Tools
 are the anti-coupling layer between AI and infrastructure</h2>
-<hr />
 <p><em>The model asks for evidence; application code decides whether and
 how that evidence may be retrieved.</em></p>
 <p>Agents never receive database connections or Azure credentials. They
@@ -1039,12 +1033,12 @@ influence.</p>
 tool ever runs: the tool has to be read-only, and the calling persona
 has to be explicitly granted access to it. Neither is a prompt
 instruction the model could talk its way around:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p>class ToolPolicy:</p>
 <p>grants: dict[str, frozenset[str]]</p>
 <p>def authorize(self, persona: str, tool: AgentTool) -&gt; None:</p>
@@ -1067,7 +1061,6 @@ adding a tool adapter and an evidence contract, not teaching every
 persona about a new backend.</p>
 <h2 id="governance-is-part-of-the-graph-not-a-disclaimer">Governance is
 part of the graph, not a disclaimer</h2>
-<hr />
 <p><em>A recommendation is useful only when its evidence, uncertainty,
 risk, and approval status travel with it.</em></p>
 <div class="article-figure">
@@ -1081,12 +1074,12 @@ state.</em></p>
 comment — it makes a proposal impossible to construct without it.
 requires_human_approval is typed as Literal[True], so there's no valid
 instance of the object where that flag is false:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p>class Proposal(BaseModel):</p>
 <p>title: str</p>
 <p>recommendation: str</p>
@@ -1123,19 +1116,19 @@ internals in the first place.</p>
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Persist</strong></th>
 <th><strong>Do not persist</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Evidence IDs, sources, timestamps, findings, proposals, verdicts,
 model/tool metadata</td>
 <td>Credentials, raw secrets, hidden chain-of-thought, executable
 remediation</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Actor scope, workflow status, latency, prompt version, safe
 errors</td>
 <td>Provider stack traces or unbounded raw observations</td>
@@ -1144,7 +1137,6 @@ errors</td>
 </table>
 <h2 id="why-docker-compose-for-the-reference-deployment">Why Docker
 Compose for the reference deployment</h2>
-<hr />
 <p>The goal here is a reproducible architecture boundary, not a claim
 that Compose is the final production platform. The reference stack
 packages PostgreSQL/TimescaleDB, a one-shot migration job, FastAPI, a
@@ -1159,7 +1151,6 @@ and managed observability — the application modules don't need to
 change, because deployment concerns were kept outside them from the
 start.</p>
 <h2 id="how-the-architecture-extends">How the architecture extends</h2>
-<hr />
 <p>Extension is meant to mean adding a module or an adapter — not
 editing every layer to accommodate one new requirement.</p>
 <table>
@@ -1168,48 +1159,48 @@ editing every layer to accommodate one new requirement.</p>
 <col style="width: 67%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Future requirement</strong></th>
 <th><strong>Extension seam</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Another LLM provider</td>
 <td>Implement the shared model factory contract and configuration
 validation.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>New cloud or billing source</td>
 <td>Add an integration adapter that emits canonical cost/inventory
 evidence.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>New specialist persona</td>
 <td>Define a persona contract, structured output, allowed tools, and
 graph route.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>New evidence source</td>
 <td>Register a read-only tool with Pydantic input/output and evidence
 metadata.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Warehouse analytics</td>
 <td>Fan out normalized records or replace the repository
 implementation.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Different UI</td>
 <td>Consume versioned APIs and artifact provenance; no graph rewrite is
 required.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Approval workflow</td>
 <td>Add a domain lifecycle around proposal artifacts without coupling
 approval to cloud execution.</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Safe remediation</td>
 <td>Introduce a separate least-privilege executor, dry-run, rollback,
 and separation of duties.</td>
@@ -1223,7 +1214,6 @@ mature architecture earns autonomy only after evidence quality,
 evaluation, identity, rollback, and operational ownership are proven —
 not before.</p>
 <h2 id="what-i-would-measure-next">What I would measure next</h2>
-<hr />
 <p>None of the following is instrumented yet — this platform is
 advisory-by-default and still early. But architecture quality should
 eventually become visible through system behavior, not only through
@@ -1243,7 +1233,6 @@ from insight to approval.</p></li>
 and zero mutation events.</p></li>
 </ul>
 <h2 id="closing-perspective">Closing perspective</h2>
-<hr />
 <p>The most important AI decisions here turned out to be conventional
 software-engineering decisions. The platform became extensible not
 because it uses six personas, but because each responsibility got a
@@ -1257,12 +1246,12 @@ longer an all-knowing service hidden behind one endpoint — it's one
 replaceable reasoning dependency inside a system that controls evidence,
 authority, state, cost, and failure. That's the difference between
 adding an LLM feature and engineering an AI platform.</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
-<tr>
+<tr class="odd">
 <td><p><strong>Architecture takeaway</strong></p>
 <p>Build deterministic foundations, expose narrow evidence contracts,
 add the minimum specialized reasoning roles, and make every autonomous
@@ -1271,7 +1260,6 @@ step bounded and observable.</p></td>
 </tbody>
 </table>
 <h2 id="explore-the-implementation">Explore the implementation</h2>
-<hr />
 <p>The complete source, architecture documentation, tests, Docker
 environment, dashboards, and release workflow are available in the
 public repository:</p>
@@ -1283,26 +1271,26 @@ href="https://github.com/nk2242696/CostMonitoringMultiAgent">github.com/nk224269
 <col style="width: 72%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th><strong>Project</strong></th>
 <th><strong>Azure Cost Monitoring Multi-Agent Platform</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>Architecture</td>
 <td>Modular Python, FastAPI, LangGraph, PostgreSQL/TimescaleDB,
 Prometheus, Grafana</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Operating model</td>
 <td>Read-only investigation and human-approved proposals</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Deployment</td>
 <td>Docker-first reference stack with semantic release automation</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Author</td>
 <td>Nikhil Kumar</td>
 </tr>
