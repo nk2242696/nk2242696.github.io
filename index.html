@@ -7,13 +7,17 @@
   <!-- Set theme before paint to avoid flash -->
   <script>
     (function () {
+      var t;
       try {
-        var t = localStorage.getItem('theme');
-        if (t !== 'light' && t !== 'dark') {
-          t = 'light';
-        }
-        document.documentElement.setAttribute('data-theme', t);
-      } catch (e) { }
+        t = localStorage.getItem('theme');
+      } catch (error) {
+        console.warn('Could not read the saved theme preference.', error);
+      }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.classList.add('js');
     })();
   </script>
   <title>Nikhil Kumar | Big Data Engineer &amp; Cloud Architect</title>
@@ -44,6 +48,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
 
   <!-- Structured data for rich results -->
   <script type="application/ld+json">
@@ -91,6 +97,7 @@
       --accent-dim: #a1a1a6;
       --border: rgba(255, 255, 255, 0.08);
       --highlight: #e50914;
+      --highlight-text: #ff8a91;
       --overlay-1: rgba(255, 255, 255, 0.03);
       --overlay-2: rgba(255, 255, 255, 0.06);
       --overlay-border: rgba(255, 255, 255, 0.1);
@@ -111,6 +118,7 @@
       --accent-dim: #6e6e73;
       --border: rgba(0, 0, 0, 0.1);
       --highlight: #0071e3;
+      --highlight-text: #005bb5;
       --overlay-1: rgba(0, 0, 0, 0.03);
       --overlay-2: rgba(0, 0, 0, 0.05);
       --overlay-border: rgba(0, 0, 0, 0.1);
@@ -126,7 +134,6 @@
       background: var(--bg-primary);
       color: var(--accent);
       line-height: 1.7;
-      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       transition: background 0.3s ease, color 0.3s ease;
     }
@@ -137,7 +144,7 @@
       top: 0;
       width: 100%;
       background: linear-gradient(180deg, var(--nav-bg) 0%, transparent 100%);
-      padding: 2rem 0;
+      padding: 1rem 0;
       z-index: 1000;
       transition: all 0.3s ease;
     }
@@ -164,13 +171,17 @@
       text-decoration: none;
       letter-spacing: -0.5px;
       padding: 0.5rem 0;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .nav-links {
       display: flex;
-      gap: 3rem;
+      gap: clamp(1rem, 2vw, 2rem);
       list-style: none;
       align-items: center;
+      margin-left: auto;
+      margin-right: 1.5rem;
     }
 
     .nav-links a {
@@ -201,12 +212,28 @@
       width: 100%;
     }
 
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.5rem 0.85rem;
+      border: 1px solid var(--overlay-border);
+      border-radius: 8px;
+      background: var(--overlay-2);
+      color: var(--accent);
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
     .theme-toggle {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
       padding: 0;
       border-radius: 50%;
       background: var(--overlay-2);
@@ -254,11 +281,12 @@
       width: 100%;
       display: flex;
       align-items: center;
-      gap: 4rem;
+      gap: clamp(2rem, 4vw, 4rem);
     }
 
     .hero-text {
       flex: 1;
+      min-width: 0;
     }
 
     .profile-image-container {
@@ -272,17 +300,10 @@
       object-fit: cover;
       border: 3px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       box-shadow: 0 20px 60px var(--shadow-hero);
-      transition: all 0.4s ease;
-    }
-
-    .profile-image:hover {
-      transform: scale(1.05);
-      border-color: var(--highlight);
-      box-shadow: 0 30px 80px color-mix(in srgb, var(--highlight) 40%, transparent);
     }
 
     .hero h1 {
-      font-size: 5rem;
+      font-size: clamp(2.5rem, 5.6vw, 5rem);
       font-weight: 700;
       margin-bottom: 1rem;
       letter-spacing: -2px;
@@ -307,6 +328,7 @@
     .cta-buttons {
       display: flex;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -341,18 +363,18 @@
 
     /* Section Styling */
     section {
-      padding: 8rem 5%;
+      padding: 6rem 5%;
       max-width: 1400px;
       margin: 0 auto;
     }
 
     .section-header {
-      margin-bottom: 4rem;
+      margin-bottom: 2.5rem;
     }
 
     .section-label {
       font-size: 0.8rem;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -372,7 +394,7 @@
       max-width: 700px;
     }
 
-    /* Experience Cards - Netflix Style */
+    /* Experience */
     .experience-grid {
       display: grid;
       gap: 1.5rem;
@@ -380,7 +402,7 @@
 
     .experience-card {
       background: var(--bg-card);
-      padding: 3rem;
+      padding: 2rem 2.5rem;
       border-radius: 20px;
       border: 1px solid var(--border);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -399,25 +421,16 @@
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
+      pointer-events: none;
       opacity: 0;
       transition: opacity 0.4s ease;
-    }
-
-    .experience-card:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-8px);
-      box-shadow: 0 25px 60px var(--shadow-card);
-    }
-
-    .experience-card:hover::before {
-      opacity: 1;
     }
 
     .company-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
@@ -454,7 +467,7 @@
       background: color-mix(in srgb, var(--highlight) 15%, transparent);
       border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-size: 0.85rem;
       font-weight: 600;
       white-space: nowrap;
@@ -478,14 +491,14 @@
       content: '→';
       position: absolute;
       left: 0;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-weight: bold;
     }
 
-    /* Skills Section - Netflix Card Style */
+    /* Skills */
     .skills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
       gap: 1.5rem;
     }
 
@@ -510,18 +523,6 @@
       border-radius: 50%;
       transform: translate(40%, -40%);
       transition: all 0.4s ease;
-    }
-
-    .skill-category:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-8px);
-      box-shadow: 0 25px 60px var(--shadow-card);
-    }
-
-    .skill-category:hover::before {
-      width: 180px;
-      height: 180px;
-      background: radial-gradient(circle, color-mix(in srgb, var(--highlight) 30%, transparent), transparent 70%);
     }
 
     .skill-category h3 {
@@ -553,17 +554,44 @@
       font-weight: 500;
     }
 
-    .skill-tag:hover {
-      background: color-mix(in srgb, var(--highlight) 20%, transparent);
-      border-color: color-mix(in srgb, var(--highlight) 60%, transparent);
-      color: var(--accent);
-      transform: translateY(-2px);
+    @media (hover: hover) {
+      .experience-card:hover,
+      .skill-category:hover {
+        background: var(--bg-card-hover);
+        transform: translateY(-8px);
+        box-shadow: 0 25px 60px var(--shadow-card);
+      }
+
+      .experience-card:hover::before {
+        opacity: 1;
+      }
+
+      .skill-category:hover::before {
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle, color-mix(in srgb, var(--highlight) 30%, transparent), transparent 70%);
+      }
+
+      .skill-tag:hover {
+        background: color-mix(in srgb, var(--highlight) 20%, transparent);
+        border-color: color-mix(in srgb, var(--highlight) 60%, transparent);
+        color: var(--accent);
+        transform: translateY(-2px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .experience-card:hover,
+      .skill-category:hover,
+      .skill-tag:hover {
+        transform: none;
+      }
     }
 
     /* Education & Certifications */
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
       gap: 1.5rem;
     }
 
@@ -572,32 +600,6 @@
       padding: 3rem;
       border-radius: 20px;
       border: 1px solid var(--border);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .info-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #e50914, #9333ea, #3b82f6);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.5s ease;
-    }
-
-    .info-card:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-8px);
-      box-shadow: 0 25px 60px var(--shadow-card);
-    }
-
-    .info-card:hover::after {
-      transform: scaleX(1);
     }
 
     .info-card h3 {
@@ -626,7 +628,7 @@
       background: color-mix(in srgb, var(--highlight) 15%, transparent);
       border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-size: 0.85rem;
       font-weight: 600;
       margin-top: 0.5rem;
@@ -645,17 +647,10 @@
       background: var(--overlay-1);
       border-radius: 12px;
       border: 1px solid var(--overlay-border);
-      transition: all 0.3s ease;
-    }
-
-    .award-item:hover {
-      background: color-mix(in srgb, var(--highlight) 8%, transparent);
-      border-color: color-mix(in srgb, var(--highlight) 40%, transparent);
-      transform: translateX(5px);
     }
 
     .award-icon {
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-size: 1.5rem;
       flex-shrink: 0;
     }
@@ -764,13 +759,6 @@
       padding: 3rem;
       border-radius: 20px;
       border: 1px solid var(--border);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-card:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-8px);
-      box-shadow: 0 25px 60px var(--shadow-card);
     }
 
     .project-card h3 {
@@ -801,7 +789,7 @@
     }
 
     .case-label {
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-size: 0.8rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -815,6 +803,61 @@
       line-height: 1.7;
     }
 
+    .writing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+      gap: 1.5rem;
+    }
+
+    .writing-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg-card);
+      color: var(--accent);
+      text-decoration: none;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .writing-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+    }
+
+    .writing-card h3 {
+      font-size: 1.4rem;
+      line-height: 1.35;
+    }
+
+    .writing-meta {
+      color: var(--accent-dim);
+      font-size: 0.85rem;
+    }
+
+    .writing-card p {
+      color: var(--accent-muted);
+    }
+
+    .writing-link,
+    .all-writing {
+      color: var(--highlight-text);
+      font-weight: 600;
+    }
+
+    .writing-link {
+      margin-top: auto;
+    }
+
+    .all-writing {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.5rem 0;
+      text-underline-offset: 0.2em;
+    }
+
     @media (max-width: 640px) {
       .case-row {
         grid-template-columns: 1fr;
@@ -822,12 +865,71 @@
       }
     }
 
-    /* Responsive */
-    @media (max-width: 968px) {
-      .nav-links {
-        gap: 1.5rem;
+    @media (max-width: 1100px) {
+      nav {
+        padding: 0.75rem 0;
+        background: var(--nav-bg);
       }
 
+      nav .container {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .logo {
+        font-size: clamp(1.05rem, 3vw, 1.5rem);
+      }
+
+      .menu-toggle {
+        margin-left: auto;
+      }
+
+      .nav-links {
+        order: 3;
+        flex-basis: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.25rem;
+        max-height: calc(100dvh - 6rem);
+        overflow-y: auto;
+        margin: 0;
+        padding: 0.5rem 0;
+      }
+
+      .nav-links a {
+        display: block;
+        min-height: 44px;
+        padding: 0.65rem 0.8rem;
+        border-radius: 8px;
+      }
+
+      .nav-links a:hover {
+        background: var(--overlay-2);
+      }
+
+      .nav-links a::after {
+        display: none;
+      }
+
+      .js .menu-toggle {
+        display: inline-flex;
+      }
+
+      .js .nav-links {
+        display: none;
+      }
+
+      .js nav.menu-open .nav-links {
+        display: grid;
+      }
+
+      html:not(.js) nav {
+        position: static;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
       .hero-content {
         flex-direction: column-reverse;
         gap: 3rem;
@@ -870,29 +972,47 @@
     }
 
     @media (max-width: 640px) {
+      .hero {
+        min-height: auto;
+        padding: 7rem 5% 3rem;
+      }
+
+      .hero-content {
+        gap: 2rem;
+      }
+
       .hero h1 {
         font-size: 2.5rem;
       }
 
       .profile-image {
-        width: 200px;
-        height: 200px;
+        width: 160px;
+        height: 160px;
+      }
+
+      .hero p {
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-metrics {
+        gap: 1.5rem;
+        margin-top: 2rem;
       }
 
       section {
-        padding: 5rem 5%;
+        padding: 3.5rem 5%;
       }
 
-      .experience-card {
-        padding: 2rem;
+      .section-title {
+        font-size: 2rem;
       }
 
-      .skill-category {
-        padding: 2rem;
-      }
-
-      .info-card {
-        padding: 2rem;
+      .experience-card,
+      .skill-category,
+      .info-card,
+      .project-card,
+      .writing-card {
+        padding: 1.5rem;
       }
     }
 
@@ -922,10 +1042,14 @@
 </head>
 
 <body>
-  <nav id="navbar">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <nav id="navbar" aria-label="Primary">
     <div class="container">
-      <a href="#" class="logo">NIKHIL KUMAR</a>
-      <ul class="nav-links">
+      <a href="#about" class="logo">NIKHIL KUMAR</a>
+      <button id="menuToggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+        <span>Menu</span>
+      </button>
+      <ul class="nav-links" id="primary-navigation">
         <li><a href="#about">About</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#projects">Projects</a></li>
@@ -934,22 +1058,21 @@
         <li><a href="blog/">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><a href="assets/Nikhil_Kumar_Resume.pdf" download>Resume</a></li>
-        <li>
-          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
-            <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-            </svg>
-            <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          </button>
-        </li>
       </ul>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
     </div>
   </nav>
 
-  <section class="hero" id="about">
+  <main id="main-content" tabindex="-1">
+  <section class="hero" id="about" tabindex="-1">
     <div class="hero-content">
       <div class="hero-text">
         <h1>Big Data Engineer<br>& Cloud Architect</h1>
@@ -970,12 +1093,35 @@
         </div>
       </div>
       <div class="profile-image-container">
-        <img src="img/profile.jpg" alt="Nikhil Kumar" class="profile-image">
+        <img src="img/profile.jpg" alt="Nikhil Kumar" class="profile-image" width="300" height="300">
       </div>
     </div>
   </section>
 
-  <section id="experience">
+  <section id="writing">
+    <div class="section-header">
+      <div class="section-label">FROM THE BLOG</div>
+      <h2 class="section-title">Selected Writing</h2>
+      <p class="section-description">Practical notes on analytics, engineering trade-offs, and tools worth understanding.</p>
+    </div>
+    <div class="writing-grid">
+      <a class="writing-card" href="/blog/duckdb-big-analytics-small-footprint.html">
+        <h3>DuckDB: Big Analytics, Small Footprint</h3>
+        <div class="writing-meta"><time datetime="2026-10-21">Oct 21, 2026</time> &middot; 8 min read</div>
+        <p>Local Python analytics, vectorized execution, and when to choose a single-machine engine over a data platform.</p>
+        <span class="writing-link">Read article &rarr;</span>
+      </a>
+      <a class="writing-card" href="/blog/how-to-best-use-ai-coding-agents-like-claude.html">
+        <h3>How to Best Use AI Coding Agents Like Claude</h3>
+        <div class="writing-meta"><time datetime="2026-08-17">Aug 17, 2026</time> &middot; 12 min read</div>
+        <p>A six-level guide to briefing agents, building reusable skills, and coordinating parallel engineering work.</p>
+        <span class="writing-link">Read article &rarr;</span>
+      </a>
+    </div>
+    <a class="all-writing" href="/blog/">Browse all posts &rarr;</a>
+  </section>
+
+  <section id="experience" tabindex="-1">
     <div class="section-header">
       <div class="section-label">CAREER PATH</div>
       <h2 class="section-title">Professional Experience</h2>
@@ -1057,7 +1203,7 @@
     </div>
   </section>
 
-  <section id="projects">
+  <section id="projects" tabindex="-1">
     <div class="section-header">
       <div class="section-label">SELECTED WORK</div>
       <h2 class="section-title">Case Studies</h2>
@@ -1128,7 +1274,7 @@
     </div>
   </section>
 
-  <section id="skills">
+  <section id="skills" tabindex="-1">
     <div class="section-header">
       <div class="section-label">EXPERTISE</div>
       <h2 class="section-title">Technical Skills</h2>
@@ -1194,7 +1340,7 @@
     </div>
   </section>
 
-  <section id="education">
+  <section id="education" tabindex="-1">
     <div class="section-header">
       <div class="section-label">BACKGROUND</div>
       <h2 class="section-title">Education & Certifications</h2>
@@ -1231,7 +1377,7 @@
     </div>
   </section>
 
-  <section id="contact">
+  <section id="contact" tabindex="-1">
     <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
       <div class="section-label">LET'S CONNECT</div>
       <h2 class="section-title">Get In Touch</h2>
@@ -1267,57 +1413,12 @@
       </div>
     </div>
   </section>
+  </main>
 
   <footer>
     <p>&copy; <span id="year"></span> Nikhil Kumar · Big Data Engineer &amp; Cloud Architect</p>
   </footer>
 
-  <script>
-    (function () {
-      'use strict';
-
-      // Add background/blur to the nav once the page is scrolled.
-      var nav = document.getElementById('navbar');
-      if (nav) {
-        var onScroll = function () {
-          nav.classList.toggle('scrolled', window.scrollY > 50);
-        };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-      }
-
-      // Keep the footer year current.
-      var yearEl = document.getElementById('year');
-      if (yearEl) {
-        yearEl.textContent = new Date().getFullYear();
-      }
-
-      // Light/dark theme toggle (preference shared via localStorage).
-      var themeToggle = document.getElementById('themeToggle');
-      if (themeToggle) {
-        var syncToggle = function () {
-          var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-          themeToggle.setAttribute('aria-pressed', String(isLight));
-          themeToggle.setAttribute(
-            'aria-label',
-            isLight ? 'Switch to dark theme' : 'Switch to light theme'
-          );
-        };
-        themeToggle.addEventListener('click', function () {
-          var next =
-            document.documentElement.getAttribute('data-theme') === 'light'
-              ? 'dark'
-              : 'light';
-          document.documentElement.setAttribute('data-theme', next);
-          try {
-            localStorage.setItem('theme', next);
-          } catch (e) { }
-          syncToggle();
-        });
-        syncToggle();
-      }
-    })();
-  </script>
 </body>
 
 </html>

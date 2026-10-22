@@ -21,7 +21,7 @@ end
 
 local function section_id(text, used_ids)
   local id = text:lower()
-    :gsub("[^%w%s-]", "")
+    :gsub("[^a-z0-9%s-]", "")
     :gsub("[%s_]+", "-")
     :gsub("%-+", "-")
     :gsub("^%-", "")
@@ -41,6 +41,27 @@ local function section_id(text, used_ids)
   return candidate
 end
 
+function Image(image)
+  image.attributes.width = nil
+  image.attributes.height = nil
+  image.attributes.loading = "lazy"
+  image.attributes.decoding = "async"
+  return image
+end
+
+function Para(block)
+  if #block.content == 1 and block.content[1].t == "Image" then
+    return pandoc.Div({ block }, pandoc.Attr("", { "article-figure" }))
+  end
+end
+
+local function is_intro_text(block)
+  if block.t == "Para" then
+    return true
+  end
+  return block.t == "Div" and block.classes:includes("article-lead")
+end
+
 function Pandoc(doc)
   local title = text_of(doc.meta.title)
   local cleaned = pandoc.List()
@@ -54,6 +75,11 @@ function Pandoc(doc)
   end
 
   for index, block in ipairs(doc.blocks) do
+    -- Top-level Plain blocks would become anonymous items in the article grid.
+    if block.t == "Plain" then
+      block = pandoc.Para(block.content)
+      block = Para(block) or block
+    end
     local text = text_of(block)
     local in_intro = index <= 6
     local duplicate_title = in_intro
@@ -74,6 +100,14 @@ function Pandoc(doc)
         cleaned:insert(block)
       end
     end
+  end
+
+  local intro = pandoc.List()
+  while #cleaned > 0 and #intro < 3 and is_intro_text(cleaned[1]) do
+    intro:insert(cleaned:remove(1))
+  end
+  if #intro > 0 then
+    doc.meta["article-intro"] = pandoc.MetaBlocks(intro)
   end
 
   doc.blocks = cleaned

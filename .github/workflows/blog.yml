@@ -5,8 +5,9 @@ on:
     branches: [main, master]
     paths:
       - 'posts/**'
-      - 'templates/post-template.html'
+      - 'templates/**'
       - 'scripts/build_blog.py'
+      - 'tests/**'
       - '.github/workflows/blog.yml'
   workflow_dispatch:
 
@@ -36,6 +37,9 @@ jobs:
 
       - name: Install Python dependencies
         run: pip install pyyaml
+
+      - name: Check blog rendering
+        run: python -m unittest discover -s tests
 
       - name: Build blog
         run: python scripts/build_blog.py
