@@ -7,13 +7,16 @@
   <!-- Set theme before paint to avoid flash -->
   <script>
     (function () {
+      var t;
       try {
-        var t = localStorage.getItem('theme');
-        if (t !== 'light' && t !== 'dark') {
-          t = 'light';
-        }
-        document.documentElement.setAttribute('data-theme', t);
-      } catch (e) { }
+        t = localStorage.getItem('theme');
+      } catch (error) {
+        console.warn('Could not read the saved theme preference.', error);
+      }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
   <title>DuckDB: Big Analytics, Small Footprint | Nikhil Kumar</title>
@@ -39,6 +42,8 @@ instead.">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -51,6 +56,7 @@ instead.">
       --accent-dim: #a1a1a6;
       --border: rgba(255, 255, 255, 0.08);
       --highlight: #e50914;
+      --highlight-text: #ff8a91;
       --link: #6ea8fe;
       --text-body: #d4d4d8;
       --code-bg: rgba(255, 255, 255, 0.08);
@@ -69,6 +75,7 @@ instead.">
       --accent-dim: #6e6e73;
       --border: rgba(0, 0, 0, 0.1);
       --highlight: #0071e3;
+      --highlight-text: #005bb5;
       --link: #0071e3;
       --text-body: #333336;
       --code-bg: rgba(0, 0, 0, 0.06);
@@ -116,8 +123,9 @@ instead.">
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
       padding: 0;
       border-radius: 50%;
       background: var(--code-bg);
@@ -139,7 +147,21 @@ instead.">
       padding: 4rem clamp(1rem, 4vw, 3rem) 6rem;
     }
 
-    .article-header { margin-bottom: 3rem; }
+    .article-header {
+      max-width: 68ch;
+      margin: 0 auto 2.25rem;
+      font-size: 1.125rem;
+    }
+
+    .article-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 68ch) minmax(0, 1fr);
+      font-size: 1.125rem;
+    }
+
+    .article-body > * { grid-column: 2; min-width: 0; }
+    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
+    .article-body > table:has(tr > :only-child) { grid-column: 2; }
 
     .article-title {
       font-size: 2.8rem;
@@ -164,34 +186,35 @@ instead.">
       background: color-mix(in srgb, var(--highlight) 15%, transparent);
       border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-size: 0.78rem;
       font-weight: 600;
     }
 
-    #TOC {
+    .article-contents {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 3rem;
+      margin: 1rem 0 2rem;
+      font-size: 1rem;
     }
 
-    #TOC::before {
-      content: 'Contents';
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--highlight);
-      margin-bottom: 1rem;
+    .article-contents summary {
+      min-height: 44px;
+      padding: 0.85rem 1.25rem;
+      color: var(--highlight-text);
+      font-weight: 600;
+      cursor: pointer;
     }
 
+    #TOC { padding: 0 1.25rem 1rem; }
     #TOC ul { list-style: none; }
     #TOC li { margin: 0.4rem 0; }
     #TOC a { color: var(--accent-muted); }
+    #TOC a:hover { color: var(--link); }
     #TOC ul ul { padding-left: 1.2rem; }
+
+    .article-intro { display: flow-root; }
 
     .article-body h2 {
       font-size: 1.65rem;
@@ -225,6 +248,13 @@ instead.">
       color: var(--text-body);
       margin-bottom: 1.3rem;
       overflow-wrap: anywhere;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .article-body :is(table, figcaption, .article-figure) p {
+      text-align: start;
+      hyphens: manual;
     }
 
     .article-body .article-lead p {
@@ -233,21 +263,111 @@ instead.">
       line-height: 1.65;
       margin-bottom: 1.5rem;
     }
-    .article-body ul, .article-body ol { margin: 0 0 1.3rem 1.5rem; color: var(--text-body); }
+    .article-body ul, .article-body ol {
+      margin: 0 0 1.3rem;
+      padding-left: 1.5rem;
+      color: var(--text-body);
+    }
+    #TOC ul { padding-left: 0; margin-bottom: 0; }
+    #TOC ul ul { padding-left: 1.2rem; }
     .article-body li { margin-bottom: 0.5rem; }
 
     .article-body img {
+      display: block;
+      width: 100% !important;
       max-width: 100%;
-      height: auto;
+      height: auto !important;
       border-radius: 12px;
-      margin: 1.5rem 0;
       border: 1px solid var(--border);
     }
 
-    .article-body figure img {
+    .article-body figure,
+    .article-figure {
+      margin: 1.5rem 0;
+    }
+
+    .article-figure p {
+      margin-bottom: 0;
+    }
+
+    .article-body figcaption {
+      max-width: 68ch;
+      margin: 0.5rem auto 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .article-body figcaption p {
+      color: var(--accent-dim);
+    }
+
+    .image-zoom {
       display: block;
-      width: 100% !important;
-      height: auto !important;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--link);
+      font: inherit;
+      text-align: right;
+      cursor: zoom-in;
+    }
+
+    .image-zoom-hint {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .image-viewer {
+      width: calc(100% - 2rem);
+      max-width: 1600px;
+      max-height: calc(100dvh - 2rem);
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-primary);
+      color: var(--accent);
+    }
+
+    .image-viewer::backdrop { background: rgba(0, 0, 0, 0.75); }
+    .image-viewer-panel { padding: 1rem; }
+    .image-viewer-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .image-viewer-header h2 { font-size: 1.2rem; }
+    .image-viewer-header button {
+      min-height: 44px;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--accent);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .image-viewer-panel > p { color: var(--accent-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+    .image-viewer-scroll {
+      max-height: 65dvh;
+      overflow: auto;
+      overscroll-behavior: contain;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .image-viewer-scroll img { display: block; width: auto; max-width: none; height: auto; }
+    .image-viewer-open { overflow: hidden; }
+
+    .image-viewer-panel > a {
+      display: inline-block;
+      padding: 0.5rem 0;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
     }
 
     .article-body blockquote {
@@ -261,6 +381,7 @@ instead.">
     .article-body code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.9em;
+      hyphens: manual;
       background: var(--code-bg);
       padding: 0.15em 0.4em;
       border-radius: 5px;
@@ -282,6 +403,7 @@ instead.">
       background: none;
       padding: 0;
       font-family: 'JetBrains Mono', monospace;
+      font-size: inherit;
     }
 
     .article-body table {
@@ -393,7 +515,11 @@ instead.">
     html { scroll-behavior: smooth; }
 
     @media (max-width: 640px) {
+      .article-wrap { padding-top: 2rem; }
       .article-title { font-size: 2rem; }
+      .article-meta { gap: 0.6rem; }
+      .top-nav { padding: 0.75rem 5%; }
+      .top-nav a { margin-right: 1.5rem; }
       .article-body table[style*="width:1%"] {
         width: 100% !important;
         max-width: 100%;
@@ -403,7 +529,8 @@ instead.">
 </head>
 
 <body>
-  <nav class="top-nav">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <nav class="top-nav" aria-label="Site">
     <a href="/">&larr; Portfolio</a>
     <a href="/blog/">All posts</a>
     <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
@@ -417,6 +544,7 @@ instead.">
     </button>
   </nav>
 
+  <main id="main-content" tabindex="-1">
   <article class="article-wrap">
     <header class="article-header">
       <h1 class="article-title">DuckDB: Big Analytics, Small
@@ -431,7 +559,22 @@ Footprint</h1>
       </div>
     </header>
 
-    <nav id="TOC" role="doc-toc">
+    <div class="article-body">
+      <div class="article-intro">
+<p>You have 20 GB of event data and one question: which markets
+generated the most revenue last month? Reaching for a Spark cluster is
+understandable. It is not always necessary.</p>
+<p><strong>Several gigabytes is a data size, not a distributed-systems
+requirement.</strong> Before distributing the work, check whether one
+machine can scan less data, execute efficiently, and keep intermediate
+state under control.</p>
+<p>DuckDB makes that a practical starting point: an analytical SQL
+database you can import into Python and run locally. No cluster, driver
+service, or network hop is required.</p>
+      </div>
+      <details class="article-contents" id="article-contents">
+        <summary>Contents</summary>
+        <nav id="TOC" role="doc-toc" aria-label="Table of contents">
     <ul>
     <li><a href="#the-philosophy-bring-the-engine-to-the-data"
     id="toc-the-philosophy-bring-the-engine-to-the-data">1. The
@@ -453,25 +596,17 @@ Footprint</h1>
     its keep</a></li>
     <li><a href="#sources" id="toc-sources">Sources</a></li>
     </ul>
-    </nav>
-
-    <div class="article-body">
-<p>You have 20 GB of event data and one question: which markets
-generated the most revenue last month? Reaching for a Spark cluster is
-understandable. It is not always necessary.</p>
-<p><strong>Several gigabytes is a data size, not a distributed-systems
-requirement.</strong> Before distributing the work, check whether one
-machine can scan less data, execute efficiently, and keep intermediate
-state under control.</p>
-<p>DuckDB makes that a practical starting point: an analytical SQL
-database you can import into Python and run locally. No cluster, driver
-service, or network hop is required.</p>
-<p><img src="assets/duckdb-big-analytics-small-footprint/media/rId9.png"
-style="width:5.83333in;height:2.83565in"
-alt="Choose the tool by the job: pandas for precise notebook work, DuckDB or Polars for local analytics, and distributed platforms for shared or scale-out workloads." /></p>
-<p>Choose the tool by the job: pandas for precise notebook work, DuckDB
-or Polars for local analytics, and distributed platforms for shared or
-scale-out workloads.</p>
+        </nav>
+      </details>
+<figure>
+<img src="assets/duckdb-big-analytics-small-footprint/media/rId9.png"
+loading="lazy" decoding="async"
+alt="Choose the tool by the job: pandas for precise notebook work, DuckDB or Polars for local analytics, and distributed platforms for shared or scale-out workloads." />
+<figcaption aria-hidden="true"><p>Choose the tool by the job: pandas for
+precise notebook work, DuckDB or Polars for local analytics, and
+distributed platforms for shared or scale-out
+workloads.</p></figcaption>
+</figure>
 <h2 id="the-philosophy-bring-the-engine-to-the-data">1. The philosophy:
 bring the engine to the data</h2>
 <p>Think of pandas as a needle: excellent for precise, flexible work
@@ -506,13 +641,15 @@ its filter columns. Parquet lets DuckDB avoid reading the other 36,
 rather than load and discard them. Date pruning helps most when row
 groups cover narrow date ranges; if every group spans the whole year, a
 September filter may skip very little.</p>
-<p><img
-src="assets/duckdb-big-analytics-small-footprint/media/rId13.png"
-style="width:5.83333in;height:3.0787in"
-alt="A conceptual query pipeline: prune Parquet data, scan selected columns, filter column batches, aggregate, and return a small result. Blocking operators may spill intermediate state to SSD." /></p>
-<p>A conceptual query pipeline: prune Parquet data, scan selected
-columns, filter column batches, aggregate, and return a small result.
-Blocking operators may spill intermediate state to SSD.</p>
+<figure>
+<img src="assets/duckdb-big-analytics-small-footprint/media/rId13.png"
+loading="lazy" decoding="async"
+alt="A conceptual query pipeline: prune Parquet data, scan selected columns, filter column batches, aggregate, and return a small result. Blocking operators may spill intermediate state to SSD." />
+<figcaption aria-hidden="true"><p>A conceptual query pipeline: prune
+Parquet data, scan selected columns, filter column batches, aggregate,
+and return a small result. Blocking operators may spill intermediate
+state to SSD.</p></figcaption>
+</figure>
 <p>DuckDB’s documented default vector size is <strong>2,048
 rows</strong>. Processing typed column batches reduces per-row overhead
 and improves CPU-cache locality. Multiple threads can process different
@@ -597,14 +734,15 @@ deserve different tools. [4]</p>
 Floating-Point Compression)</strong> arrived in DuckDB 0.10.0. It
 exploits decimal-like structure where suitable, with exception/fallback
 paths that preserve values exactly. [5]</p>
-<p><img
-src="assets/duckdb-big-analytics-small-footprint/media/rId19.png"
-style="width:5.83333in;height:3.0787in"
-alt="Historical DuckDB 0.10.0 example: Patas used 275 MB with an 80 ms query, ALP used 184 MB with a 20 ms query, and uncompressed used 489 MB with a 12 ms query. Lower is better; this is not a cross-engine benchmark." /></p>
-<p>Historical DuckDB 0.10.0 example: Patas used 275 MB with an 80 ms
-query, ALP used 184 MB with a 20 ms query, and uncompressed used 489 MB
-with a 12 ms query. Lower is better; this is not a cross-engine
-benchmark.</p>
+<figure>
+<img src="assets/duckdb-big-analytics-small-footprint/media/rId19.png"
+loading="lazy" decoding="async"
+alt="Historical DuckDB 0.10.0 example: Patas used 275 MB with an 80 ms query, ALP used 184 MB with a 20 ms query, and uncompressed used 489 MB with a 12 ms query. Lower is better; this is not a cross-engine benchmark." />
+<figcaption aria-hidden="true"><p>Historical DuckDB 0.10.0 example:
+Patas used 275 MB with an 80 ms query, ALP used 184 MB with a 20 ms
+query, and uncompressed used 489 MB with a 12 ms query. Lower is better;
+this is not a cross-engine benchmark.</p></figcaption>
+</figure>
 <p>In that historical example, ALP was smaller and faster than Patas;
 uncompressed execution was faster still. <strong>Compression pays when
 saved data movement outweighs decoding work.</strong></p>
@@ -613,42 +751,42 @@ native DuckDB codecs. Parquet’s own encodings and page compression apply
 there.</p>
 <h2 id="duckdb-pandas-polars-or-dask">5. DuckDB, pandas, Polars, or
 Dask?</h2>
-<table>
+<table style="width:85%;">
 <colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Tool</th>
 <th>Start here when…</th>
 <th>Watch for…</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>pandas</td>
 <td>Data fits comfortably; exploratory manipulation and Python-library
 compatibility dominate.</td>
 <td>Eager intermediates and object-heavy columns can inflate memory.
 Vectorized pandas is not a Python row loop.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>DuckDB</td>
 <td>The question is naturally SQL: joins, aggregations, windows, and
 file-based analytics.</td>
 <td>Large intermediate state, result materialization, and the limits of
 one host.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Polars</td>
 <td>You prefer a DataFrame expression API with a lazy, parallel query
 engine.</td>
 <td>Use lazy scans for pushdown; streaming support and memory needs
 depend on the query.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Dask</td>
 <td>You need partitioned Python/DataFrame computation, custom task
 graphs, or a path to multiple workers.</td>
@@ -667,45 +805,45 @@ RAM use.</p>
 <p>Hardware: Apple M5 Max, 48 GiB RAM, local storage; Python 3.11.16,
 PyArrow 26.0.0. Native thread pools were capped at four where
 configurable; pandas aggregation was not made parallel.</p>
-<table>
+<table style="width:85%;">
 <colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Engine/version</th>
-<th>First query</th>
-<th>Repeat query</th>
-<th>Peak process RSS</th>
+<th style="text-align: right;">First query</th>
+<th style="text-align: right;">Repeat query</th>
+<th style="text-align: right;">Peak process RSS</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>DuckDB 1.4.5</td>
-<td>178.3 ms</td>
-<td>18.3 ms</td>
-<td>129 MiB</td>
+<td style="text-align: right;">178.3 ms</td>
+<td style="text-align: right;">18.3 ms</td>
+<td style="text-align: right;">129 MiB</td>
 </tr>
-<tr class="even">
+<tr>
 <td>pandas 3.0.6</td>
-<td>67.0 ms</td>
-<td>41.5 ms</td>
-<td>389 MiB</td>
+<td style="text-align: right;">67.0 ms</td>
+<td style="text-align: right;">41.5 ms</td>
+<td style="text-align: right;">389 MiB</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Polars 2.0.0</td>
-<td>17.7 ms</td>
-<td>15.5 ms</td>
-<td>140 MiB</td>
+<td style="text-align: right;">17.7 ms</td>
+<td style="text-align: right;">15.5 ms</td>
+<td style="text-align: right;">140 MiB</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Dask 2026.8.0</td>
-<td>32.1 ms</td>
-<td>23.6 ms</td>
-<td>390 MiB</td>
+<td style="text-align: right;">32.1 ms</td>
+<td style="text-align: right;">23.6 ms</td>
+<td style="text-align: right;">390 MiB</td>
 </tr>
 </tbody>
 </table>
@@ -785,25 +923,20 @@ Photon: vectorized execution and platform integration</a>.</li>
       <p>Written by Nikhil Kumar &middot; <a href="/blog/">Back to all posts</a></p>
     </footer>
   </article>
-
-  <script>
-    (function () {
-      var themeToggle = document.getElementById('themeToggle');
-      if (!themeToggle) return;
-      var syncToggle = function () {
-        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        themeToggle.setAttribute('aria-pressed', String(isLight));
-        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
-      };
-      themeToggle.addEventListener('click', function () {
-        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        try { localStorage.setItem('theme', next); } catch (e) { }
-        syncToggle();
-      });
-      syncToggle();
-    })();
-  </script>
+  </main>
+  <dialog id="image-viewer" class="image-viewer" aria-labelledby="image-viewer-title">
+    <div class="image-viewer-panel">
+      <div class="image-viewer-header">
+        <h2 id="image-viewer-title">Full-size diagram</h2>
+        <button type="button" autofocus>Close</button>
+      </div>
+      <p id="image-viewer-help">Scroll to explore the image. Press Escape or Close to return to the article.</p>
+      <div class="image-viewer-scroll" role="region" tabindex="0" aria-labelledby="image-viewer-title" aria-describedby="image-viewer-help">
+        <img alt="">
+      </div>
+      <a href="#" target="_blank" rel="noopener">Open original image in a new tab</a>
+    </div>
+  </dialog>
 </body>
 
 </html>

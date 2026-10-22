@@ -9,7 +9,13 @@ platforms across Azure, AWS, and GCP.
 
 A single-page, dependency-free portfolio built with plain HTML, CSS, and vanilla
 JavaScript — no build step, no framework, no external runtime libraries. Everything
-ships from [index.html](index.html).
+is served as static files: [index.html](index.html) and shared UI assets in
+[`assets/site.css`](assets/site.css) and [`assets/site.js`](assets/site.js).
+
+The portfolio and blog share system-aware light/dark themes, keyboard focus
+styles, skip links, and reduced-motion support. Compact screens get a
+collapsible navigation menu; articles keep prose narrow while allowing wider
+diagrams, tables, and code.
 
 ## Highlights
 
@@ -34,13 +40,11 @@ ships from [index.html](index.html).
 
 ## Local preview
 
-No tooling required — open the file directly, or serve it with any static server:
+Serve the repository root with any static server so shared assets and blog links
+resolve correctly:
 
 ```powershell
-# Option 1: just open it
-Start-Process index.html
-
-# Option 2: serve locally (requires Python)
+# Requires Python
 python -m http.server 8000
 # then visit http://localhost:8000
 ```
@@ -48,15 +52,17 @@ python -m http.server 8000
 ## Project structure
 
 ```
-index.html                     # entire portfolio (markup, styles, and script)
+index.html                     # portfolio markup and page-specific styles
 sitemap.xml, robots.txt        # SEO
 blog/                          # generated blog (index.html + post HTML)
 posts/                         # source Word docs (.docx) + optional .meta.yaml
 templates/post-template.html   # Pandoc template for blog posts
+templates/strip-title.lua      # Word cleanup, introduction, and image normalization
 scripts/build_blog.py          # docx -> HTML build script
+tests/test_blog_rendering.py   # Pandoc and listing regression checks
 .github/workflows/blog.yml     # auto-publishes posts on push
 img/                           # profile photo, company logos
-assets/                        # downloadable resume PDF
+assets/                        # shared UI CSS/JS, resume, and original diagrams
 LICENSE                        # MIT
 ```
 
@@ -70,6 +76,9 @@ Write in Word, save a `.docx` into `posts/`, and push. A GitHub Action runs
 that matches the portfolio design (TOC, reading time, tags, syntax-highlighted
 code). See [posts/README.md](posts/README.md) for the optional metadata sidecar
 format and how to build locally.
+
+The homepage's **Selected Writing** cards are curated in `index.html`; update
+their links and metadata when changing featured articles.
 
 ```powershell
 # Build locally (requires pandoc on PATH and: pip install pyyaml)

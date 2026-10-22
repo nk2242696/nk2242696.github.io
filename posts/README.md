@@ -35,6 +35,27 @@ python scripts/build_blog.py
 Generated files land in `blog/` (post HTML + `blog/assets/<slug>/` for images).
 Do not edit files in `blog/` by hand — they are overwritten on each build.
 
+## Shared article UI
+
+Change article layout in `templates/post-template.html`, Word cleanup in
+`templates/strip-title.lua`, and the listing in `scripts/build_blog.py`.
+Shared theme, navigation, focus, and motion behavior lives in `assets/site.css`
+and `assets/site.js`. Rebuild after changing a template or the Lua filter.
+
+Up to three opening text paragraphs appear before the contents; posts that
+start with a heading use their metadata description instead. Contents open
+by default on desktop and collapse on mobile. Article prose is justified with
+automatic hyphenation; headings, captions, tables, and code retain their normal
+alignment. Fixed Word image dimensions are
+removed so diagrams fit the article; **View larger** opens an accessible
+full-resolution viewer with scrolling, a Close button, and Escape support.
+
+Run rendering regression checks with the same dependencies as the build:
+
+```bash
+python3 -m unittest discover -s tests
+```
+
 ## Editing the DuckDB article
 
 `duckdb-big-analytics-small-footprint.md` is the editable authoring source.

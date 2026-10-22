@@ -7,13 +7,16 @@
   <!-- Set theme before paint to avoid flash -->
   <script>
     (function () {
+      var t;
       try {
-        var t = localStorage.getItem('theme');
-        if (t !== 'light' && t !== 'dark') {
-          t = 'light';
-        }
-        document.documentElement.setAttribute('data-theme', t);
-      } catch (e) { }
+        t = localStorage.getItem('theme');
+      } catch (error) {
+        console.warn('Could not read the saved theme preference.', error);
+      }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
   <title>Blog | Nikhil Kumar</title>
@@ -24,6 +27,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -36,6 +41,7 @@
       --accent-dim: #a1a1a6;
       --border: rgba(255, 255, 255, 0.08);
       --highlight: #e50914;
+      --highlight-text: #ff8a91;
       --code-bg: rgba(255, 255, 255, 0.08);
       --shadow-card: rgba(0, 0, 0, 0.6);
       --nav-bg: rgba(10, 10, 10, 0.9);
@@ -50,6 +56,7 @@
       --accent-dim: #6e6e73;
       --border: rgba(0, 0, 0, 0.1);
       --highlight: #0071e3;
+      --highlight-text: #005bb5;
       --code-bg: rgba(0, 0, 0, 0.06);
       --shadow-card: rgba(0, 0, 0, 0.1);
       --nav-bg: rgba(255, 255, 255, 0.9);
@@ -91,8 +98,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
       padding: 0;
       border-radius: 50%;
       background: var(--code-bg);
@@ -114,7 +122,7 @@
 
     .blog-label {
       font-size: 0.8rem;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -148,6 +156,7 @@
 
     .post-meta {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.8rem;
       color: var(--accent-dim);
       font-size: 0.85rem;
@@ -164,18 +173,29 @@
       background: color-mix(in srgb, var(--highlight) 15%, transparent);
       border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
       border-radius: 50px;
-      color: var(--highlight);
+      color: var(--highlight-text);
       font-size: 0.78rem;
       font-weight: 600;
     }
 
     .empty { color: var(--accent-dim); }
     .empty code { background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 5px; }
+
+    @media (max-width: 640px) {
+      .top-nav { padding: 0.75rem 5%; }
+      .top-nav a { margin-right: 1.5rem; }
+      .blog-wrap { padding-top: 2rem; }
+      .blog-header { margin-bottom: 2rem; }
+      .blog-header h1 { font-size: 2.2rem; }
+      .post-card { padding: 1.5rem; }
+      .post-card h2 { font-size: 1.3rem; line-height: 1.4; }
+    }
   </style>
 </head>
 
 <body>
-  <nav class="top-nav">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <nav class="top-nav" aria-label="Site">
     <a href="/">&larr; Portfolio</a>
     <a href="/blog/">All posts</a>
     <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
@@ -189,7 +209,7 @@
     </button>
   </nav>
 
-  <main class="blog-wrap">
+  <main class="blog-wrap" id="main-content" tabindex="-1">
     <header class="blog-header">
       <div class="blog-label">Writing</div>
       <h1>Technical Blog</h1>
@@ -244,24 +264,6 @@
     </div>
   </main>
 
-  <script>
-    (function () {
-      var themeToggle = document.getElementById('themeToggle');
-      if (!themeToggle) return;
-      var syncToggle = function () {
-        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        themeToggle.setAttribute('aria-pressed', String(isLight));
-        themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
-      };
-      themeToggle.addEventListener('click', function () {
-        var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        try { localStorage.setItem('theme', next); } catch (e) { }
-        syncToggle();
-      });
-      syncToggle();
-    })();
-  </script>
 </body>
 
 </html>
