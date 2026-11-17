@@ -162,8 +162,7 @@ approval.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -408,15 +407,21 @@ approval.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -649,6 +654,8 @@ calculate financial facts. Agents coordinate investigation. Governance
 evaluates proposals. APIs and dashboards present outcomes.
 Infrastructure exists to make those modules repeatable and observable —
 nothing more.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 32%" />
@@ -683,6 +690,7 @@ implementation details.</td>
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="a-modular-core-keeps-change-local">A modular core keeps change
 local</h2>
 <hr />
@@ -697,6 +705,8 @@ contracts; observability owns metrics and dashboards. Each of those maps
 directly onto a top-level package in the repository (src/collection,
 src/monitoring, src/agents, and so on), so the module boundary on paper
 is the same one enforced by the import graph.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 23%" />
@@ -743,6 +753,7 @@ is the same one enforced by the import graph.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>The pattern that actually enforces this is dependency direction.
 Business and agent code depend on interfaces — cost repositories,
 inventory tools, model factories — not on concrete SDK calls.
@@ -777,6 +788,8 @@ general document store makes those relationships and aggregations harder
 to express; a metrics-only store is weak for transactions, joins,
 approvals, and audit records — all things this platform needs on the
 same data.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 23%" />
@@ -822,6 +835,7 @@ operational database boundary.</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>This is a deliberately reversible choice. SQLAlchemy repositories
 isolate the application from storage details, and Alembic gives schema
 evolution an explicit lifecycle. If scale later requires a warehouse or
@@ -915,6 +929,8 @@ are selected by evidence need — not by job-title theatre</h2>
 <hr />
 <p><em>More agents are not automatically better. Each persona must own a
 distinct decision boundary.</em></p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 34%" />
@@ -961,6 +977,7 @@ distinct decision boundary.</em></p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>The orchestrator doesn't call every persona by default — it selects
 the minimum evidence-producing specialists the question actually
 requires. The optimizer and governance reviewer are mandatory only for
@@ -1117,6 +1134,8 @@ continuation. That separation matters operationally: the business audit
 model can stay stable even if the orchestration library changes
 underneath it, because product APIs were never coupled to framework
 internals in the first place.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 50%" />
@@ -1142,6 +1161,7 @@ errors</td>
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="why-docker-compose-for-the-reference-deployment">Why Docker
 Compose for the reference deployment</h2>
 <hr />
@@ -1162,6 +1182,8 @@ start.</p>
 <hr />
 <p>Extension is meant to mean adding a module or an adapter — not
 editing every layer to accommodate one new requirement.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 32%" />
@@ -1216,6 +1238,7 @@ and separation of duties.</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>That last row is intentionally not implemented. Advisory intelligence
 and cloud mutation have different threat models, and combining them
 early would increase blast radius and make human approval ambiguous. A
@@ -1277,6 +1300,8 @@ environment, dashboards, and release workflow are available in the
 public repository:</p>
 <p><strong>GitHub repository →</strong> <a
 href="https://github.com/nk2242696/CostMonitoringMultiAgent">github.com/nk2242696/CostMonitoringMultiAgent</a></p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 27%" />
@@ -1308,6 +1333,7 @@ Prometheus, Grafana</td>
 </tr>
 </tbody>
 </table>
+</div>
     </div>
 
     <footer class="article-footer">

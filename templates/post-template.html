@@ -158,8 +158,7 @@ $endif$
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -404,15 +403,21 @@ $endif$
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);

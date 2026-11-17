@@ -104,6 +104,35 @@ class BlogRenderingTests(unittest.TestCase):
         self.assertNotIn('<header class="article-header">', output)
         self.assertEqual(output.count("An opening lead."), 1)
 
+    def test_data_tables_get_accessible_prose_width_scroll_container(self):
+        output = self.render(
+            '<p>Opening text.</p>'
+            '<table style="width:85%;">'
+            '<caption>Column choices</caption>'
+            '<thead><tr><th>Type</th><th>Range</th><th>Bytes</th></tr></thead>'
+            '<tbody><tr><td>tinyint</td><td>0 to 255</td><td>1</td></tr></tbody>'
+            '</table>',
+            reader="html",
+        )
+        self.assertRegex(output, r'<div class="article-table"[^>]*>\s*<table')
+        self.assertIn('role="region"', output)
+        self.assertIn('aria-label="Scrollable table"', output)
+        self.assertIn('tabindex="0"', output)
+        self.assertIn('<caption>Column choices</caption>', output)
+        self.assertIn('<th>Type</th>', output)
+        self.assertEqual(output.count('<td>0 to 255</td>'), 1)
+
+    def test_single_cell_word_callouts_keep_existing_layout(self):
+        output = self.render(
+            '<table style="width:1%;"><tbody><tr><td>'
+            '<p><strong>Note</strong></p><p>A useful warning.</p>'
+            '</td></tr></tbody></table>',
+            reader="html",
+        )
+        self.assertNotIn('<div class="article-table"', output)
+        self.assertIn('<table', output)
+        self.assertEqual(output.count('A useful warning.'), 1)
+
     def test_top_level_plain_text_becomes_paragraphs_but_lists_stay_compact(self):
         output = self.render(
             '[Plain [Str "Opening", Space, Str "text."],'

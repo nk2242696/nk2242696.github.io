@@ -14,8 +14,9 @@ is served as static files: [index.html](index.html) and shared UI assets in
 
 The portfolio and blog share system-aware light/dark themes, keyboard focus
 styles, skip links, and reduced-motion support. Compact screens get a
-collapsible navigation menu; articles keep prose narrow while allowing wider
-diagrams, tables, and code.
+collapsible navigation menu; articles align tables and code with the prose column
+while allowing wider diagrams. Wide tables and long code lines scroll within the
+text column.
 
 ## Highlights
 

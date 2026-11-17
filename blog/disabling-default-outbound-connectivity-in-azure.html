@@ -160,8 +160,7 @@ controlled internet path.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -406,15 +405,21 @@ controlled internet path.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -683,6 +688,8 @@ default. A compromised process can call an unknown internet destination
 through the same invisible path, and operators may not have a stable
 public IP, a central inspection point, or even a clear diagram showing
 how the traffic leaves.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 50%" />
@@ -713,6 +720,7 @@ how the traffic leaves.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <table>
 <colgroup>
 <col style="width: 100%" />
@@ -763,6 +771,8 @@ alt="A private workload can use NAT Gateway, Load Balancer outbound rules, Firew
 </div>
 <p><em>Figure 3. Different outbound methods solve different security and
 ownership problems.</em></p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 25%" />
@@ -814,6 +824,7 @@ services</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>For a typical private application subnet that simply needs a stable
 way to call public services, NAT Gateway is usually the easiest explicit
 choice. If the organization must control destinations or inspect

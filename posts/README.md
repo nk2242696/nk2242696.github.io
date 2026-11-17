@@ -46,7 +46,8 @@ Up to three opening text paragraphs appear before the contents; posts that
 start with a heading use their metadata description instead. Contents open
 by default on desktop and collapse on mobile. Article prose is justified with
 automatic hyphenation; headings, captions, tables, and code retain their normal
-alignment. Fixed Word image dimensions are
+alignment. Tables and code blocks match the prose width and scroll horizontally
+when needed. Fixed Word image dimensions are
 removed so diagrams fit the article; **View larger** opens an accessible
 full-resolution viewer with scrolling, a Close button, and Escape support.
 
@@ -54,6 +55,19 @@ Run rendering regression checks with the same dependencies as the build:
 
 ```bash
 python3 -m unittest discover -s tests
+```
+
+## Editing the data modeling article
+
+`data-dimensional-modeling-design-now-save-later.md` is the editable source;
+the matching `.docx` is the publishing input. After editing, regenerate and
+commit both sources along with the built blog:
+
+```bash
+(cd posts && pandoc data-dimensional-modeling-design-now-save-later.md \
+  --from markdown --to docx \
+  -o data-dimensional-modeling-design-now-save-later.docx)
+python3 scripts/build_blog.py
 ```
 
 ## Editing the DuckDB article

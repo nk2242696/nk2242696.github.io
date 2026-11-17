@@ -162,8 +162,7 @@ MCP connectors, and parallel worktree workflows.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -408,15 +407,21 @@ MCP connectors, and parallel worktree workflows.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -716,6 +721,8 @@ optional scripts the agent can run. The description is the clever part:
 Claude reads it and pulls the Skill in <em>by itself</em> when your
 request matches, no command needed. You’re not just saving a prompt,
 you’re teaching a capability the agent knows when to reach for.</p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
 <table style="width:85%;">
 <colgroup>
 <col style="width: 28%" />
@@ -747,6 +754,7 @@ you’re teaching a capability the agent knows when to reach for.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>Write the description like you’re telling a colleague when to
 interrupt you: specific enough to fire on the right requests, not so
 broad it jumps in on everything.</p>

@@ -160,8 +160,7 @@ instead.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -406,15 +405,21 @@ instead.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -751,6 +756,8 @@ native DuckDB codecs. Parquet’s own encodings and page compression apply
 there.</p>
 <h2 id="duckdb-pandas-polars-or-dask">5. DuckDB, pandas, Polars, or
 Dask?</h2>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table style="width:85%;">
 <colgroup>
 <col style="width: 28%" />
@@ -795,6 +802,7 @@ the computation.</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>Polars also supports pushdown and streaming for supported
 larger-than-memory workloads. Dask can run locally too. [6]</p>
 <p><strong>One measured comparison, not a leaderboard.</strong> I ran
@@ -805,6 +813,8 @@ RAM use.</p>
 <p>Hardware: Apple M5 Max, 48 GiB RAM, local storage; Python 3.11.16,
 PyArrow 26.0.0. Native thread pools were capped at four where
 configurable; pandas aggregation was not made parallel.</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table style="width:85%;">
 <colgroup>
 <col style="width: 21%" />
@@ -847,6 +857,7 @@ configurable; pandas aggregation was not made parallel.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>Each engine used a fresh process and two timed
 read/filter/group/sort/materialize runs, excluding imports.
 pandas/PyArrow and Dask received scan filters and column selections;

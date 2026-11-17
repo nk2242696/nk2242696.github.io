@@ -160,8 +160,7 @@ text, JSON, mixed-file, and audio datasets.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -406,15 +405,21 @@ text, JSON, mixed-file, and audio datasets.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -743,6 +748,8 @@ compression and 61 MB/s decompression at level 6.</p>
 latency-sensitive pipelines.</p>
 <h2 id="strengths-and-weaknesses-at-a-glance">Strengths and Weaknesses
 (At a Glance)</h2>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table style="width:85%;">
 <colgroup>
 <col style="width: 16%" />
@@ -805,10 +812,13 @@ latency-sensitive pipelines.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="live-benchmark-results">Live Benchmark Results</h2>
 <p>The July 2026 standard run processed 2.43 GiB of public data with six
 codecs, five measured repetitions per case, and zero failures. These
 enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 20%" />
@@ -871,6 +881,7 @@ enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>On 977.8 MiB of GitHub Archive JSON, zstd reached an 11.3× ratio at
 389 MB/s, while LZ4 decompressed at 617 MB/s and Snappy compressed at
 570 MB/s. The data type changes the result, so use the matrices rather
