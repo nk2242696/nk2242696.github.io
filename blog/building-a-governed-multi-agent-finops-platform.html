@@ -617,9 +617,9 @@ loading="lazy" decoding="async" /></p>
 </div>
 <p><em>High-level architecture: evidence flows inward; governed
 decisions flow outward.</em></p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -634,7 +634,6 @@ reasoning actually adds value.</p></td>
 </table>
 <h2 id="why-a-cost-dashboard-becomes-an-architecture-problem">Why a cost
 dashboard becomes an architecture problem</h2>
-<hr />
 <p>Cloud cost platforms begin simply: ingest billing data, calculate
 totals, and draw a dashboard. The complexity arrives later, when users
 start asking higher-order questions — why did spend move, which resource
@@ -654,8 +653,8 @@ calculate financial facts. Agents coordinate investigation. Governance
 evaluates proposals. APIs and dashboards present outcomes.
 Infrastructure exists to make those modules repeatable and observable —
 nothing more.</p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 32%" />
@@ -693,7 +692,6 @@ implementation details.</td>
 </div>
 <h2 id="a-modular-core-keeps-change-local">A modular core keeps change
 local</h2>
-<hr />
 <p>A senior architecture optimizes for the cost of the next change, not
 just the first release. In this platform, ownership is split along the
 lines a team would actually need to change independently: Azure
@@ -705,8 +703,8 @@ contracts; observability owns metrics and dashboards. Each of those maps
 directly onto a top-level package in the repository (src/collection,
 src/monitoring, src/agents, and so on), so the module boundary on paper
 is the same one enforced by the import graph.</p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 23%" />
@@ -762,9 +760,9 @@ to swap Azure OpenAI for an OpenAI-compatible endpoint, replace
 PostgreSQL with another repository implementation, or present through
 something other than Grafana without touching the reasoning model at
 all.</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -777,7 +775,6 @@ missing.</p></td>
 </table>
 <h2 id="why-postgresql-plus-timescaledb">Why PostgreSQL plus
 TimescaleDB</h2>
-<hr />
 <p><em>Cost data is relational in meaning and time-series in access
 pattern.</em></p>
 <p>Azure cost records have dimensions — subscription, service, resource,
@@ -788,8 +785,8 @@ general document store makes those relationships and aggregations harder
 to express; a metrics-only store is weak for transactions, joins,
 approvals, and audit records — all things this platform needs on the
 same data.</p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 23%" />
@@ -843,7 +840,6 @@ lakehouse, ingestion can fan out to it without forcing the API and agent
 layers to understand the migration.</p>
 <h2 id="why-langgraph-instead-of-a-chain-of-prompts">Why LangGraph
 instead of a chain of prompts</h2>
-<hr />
 <p><em>Coordination needs state, branching, fan-out, retries, budgets,
 and durable checkpoints.</em></p>
 <div class="article-figure">
@@ -872,9 +868,9 @@ could ignore. The orchestrator's plan produces a list of selected
 personas; a routing function filters that list against the personas
 actually allowed to produce evidence, then fans out one graph branch per
 persona:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -898,9 +894,9 @@ decides which ones are actually allowed to run.</em></p>
 request refinement from specific personas, but only up to a fixed round
 limit, and only for personas on the evidence allow-list — so a model
 can't argue its way into an unbounded loop:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -926,11 +922,10 @@ stop.</em></p>
 <h2
 id="personas-are-selected-by-evidence-need-not-by-job-title-theatre">Personas
 are selected by evidence need — not by job-title theatre</h2>
-<hr />
 <p><em>More agents are not automatically better. Each persona must own a
 distinct decision boundary.</em></p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 34%" />
@@ -988,9 +983,9 @@ around the control point.</p>
 personality. A persona's system prompt, prompt version, and — critically
 — its allowed tool list are declared once as data, not re-derived from a
 role description scattered across prompts:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -1026,9 +1021,9 @@ evidence source, policy, or evaluation suite — not merely because
 another title sounds plausible. That rule keeps orchestration
 understandable and avoids token-heavy agent debates that produce no
 additional evidence.</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -1043,7 +1038,6 @@ personas.</p></td>
 <h2
 id="tools-are-the-anti-coupling-layer-between-ai-and-infrastructure">Tools
 are the anti-coupling layer between AI and infrastructure</h2>
-<hr />
 <p><em>The model asks for evidence; application code decides whether and
 how that evidence may be retrieved.</em></p>
 <p>Agents never receive database connections or Azure credentials. They
@@ -1056,9 +1050,9 @@ influence.</p>
 tool ever runs: the tool has to be read-only, and the calling persona
 has to be explicitly granted access to it. Neither is a prompt
 instruction the model could talk its way around:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -1084,7 +1078,6 @@ adding a tool adapter and an evidence contract, not teaching every
 persona about a new backend.</p>
 <h2 id="governance-is-part-of-the-graph-not-a-disclaimer">Governance is
 part of the graph, not a disclaimer</h2>
-<hr />
 <p><em>A recommendation is useful only when its evidence, uncertainty,
 risk, and approval status travel with it.</em></p>
 <div class="article-figure">
@@ -1098,9 +1091,9 @@ state.</em></p>
 comment — it makes a proposal impossible to construct without it.
 requires_human_approval is typed as Literal[True], so there's no valid
 instance of the object where that flag is false:</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -1134,8 +1127,8 @@ continuation. That separation matters operationally: the business audit
 model can stay stable even if the orchestration library changes
 underneath it, because product APIs were never coupled to framework
 internals in the first place.</p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 50%" />
@@ -1164,7 +1157,6 @@ errors</td>
 </div>
 <h2 id="why-docker-compose-for-the-reference-deployment">Why Docker
 Compose for the reference deployment</h2>
-<hr />
 <p>The goal here is a reproducible architecture boundary, not a claim
 that Compose is the final production platform. The reference stack
 packages PostgreSQL/TimescaleDB, a one-shot migration job, FastAPI, a
@@ -1179,11 +1171,10 @@ and managed observability — the application modules don't need to
 change, because deployment concerns were kept outside them from the
 start.</p>
 <h2 id="how-the-architecture-extends">How the architecture extends</h2>
-<hr />
 <p>Extension is meant to mean adding a module or an adapter — not
 editing every layer to accommodate one new requirement.</p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 32%" />
@@ -1246,7 +1237,6 @@ mature architecture earns autonomy only after evidence quality,
 evaluation, identity, rollback, and operational ownership are proven —
 not before.</p>
 <h2 id="what-i-would-measure-next">What I would measure next</h2>
-<hr />
 <p>None of the following is instrumented yet — this platform is
 advisory-by-default and still early. But architecture quality should
 eventually become visible through system behavior, not only through
@@ -1266,7 +1256,6 @@ from insight to approval.</p></li>
 and zero mutation events.</p></li>
 </ul>
 <h2 id="closing-perspective">Closing perspective</h2>
-<hr />
 <p>The most important AI decisions here turned out to be conventional
 software-engineering decisions. The platform became extensible not
 because it uses six personas, but because each responsibility got a
@@ -1280,9 +1269,9 @@ longer an all-knowing service hidden behind one endpoint — it's one
 replaceable reasoning dependency inside a system that controls evidence,
 authority, state, cost, and failure. That's the difference between
 adding an LLM feature and engineering an AI platform.</p>
-<table style="width:1%;">
+<table>
 <colgroup>
-<col style="width: 1%" />
+<col style="width: 100%" />
 </colgroup>
 <tbody>
 <tr>
@@ -1294,14 +1283,13 @@ step bounded and observable.</p></td>
 </tbody>
 </table>
 <h2 id="explore-the-implementation">Explore the implementation</h2>
-<hr />
 <p>The complete source, architecture documentation, tests, Docker
 environment, dashboards, and release workflow are available in the
 public repository:</p>
 <p><strong>GitHub repository →</strong> <a
 href="https://github.com/nk2242696/CostMonitoringMultiAgent">github.com/nk2242696/CostMonitoringMultiAgent</a></p>
-<div class="article-table" role="region" aria-label="Scrollable table"
-tabindex="0">
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 27%" />
