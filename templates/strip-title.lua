@@ -49,6 +49,16 @@ function Image(image)
   return image
 end
 
+function Table(element)
+  if #element.colspecs > 1 then
+    return pandoc.Div({ element }, pandoc.Attr("", { "article-table" }, {
+      role = "region",
+      ["aria-label"] = "Scrollable table",
+      tabindex = "0",
+    }))
+  end
+end
+
 function Para(block)
   if #block.content == 1 and block.content[1].t == "Image" then
     return pandoc.Div({ block }, pandoc.Attr("", { "article-figure" }))

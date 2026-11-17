@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set theme before paint to avoid flash -->
+  <script>
+    (function () {
+      var t;
+      try {
+        t = localStorage.getItem('theme');
+      } catch (error) {
+        console.warn('Could not read the saved theme preference.', error);
+      }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <title>Data Modeling: Small Choices, Billion-Row
+Consequences | Nikhil Kumar</title>
+  <meta name="description" content="Start with the grain, choose
+dimensions and schema shapes, and make data types count: practical
+modeling choices that save storage and prevent expensive rework.">
+  <meta name="author" content="Nikhil Kumar">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Data Modeling: Small Choices,
+Billion-Row Consequences">
+  <meta property="og:description" content="Start with the grain, choose
+dimensions and schema shapes, and make data types count: practical
+modeling choices that save storage and prevent expensive rework.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Ctext x='50%25' y='50%25' dy='.1em' font-family='Inter,Arial,sans-serif' font-size='30' font-weight='700' fill='%23e50914' text-anchor='middle' dominant-baseline='middle'%3ENK%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a2e;
+      --accent: #ffffff;
+      --accent-muted: #b3b3b3;
+      --accent-dim: #a1a1a6;
+      --border: rgba(255, 255, 255, 0.08);
+      --highlight: #e50914;
+      --highlight-text: #ff8a91;
+      --link: #6ea8fe;
+      --text-body: #d4d4d8;
+      --code-bg: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(10, 10, 10, 0.9);
+      --callout-bg: #17253a;
+      --callout-border: #5aa7ff;
+      --heading-rule: rgba(255, 255, 255, 0.12);
+    }
+
+    html[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #f5f5f7;
+      --accent: #1d1d1f;
+      --accent-muted: #515154;
+      --accent-dim: #6e6e73;
+      --border: rgba(0, 0, 0, 0.1);
+      --highlight: #0071e3;
+      --highlight-text: #005bb5;
+      --link: #0071e3;
+      --text-body: #333336;
+      --code-bg: rgba(0, 0, 0, 0.06);
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --callout-bg: #eef6ff;
+      --callout-border: #80bfff;
+      --heading-rule: rgba(0, 113, 227, 0.18);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--accent);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 5%;
+    }
+
+    .top-nav a {
+      color: var(--accent-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 2rem;
+    }
+
+    .top-nav a:hover { color: var(--accent); text-decoration: none; }
+
+    .theme-toggle {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .theme-toggle svg { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    .article-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 4rem clamp(1rem, 4vw, 3rem) 6rem;
+    }
+
+    .article-header {
+      max-width: 68ch;
+      margin: 0 auto 2.25rem;
+      font-size: 1.125rem;
+    }
+
+    .article-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 68ch) minmax(0, 1fr);
+      font-size: 1.125rem;
+    }
+
+    .article-body > * { grid-column: 2; min-width: 0; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
+
+    .article-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: color-mix(in srgb, var(--highlight) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--highlight) 30%, transparent);
+      border-radius: 50px;
+      color: var(--highlight-text);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .article-contents {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 1rem 0 2rem;
+      font-size: 1rem;
+    }
+
+    .article-contents summary {
+      min-height: 44px;
+      padding: 0.85rem 1.25rem;
+      color: var(--highlight-text);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #TOC { padding: 0 1.25rem 1rem; }
+    #TOC ul { list-style: none; }
+    #TOC li { margin: 0.4rem 0; }
+    #TOC a { color: var(--accent-muted); }
+    #TOC a:hover { color: var(--link); }
+    #TOC ul ul { padding-left: 1.2rem; }
+
+    .article-intro { display: flow-root; }
+
+    .article-body h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+      margin: 3.5rem 0 1.2rem;
+      padding: 1.35rem 0 0;
+      border-top: 1px solid var(--heading-rule);
+      position: relative;
+    }
+
+    .article-body h2::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      width: 3.5rem;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--highlight);
+    }
+
+    .article-body h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p {
+      color: var(--text-body);
+      margin-bottom: 1.3rem;
+      overflow-wrap: anywhere;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .article-body :is(table, figcaption, .article-figure) p {
+      text-align: start;
+      hyphens: manual;
+    }
+
+    .article-body .article-lead p {
+      color: var(--accent);
+      font-size: 1.12rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+    .article-body ul, .article-body ol {
+      margin: 0 0 1.3rem;
+      padding-left: 1.5rem;
+      color: var(--text-body);
+    }
+    #TOC ul { padding-left: 0; margin-bottom: 0; }
+    #TOC ul ul { padding-left: 1.2rem; }
+    .article-body li { margin-bottom: 0.5rem; }
+
+    .article-body img {
+      display: block;
+      width: 100% !important;
+      max-width: 100%;
+      height: auto !important;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .article-body figure,
+    .article-figure {
+      margin: 1.5rem 0;
+    }
+
+    .article-figure p {
+      margin-bottom: 0;
+    }
+
+    .article-body figcaption {
+      max-width: 68ch;
+      margin: 0.5rem auto 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .article-body figcaption p {
+      color: var(--accent-dim);
+    }
+
+    .image-zoom {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--link);
+      font: inherit;
+      text-align: right;
+      cursor: zoom-in;
+    }
+
+    .image-zoom-hint {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .image-viewer {
+      width: calc(100% - 2rem);
+      max-width: 1600px;
+      max-height: calc(100dvh - 2rem);
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-primary);
+      color: var(--accent);
+    }
+
+    .image-viewer::backdrop { background: rgba(0, 0, 0, 0.75); }
+    .image-viewer-panel { padding: 1rem; }
+    .image-viewer-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .image-viewer-header h2 { font-size: 1.2rem; }
+    .image-viewer-header button {
+      min-height: 44px;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--accent);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .image-viewer-panel > p { color: var(--accent-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+    .image-viewer-scroll {
+      max-height: 65dvh;
+      overflow: auto;
+      overscroll-behavior: contain;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .image-viewer-scroll img { display: block; width: auto; max-width: none; height: auto; }
+    .image-viewer-open { overflow: hidden; }
+
+    .image-viewer-panel > a {
+      display: inline-block;
+      padding: 0.5rem 0;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--highlight);
+      padding-left: 1.2rem;
+      margin: 1.5rem 0;
+      color: var(--accent-muted);
+      font-style: italic;
+    }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      hyphens: manual;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 5px;
+    }
+
+    .article-body pre {
+      background: #141414;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.3rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e6e6e6;
+    }
+
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: inherit;
+    }
+
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    .article-body table {
+      display: table;
+      width: 100% !important;
+      max-width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .article-body .article-table table { margin: 0; }
+
+    .article-body th, .article-body td {
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+
+    .article-body th { background: var(--bg-card); }
+
+     /* Word text boxes and code blocks are emitted by Pandoc as 1%-wide,
+       single-cell tables. Override the unusable inline width while leaving
+       breathing room around these supporting elements. */
+    .article-body table[style*="width:1%"] {
+      display: block;
+      width: 92% !important;
+      max-width: 92%;
+      overflow-x: auto;
+      margin: 1.8rem auto;
+      border: 1px solid var(--callout-border);
+      border-left: 4px solid var(--callout-border);
+      border-radius: 14px;
+      background: var(--callout-bg);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--callout-border) 10%, transparent);
+    }
+
+    .article-body table[style*="width:1%"] tbody,
+    .article-body table[style*="width:1%"] tr,
+    .article-body table[style*="width:1%"] td {
+      display: block;
+      width: auto !important;
+    }
+
+    .article-body table[style*="width:1%"] td {
+      min-width: 100%;
+      border: 0;
+      padding: 1.15rem 1.3rem;
+    }
+
+    .article-body table[style*="width:1%"] td p:last-child {
+      margin-bottom: 0;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child {
+      margin-bottom: 0.65rem;
+    }
+
+    .article-body table[style*="width:1%"]:has(strong) td p:first-child strong {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--callout-border) 18%, transparent);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Single-cell boxes without a bold label are source-code snippets. */
+    .article-body table[style*="width:1%"]:not(:has(strong)) {
+      width: 94% !important;
+      max-width: 94%;
+      border-color: rgba(255, 255, 255, 0.12);
+      border-left-width: 1px;
+      border-radius: 12px;
+      background: #141414;
+      box-shadow: none;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) td {
+      min-width: max-content;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: #e6e6e6;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p {
+      margin: 0;
+      color: inherit;
+      white-space: pre;
+    }
+
+    .article-body table[style*="width:1%"]:not(:has(strong)) p:empty {
+      display: none;
+    }
+
+    .article-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--accent-dim);
+      font-size: 0.9rem;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    @media (max-width: 640px) {
+      .article-wrap { padding-top: 2rem; }
+      .article-title { font-size: 2rem; }
+      .article-meta { gap: 0.6rem; }
+      .top-nav { padding: 0.75rem 5%; }
+      .top-nav a { margin-right: 1.5rem; }
+      .article-body table[style*="width:1%"] {
+        width: 100% !important;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <nav class="top-nav" aria-label="Site">
+    <a href="/">&larr; Portfolio</a>
+    <a href="/blog/">All posts</a>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch theme" aria-pressed="false">
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+  <article class="article-wrap">
+    <header class="article-header">
+      <h1 class="article-title">Data Modeling: Small Choices,
+Billion-Row Consequences</h1>
+      <div class="article-meta">
+        <span>2026-11-17</span>
+        <span>&middot; 6 min read</span>
+        <span class="tag">Data Modeling</span>
+        <span class="tag">Dimensional Modeling</span>
+        <span class="tag">Data Engineering</span>
+        <span class="tag">SQL</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+      <div class="article-intro">
+<p>A dashboard says sales were $300. Finance says $100. Both queries run
+in milliseconds. The problem? Someone repeated a $100 order total across
+three order lines.</p>
+<div class="article-lead">
+<p><strong>A careful data model saves twice: fewer bytes now, fewer
+rebuilds later.</strong></p>
+</div>
+<p>Data modeling decides what we store and how it relates. Dimensional
+modeling organizes that data around business events and their context.
+Here is a practical way to get both right.</p>
+      </div>
+      <details class="article-contents" id="article-contents">
+        <summary>Contents</summary>
+        <nav id="TOC" role="doc-toc" aria-label="Table of contents">
+    <ul>
+    <li><a href="#before-columns-finish-one-sentence"
+    id="toc-before-columns-finish-one-sentence">1. Before columns,
+    finish one sentence</a></li>
+    <li><a href="#separate-measurements-from-context"
+    id="toc-separate-measurements-from-context">2. Separate measurements
+    from context</a></li>
+    <li><a href="#choose-a-shape-not-a-religion"
+    id="toc-choose-a-shape-not-a-religion">3. Choose a shape, not a
+    religion</a></li>
+    <li><a href="#a-byte-becomes-a-billion-bytes"
+    id="toc-a-byte-becomes-a-billion-bytes">4. A byte becomes a billion
+    bytes</a></li>
+    <li><a href="#a-date-key-is-not-a-date"
+    id="toc-a-date-key-is-not-a-date">5. A date key is not a
+    date</a></li>
+    <li><a href="#decide-whether-history-should-change"
+    id="toc-decide-whether-history-should-change">6. Decide whether
+    history should change</a></li>
+    <li><a href="#make-the-model-prove-itself"
+    id="toc-make-the-model-prove-itself">7. Make the model prove
+    itself</a></li>
+    <li><a href="#sources" id="toc-sources">Sources</a></li>
+    </ul>
+        </nav>
+      </details>
+<h2 id="before-columns-finish-one-sentence">1. Before columns, finish
+one sentence</h2>
+<p>Start with the business question: what are we selling, to whom, and
+through which channels? Then declare the <strong>grain</strong>:</p>
+<blockquote>
+<p>One row represents one booked order line, uniquely identified by
+source system, order ID, and line number.</p>
+</blockquote>
+<p>Grain is the exact meaning of a row, not just a list of keys. “One
+row per customer and product” is incomplete: the same customer can buy
+the same product twice. [1]</p>
+<p>In our $100 order, line amounts are $20, $30, and $50. Those belong
+at line grain. The order total belongs in an order-level fact, or needs
+an explicit allocation rule.</p>
+<p>Sales lines, return events, and daily stock balances have different
+grains. Keep them separate. Joining sales lines directly to multiple
+return events can multiply rows and inflate revenue; aggregate each side
+to the intended common grain first.</p>
+<p>Keep the lowest useful detail. You can summarize order lines into
+daily totals; you cannot reconstruct the lines from those totals.</p>
+<h2 id="separate-measurements-from-context">2. Separate measurements
+from context</h2>
+<p><strong>Facts</strong> record measurements.
+<strong>Dimensions</strong> describe who, what, when, and where.</p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
+<table style="width:85%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr>
+<th>Table</th>
+<th>What belongs here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fact_sales_line</code></td>
+<td>Grain identifiers, dimension keys, quantity, net amount</td>
+</tr>
+<tr>
+<td><code>dim_product</code></td>
+<td>Product key, source product ID, name, brand, category</td>
+</tr>
+<tr>
+<td><code>dim_customer</code></td>
+<td>Customer key, source customer ID, segment, region</td>
+</tr>
+<tr>
+<td><code>dim_date</code></td>
+<td>Date key, actual date, month, fiscal period, holiday flags</td>
+</tr>
+<tr>
+<td><code>dim_channel</code></td>
+<td>Channel key and name: web, app, store</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Use warehouse-generated <strong>surrogate keys</strong> to identify
+dimension rows; retain source IDs for tracing records. Names change and
+are poor join keys.</p>
+<p>Reuse shared definitions of customer, product, and date across sales
+and returns. These <strong>conformed dimensions</strong> stop teams
+inventing incompatible versions of “region.” [2]</p>
+<p>Also define how measures aggregate. Revenue in one reporting currency
+can be summed. Stock balances cannot be summed across days. Calculate a
+conversion rate from total conversions divided by total visits, not an
+unweighted average of daily percentages.</p>
+<h2 id="choose-a-shape-not-a-religion">3. Choose a shape, not a
+religion</h2>
+<p>Normalization reduces repeated data. Denormalization deliberately
+repeats some data to simplify reads. Star and snowflake schemas apply
+these choices to analytics:</p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
+<table style="width:85%;">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th>Shape</th>
+<th>Useful when</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normalized relational model</td>
+<td>Transactional applications need consistent inserts and updates</td>
+<td>Analysis may cross many tables</td>
+</tr>
+<tr>
+<td>Star schema</td>
+<td>BI needs facts joined to straightforward dimensions</td>
+<td>Product brand and category repeat within the product dimension</td>
+</tr>
+<tr>
+<td>Snowflake schema</td>
+<td>Dimension hierarchies need separate, reusable tables: product to
+category to department</td>
+<td>More joins and navigation</td>
+</tr>
+<tr>
+<td>Wide denormalized table</td>
+<td>A stable report or export benefits from one ready-to-query
+table</td>
+<td>Repeated attributes and harder historical corrections</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A star is already a compromise: separate facts from dimensions, but
+usually flatten descriptive hierarchies inside each dimension. “Star
+versus denormalized” is not a clean either/or. [2]</p>
+<p>For general BI, start with a star. Build selective wide outputs when
+measurements justify them. Fewer joins do not automatically mean less
+total work.</p>
+<h2 id="a-byte-becomes-a-billion-bytes">4. A byte becomes a billion
+bytes</h2>
+<p>Suppose a fact table stores a small channel code. In <strong>SQL
+Server</strong>, the uncompressed value widths are: [3]</p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
+<table style="width:85%;">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th>Type</th>
+<th>Range</th>
+<th>Bytes per value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TINYINT</code></td>
+<td>0 to 255</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>INT</code></td>
+<td>-2,147,483,648 to 2,147,483,647</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Replacing <code>INT</code> with <code>TINYINT</code> saves <strong>3
+bytes per row</strong>. At a billion rows, that is <strong>3 GB</strong>
+of raw value payload; at ten billion, <strong>30 GB</strong>, roughly 28
+GiB, for one column.</p>
+<p>That is 75% less <em>for those values</em>, not 75% off the table or
+cloud bill. Compression, row overhead, indexes, replicas, and the
+engine’s physical representation change the result. Columnar encoding
+can make small-valued <code>INT</code> columns compact already.</p>
+<p>Choose the smallest type that safely fits the <strong>future
+domain</strong>, including reserved unknown values. SQL Server’s
+<code>TINYINT</code> cannot hold <code>-1</code>; other engines have
+different ranges or no <code>TINYINT</code>.</p>
+<p>Two more guardrails: use appropriately sized
+<code>DECIMAL(p,s)</code> for money, not floating point; keep postal
+codes as strings because leading zeros matter. Matching join-key types
+avoids unnecessary conversions.</p>
+<h2 id="a-date-key-is-not-a-date">5. A date key is not a date</h2>
+<p>For November 24, 2026, compare these SQL Server representations,
+excluding surrounding overhead: [3][4]</p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
+<table style="width:85%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr>
+<th>Representation</th>
+<th>Value payload</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAR(8)</code> containing <code>'20261124'</code></td>
+<td>8 bytes</td>
+</tr>
+<tr>
+<td><code>INT</code> containing <code>20261124</code></td>
+<td>4 bytes</td>
+</tr>
+<tr>
+<td>Native <code>DATE</code></td>
+<td>3 bytes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>An integer date key can reduce index and join-key footprint versus
+text, without string collation work. Converting strings during every
+join adds avoidable work; parse and validate once when loading.</p>
+<p>But <strong>integer is not universally faster</strong>, and it is not
+smaller than every native date type. Plans, indexes, compression, and
+data layout matter.</p>
+<p>A useful dimensional design keeps <code>date_key = 20261124</code>
+alongside a real <code>calendar_date</code> in <code>dim_date</code>.
+Join matching integer keys; use calendar attributes for reporting:
+[5]</p>
+<pre><code>SELECT d.calendar_date, SUM(f.net_amount) AS net_sales
+FROM fact_sales_line AS f
+JOIN dim_date AS d ON f.date_key = d.date_key
+WHERE d.calendar_date &gt;= CAST(&#39;2026-11-01&#39; AS DATE)
+  AND d.calendar_date &lt;  CAST(&#39;2026-12-01&#39; AS DATE)
+GROUP BY d.calendar_date;</code></pre>
+<p>Do not subtract encoded keys to count days:
+<code>20261201 - 20261130 = 71</code>, not one. An integer also accepts
+<code>20260230</code>; a native date rejects it.</p>
+<p>Use native <code>DATE</code> for ordinary calendar operations, and
+retain event timestamps where time matters. Define the reporting
+timezone before deriving the business date.</p>
+<h2 id="decide-whether-history-should-change">6. Decide whether history
+should change</h2>
+<p>A customer moves from Pune to Delhi in December. Should November’s
+sales move too?</p>
+<ul>
+<li><strong>Type 1:</strong> overwrite the dimension attribute. Useful
+for corrections or a deliberate current-state view.</li>
+<li><strong>Type 2:</strong> create a new dimension row with a new
+surrogate key and validity interval. Historical facts retain the version
+valid at their event time. [2]</li>
+</ul>
+<p>Joining a fact to a Type 2 dimension by customer ID alone can match
+both versions. Join its stored version key instead; resolve
+late-arriving facts using event time.</p>
+<p>History is a business decision, not an accidental side effect of an
+update statement. Without a policy, yesterday’s perfectly correct
+dashboard can change today.</p>
+<h2 id="make-the-model-prove-itself">7. Make the model prove itself</h2>
+<p>Before the first dashboard, test these promises:</p>
+<ul>
+<li>The declared grain is unique.</li>
+<li>Dimension join keys are unique; facts have no orphan keys. Represent
+unknown members explicitly.</li>
+<li>Intended many-to-one joins preserve row counts and totals.</li>
+<li>Reloading a batch does not duplicate facts.</li>
+<li>Currency, timezone, null handling, and metric definitions are
+documented.</li>
+</ul>
+<p>Changing a column later is easy. Changing its meaning after twenty
+dashboards depend on it is not.</p>
+<p>The best model is not the one with the most tables or the fewest
+joins. It is the one that makes <strong>wrong answers harder to
+produce</strong>.</p>
+<h2 id="sources">Sources</h2>
+<ol type="1">
+<li><a href="https://www.kimballgroup.com/2008/11/fact-tables/">Kimball
+Group: grain and fact tables</a>.</li>
+<li><a
+href="https://learn.microsoft.com/en-us/power-bi/guidance/star-schema">Microsoft:
+star schemas, dimensions, and historical versions</a>.</li>
+<li><a
+href="https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql?view=sql-server-ver17">SQL
+Server: integer ranges and storage</a>.</li>
+<li><a
+href="https://learn.microsoft.com/en-us/sql/t-sql/data-types/date-transact-sql?view=sql-server-ver17">SQL
+Server: native date storage</a>.</li>
+<li><a
+href="https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/calendar-date-dimension/">Kimball
+Group: calendar date dimensions and integer keys</a>.</li>
+</ol>
+    </div>
+
+    <footer class="article-footer">
+      <p>Written by Nikhil Kumar &middot; <a href="/blog/">Back to all posts</a></p>
+    </footer>
+  </article>
+  </main>
+  <dialog id="image-viewer" class="image-viewer" aria-labelledby="image-viewer-title">
+    <div class="image-viewer-panel">
+      <div class="image-viewer-header">
+        <h2 id="image-viewer-title">Full-size diagram</h2>
+        <button type="button" autofocus>Close</button>
+      </div>
+      <p id="image-viewer-help">Scroll to explore the image. Press Escape or Close to return to the article.</p>
+      <div class="image-viewer-scroll" role="region" tabindex="0" aria-labelledby="image-viewer-title" aria-describedby="image-viewer-help">
+        <img alt="">
+      </div>
+      <a href="#" target="_blank" rel="noopener">Open original image in a new tab</a>
+    </div>
+  </dialog>
+</body>
+
+</html>

@@ -160,8 +160,7 @@ text, JSON, mixed-file, and audio datasets.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -406,15 +405,21 @@ text, JSON, mixed-file, and audio datasets.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -743,16 +748,18 @@ compression and 61 MB/s decompression at level 6.</p>
 latency-sensitive pipelines.</p>
 <h2 id="strengths-and-weaknesses-at-a-glance">Strengths and Weaknesses
 (At a Glance)</h2>
-<table>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
+<table style="width:85%;">
 <colgroup>
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Algorithm</th>
 <th>Compression Ratio</th>
 <th>Compression Speed</th>
@@ -761,42 +768,42 @@ latency-sensitive pipelines.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>gzip</td>
 <td>Moderate</td>
 <td>Slow</td>
 <td>Moderate</td>
 <td>Archival, web content</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Snappy</td>
 <td>Low</td>
 <td>Very Fast</td>
 <td>Very Fast</td>
 <td>Real-time, low-CPU systems</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>LZ4</td>
 <td>Moderate</td>
 <td>Extremely Fast</td>
 <td>Extremely Fast</td>
 <td>High-throughput, low-latency systems</td>
 </tr>
-<tr class="even">
+<tr>
 <td>zstd</td>
 <td>High</td>
 <td>Fast</td>
 <td>Fast</td>
 <td>General-purpose, Parquet, Kafka, data transfers</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Brotli</td>
 <td>High</td>
 <td>Slow</td>
 <td>Fast</td>
 <td>HTTP and static web content</td>
 </tr>
-<tr class="even">
+<tr>
 <td>XZ/LZMA</td>
 <td>Very High</td>
 <td>Extremely Slow</td>
@@ -805,10 +812,13 @@ latency-sensitive pipelines.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="live-benchmark-results">Live Benchmark Results</h2>
 <p>The July 2026 standard run processed 2.43 GiB of public data with six
 codecs, five measured repetitions per case, and zero failures. These
 enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
+<div class="article-table" tabindex="0" aria-label="Scrollable table"
+role="region">
 <table>
 <colgroup>
 <col style="width: 20%" />
@@ -818,7 +828,7 @@ enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
 <col style="width: 20%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Codec</th>
 <th>Ratio</th>
 <th>Compress MB/s</th>
@@ -827,42 +837,42 @@ enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>gzip 6</td>
 <td>3.09×</td>
 <td>18</td>
 <td>178</td>
 <td>30.5</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Snappy 1</td>
 <td>1.97×</td>
 <td>313</td>
 <td>358</td>
 <td>35.4</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>LZ4 0</td>
 <td>1.96×</td>
 <td>344</td>
 <td>634</td>
 <td>33.0</td>
 </tr>
-<tr class="even">
+<tr>
 <td>zstd 3</td>
 <td>3.19×</td>
 <td>114</td>
 <td>142</td>
 <td>41.9</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Brotli 5</td>
 <td>3.60×</td>
 <td>34</td>
 <td>219</td>
 <td>60.8</td>
 </tr>
-<tr class="even">
+<tr>
 <td>XZ 6</td>
 <td>4.34×</td>
 <td>1.3</td>
@@ -871,6 +881,7 @@ enwik9 results show the trade-off on a 1 GB Wikipedia text input:</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>On 977.8 MiB of GitHub Archive JSON, zstd reached an 11.3× ratio at
 389 MB/s, while LZ4 decompressed at 617 MB/s and Snappy compressed at
 570 MB/s. The data type changes the result, so use the matrices rather

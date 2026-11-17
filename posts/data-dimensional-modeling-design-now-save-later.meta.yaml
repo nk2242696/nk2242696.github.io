@@ -1,0 +1,8 @@
+title: "Data Modeling: Small Choices, Billion-Row Consequences"
+date: "2026-11-17"
+description: "Start with the grain, choose dimensions and schema shapes, and make data types count: practical modeling choices that save storage and prevent expensive rework."
+tags:
+  - Data Modeling
+  - Dimensional Modeling
+  - Data Engineering
+  - SQL

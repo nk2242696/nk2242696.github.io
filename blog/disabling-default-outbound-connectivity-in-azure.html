@@ -160,8 +160,7 @@ controlled internet path.">
     }
 
     .article-body > * { grid-column: 2; min-width: 0; }
-    .article-body > :is(figure, .article-figure, pre, table, .sourceCode) { grid-column: 1 / -1; }
-    .article-body > table:has(tr > :only-child) { grid-column: 2; }
+    .article-body > :is(figure, .article-figure) { grid-column: 1 / -1; }
 
     .article-title {
       font-size: 2.8rem;
@@ -406,15 +405,21 @@ controlled internet path.">
       font-size: inherit;
     }
 
+    .article-table {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
     .article-body table {
-      display: block;
+      display: table;
       width: 100% !important;
       max-width: 100%;
-      overflow-x: auto;
       border-collapse: collapse;
       margin: 1.5rem 0;
       font-size: 0.95rem;
     }
+
+    .article-body .article-table table { margin: 0; }
 
     .article-body th, .article-body td {
       border: 1px solid var(--border);
@@ -612,7 +617,7 @@ internet access with an explicit, controlled path</strong></p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>THE SHORT VERSION<br />
 </strong>Private subnet does not mean no internet. It means no implicit
 internet path. If a workload needs a public endpoint, create and
@@ -651,7 +656,7 @@ because the VM started the conversation.</p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>SIMPLE MENTAL MODEL<br />
 </strong>Outbound connectivity is the controlled exit door for a private
 workload. Security depends on knowing where that door is, who owns it,
@@ -683,42 +688,45 @@ default. A compromised process can call an unknown internet destination
 through the same invisible path, and operators may not have a stable
 public IP, a central inspection point, or even a clear diagram showing
 how the traffic leaves.</p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
 <table>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>Implicit default</strong></th>
 <th><strong>Explicit outbound</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Internet access appears automatically</td>
 <td>Internet access is an intentional design decision</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Public identity is Microsoft-owned and can change</td>
 <td>The team owns or selects the public identity</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>The path is easy to overlook</td>
 <td>The path can be reviewed, logged, and governed</td>
 </tr>
-<tr class="even">
+<tr>
 <td>A fallback can survive unnoticed</td>
 <td>Removing the outbound resource removes the path</td>
 </tr>
 </tbody>
 </table>
+</div>
 <table>
 <colgroup>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>PRIVATE DOES NOT MEAN ISOLATED<br />
 </strong>Setting defaultOutboundAccess to false removes Azure's implicit
 fallback. A private subnet can still reach approved public destinations
@@ -763,6 +771,8 @@ alt="A private workload can use NAT Gateway, Load Balancer outbound rules, Firew
 </div>
 <p><em>Figure 3. Different outbound methods solve different security and
 ownership problems.</em></p>
+<div class="article-table" role="region" aria-label="Scrollable table"
+tabindex="0">
 <table>
 <colgroup>
 <col style="width: 25%" />
@@ -771,7 +781,7 @@ ownership problems.</em></p>
 <col style="width: 25%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>Choice</strong></th>
 <th><strong>Think of it as</strong></th>
 <th><strong>Good introductory use case</strong></th>
@@ -779,33 +789,33 @@ ownership problems.</em></p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>NAT Gateway</td>
 <td>A shared exit for a subnet</td>
 <td>Private application servers need predictable internet access</td>
 <td>Stable identity, but it does not decide which websites are
 allowed</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Azure Firewall</td>
 <td>A guarded and inspected exit</td>
 <td>A regulated service must restrict and log destinations</td>
 <td>More control, with more cost and operational complexity</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>VM public IP</td>
 <td>A personal street address</td>
 <td>A small, justified standalone system needs its own identity</td>
 <td>Simple, but increases per-VM public exposure and governance</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Load Balancer rules</td>
 <td>An exit shared by one backend pool</td>
 <td>An existing load-balanced application reuses its frontend IP</td>
 <td>Explicit, but less flexible for uneven or rapidly scaling
 workloads</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Private Link</td>
 <td>No public exit for that service</td>
 <td>A VM reaches Storage, SQL, or Key Vault privately</td>
@@ -814,6 +824,7 @@ services</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>For a typical private application subnet that simply needs a stable
 way to call public services, NAT Gateway is usually the easiest explicit
 choice. If the organization must control destinations or inspect
@@ -869,7 +880,7 @@ fully removed.</p>
 <col style="width: 100%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>REMEMBER THE ORDER<br />
 </strong>Understand the need → create the explicit path → test it →
 disable the default. Disabling first can break updates, package
